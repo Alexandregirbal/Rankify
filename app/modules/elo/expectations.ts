@@ -3,7 +3,10 @@
 import { POWER, THRESHOLD } from "./constants";
 import { Player } from "./types";
 
-const calculateExpectation = (rating1: number, rating2: number): number => {
+export const calculateExpectation = (
+  rating1: number,
+  rating2: number
+): number => {
   const rating1Expectation =
     1 / (1 + POWER ** ((rating2 - rating1) / THRESHOLD));
   return Number(rating1Expectation.toFixed(4));

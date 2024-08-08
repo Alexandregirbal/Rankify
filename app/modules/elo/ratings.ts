@@ -4,14 +4,13 @@ import { calculateTeamsExpectations } from "./expectations";
 import { calculateKFactor, calculatePFactor } from "./factors";
 import { Player, Team } from "./types";
 
-const calculatePlayerRating = (
+export const calculatePlayerRating = (
   player: Player,
   team: Team,
   result: [number, number],
   gamePFactor: number = 1
 ): { rating: number } => {
   const playerKFactor = calculateKFactor(player.games);
-  console.log(player.name, playerKFactor);
 
   const { team1: playerExpectation } = calculateTeamsExpectations(
     [player],
