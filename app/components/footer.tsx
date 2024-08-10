@@ -25,8 +25,8 @@ export default function Footer() {
         <Trophy />
       </button>
 
-      <button className={isActiveTab("/addGame")}>
-        <SquarePlus onClick={() => router.push("/addGame")} />
+      <button className={isActiveTab("/add")}>
+        <SquarePlus onClick={() => router.push("/add")} />
       </button>
     </footer>
   );

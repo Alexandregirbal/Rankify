@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Player } from "../modules/elo/types";
 
@@ -7,6 +8,28 @@ export default function AddGame() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [player1, setPlayer1] = useState({ name: "", score: 0 });
   const [player2, setPlayer2] = useState({ name: "", score: 0 });
+  const [newPlayerName, setNewPlayerName] = useState("");
+
+  const router = useRouter();
+
+  const handleChangeNewPlayerName = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewPlayerName(value);
+  };
+
+  const handleSubmitNewPlayer = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    fetch("/api/players", {
+      method: "POST",
+      body: JSON.stringify({ name: newPlayerName }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAllPlayers([...allPlayers, data.player]);
+        setNewPlayerName("");
+      });
+  };
 
   const handleChangePlayer1Name = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
@@ -34,11 +57,11 @@ export default function AddGame() {
     fetch("/api/game", {
       method: "POST",
       body: JSON.stringify({ player1, player2 }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      });
+    }).then((res) => {
+      if (res.status === 200) {
+        router.push("/");
+      }
+    });
   };
 
   useEffect(() => {
@@ -70,7 +93,7 @@ export default function AddGame() {
                   disabled={player.name === player2.name}
                   key={player.name}
                 >
-                  {player.name} ({player.rating})
+                  {player.name}
                 </option>
               ))}
             </select>
@@ -78,7 +101,7 @@ export default function AddGame() {
               className="input input-bordered w-full focus:outline-accent"
               type="number"
               name="score"
-              placeholder="Score player 1"
+              defaultValue={player1.score}
               onChange={handleChangePlayer1Score}
             />
           </div>
@@ -96,7 +119,7 @@ export default function AddGame() {
                   disabled={player.name === player1.name}
                   key={player.name}
                 >
-                  {player.name} ({player.rating})
+                  {player.name}
                 </option>
               ))}
             </select>
@@ -104,11 +127,34 @@ export default function AddGame() {
               className="input input-bordered w-full focus:outline-accent"
               type="number"
               name="score"
-              placeholder="Score player 2"
+              defaultValue={player2.score}
               onChange={handleChangePlayer2Score}
             />
           </div>
         </div>
+        <button
+          disabled={
+            !(player1.score !== player2.score && player1.name && player2.name)
+          }
+          type="submit"
+          className="btn btn-accent text-white"
+        >
+          Add
+        </button>
+      </form>
+      <div className="divider"></div>
+      <h1 className="text-center text-2xl">Add a player</h1>
+      <form
+        onSubmit={handleSubmitNewPlayer}
+        className="flex flex-col items-center gap-4"
+      >
+        <input
+          className="input input-bordered w-full focus:outline-accent"
+          type="text"
+          name="name"
+          placeholder="Player name"
+          onChange={handleChangeNewPlayerName}
+        />
         <button type="submit" className="btn btn-accent text-white">
           Add
         </button>
