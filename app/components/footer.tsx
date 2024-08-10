@@ -14,6 +14,7 @@ export default function Footer() {
   return (
     <footer className="btm-nav">
       <button
+        disabled
         className={isActiveTab("/charts")}
         onClick={() => router.push("/charts")}
       >
