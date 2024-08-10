@@ -58,7 +58,7 @@ export default function AddGame() {
         <div className="flex gap-4">
           <div className="flex flex-col items-center gap-4">
             <select
-              className="select w-full"
+              className="select w-full border border-slate-300 focus:outline-accent"
               onChange={handleChangePlayer1Name}
             >
               <option disabled selected>
@@ -71,7 +71,7 @@ export default function AddGame() {
               ))}
             </select>
             <input
-              className="input input-bordered w-full"
+              className="input input-bordered w-full focus:outline-accent"
               type="number"
               name="score"
               placeholder="Score player 1"
@@ -81,7 +81,7 @@ export default function AddGame() {
 
           <div className="flex flex-col items-center gap-4">
             <select
-              className="select w-full"
+              className="select w-full border border-slate-300 focus:outline-accent"
               onChange={handleChangePlayer2Name}
             >
               <option disabled selected>
@@ -94,7 +94,7 @@ export default function AddGame() {
               ))}
             </select>
             <input
-              className="input input-bordered  w-full"
+              className="input input-bordered w-full focus:outline-accent"
               type="number"
               name="score"
               placeholder="Score player 2"

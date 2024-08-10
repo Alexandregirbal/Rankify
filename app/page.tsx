@@ -11,10 +11,11 @@ export default function Leaderboard() {
     { name: "Barney", rating: 50 },
     { name: "Betty", rating: 40 },
     { name: "Wilma", rating: 20 },
+    { name: "José", rating: 10 },
   ].sort((p1, p2) => p2.rating - p1.rating);
 
   return (
-    <div className="h-full flex flex-col items-center gap-4 p-4">
+    <div className="h-full flex flex-col items-center gap-4 p-4 overflow-y-scroll">
       <h1 className="text-center text-2xl">Leaderboard</h1>
       {players.map((player, index) => (
         <Player

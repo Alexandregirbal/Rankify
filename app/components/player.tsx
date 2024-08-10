@@ -8,12 +8,16 @@ export default function Player({
   ranking: number;
 }) {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="flex gap-4">
-        <div>{ranking}</div>
-        {name}
+    <div className="shadow-md flex rounded-md items-center gap-4 border border-slate-300 p-4 w-full">
+      <div className="avatar">
+        <div className="ring-2 ring-accent w-8 rounded-full text-center pt-1">
+          {ranking}
+        </div>
       </div>
-      {rating}
+      <div className="flex justify-between grow">
+        <div>{name}</div>
+        <div>{rating}</div>
+      </div>
     </div>
   );
 }
