@@ -1,9 +1,10 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { Player } from "../modules/elo/types";
 
 export default function AddGame() {
-  const [allPlayers, setAllPlayers] = useState<string[]>([]);
+  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [player1, setPlayer1] = useState({ name: "", score: 0 });
   const [player2, setPlayer2] = useState({ name: "", score: 0 });
 
@@ -65,8 +66,11 @@ export default function AddGame() {
                 Player 1
               </option>
               {allPlayers.map((player) => (
-                <option disabled={player === player2.name} key={player}>
-                  {player}
+                <option
+                  disabled={player.name === player2.name}
+                  key={player.name}
+                >
+                  {player.name} ({player.rating})
                 </option>
               ))}
             </select>
@@ -88,8 +92,11 @@ export default function AddGame() {
                 Player 2
               </option>
               {allPlayers.map((player) => (
-                <option disabled={player === player1.name} key={player}>
-                  {player}
+                <option
+                  disabled={player.name === player1.name}
+                  key={player.name}
+                >
+                  {player.name} ({player.rating})
                 </option>
               ))}
             </select>

@@ -1,24 +1,25 @@
-import Player from "./components/player";
+"use client";
+
+import { useEffect, useState } from "react";
+import PlayerComponent from "./components/player";
+import { Player } from "./modules/elo/types";
 
 export default function Leaderboard() {
-  const players = [
-    { name: "Bart", rating: 80 },
-    { name: "Marge", rating: 90 },
-    { name: "Maggie", rating: 60 },
-    { name: "Homer", rating: 100 },
-    { name: "Lisa", rating: 70 },
-    { name: "Fred", rating: 30 },
-    { name: "Barney", rating: 50 },
-    { name: "Betty", rating: 40 },
-    { name: "Wilma", rating: 20 },
-    { name: "José", rating: 10 },
-  ].sort((p1, p2) => p2.rating - p1.rating);
+  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
+
+  useEffect(() => {
+    fetch("/api/players")
+      .then((res) => res.json())
+      .then((data) => {
+        setAllPlayers(data.players);
+      });
+  }, []);
 
   return (
     <div className="h-full flex flex-col items-center gap-4 p-4 overflow-y-scroll">
       <h1 className="text-center text-2xl">Leaderboard</h1>
-      {players.map((player, index) => (
-        <Player
+      {allPlayers.map((player, index) => (
+        <PlayerComponent
           key={player.name}
           name={player.name}
           rating={player.rating}

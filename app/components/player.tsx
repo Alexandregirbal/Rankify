@@ -1,4 +1,4 @@
-export default function Player({
+export default function PlayerComponent({
   name,
   rating,
   ranking,
