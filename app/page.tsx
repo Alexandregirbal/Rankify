@@ -1,8 +1,8 @@
 "use client";
 
+import { Player } from "@/modules/elo/types";
 import { useEffect, useState } from "react";
 import PlayerComponent from "./components/player";
-import { Player } from "./modules/elo/types";
 
 export default function Leaderboard() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);

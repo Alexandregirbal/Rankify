@@ -1,5 +1,5 @@
-import { createPlayer } from "@/app/modules/player/create";
-import { getAllPlayers, getPlayer } from "@/app/modules/player/get";
+import { createPlayer } from "@/modules/player/create";
+import { getAllPlayers, getPlayer } from "@/modules/player/get";
 
 export async function GET() {
   const players = await getAllPlayers();

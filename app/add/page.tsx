@@ -1,8 +1,8 @@
 "use client";
 
+import { Player } from "@/modules/elo/types";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { Player } from "../modules/elo/types";
 
 export default function AddGame() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);

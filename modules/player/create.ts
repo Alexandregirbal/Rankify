@@ -1,5 +1,5 @@
-import { DEFAULT_RATING } from "@/app/modules/elo/constants";
 import { getDatabaseClient } from "@/database/db";
+import { DEFAULT_RATING } from "@/modules/elo/constants";
 
 export const createPlayer = async (playerName: string) => {
   const db = getDatabaseClient();

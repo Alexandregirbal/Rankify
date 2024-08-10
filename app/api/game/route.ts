@@ -1,8 +1,8 @@
-import { calculatePlayersRatings } from "@/app/modules/elo/ratings";
-import { Player } from "@/app/modules/elo/types";
-import { createGame } from "@/app/modules/game/create";
-import { getPlayer } from "@/app/modules/player/get";
-import { updatePlayerRating } from "@/app/modules/player/update";
+import { calculatePlayersRatings } from "@/modules/elo/ratings";
+import { Player } from "@/modules/elo/types";
+import { createGame } from "@/modules/game/create";
+import { getPlayer } from "@/modules/player/get";
+import { updatePlayerRating } from "@/modules/player/update";
 
 export async function POST(request: Request) {
   const { player1, player2 } = await request.json();
