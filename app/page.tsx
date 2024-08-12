@@ -21,8 +21,7 @@ export default function Leaderboard() {
       {allPlayers.map((player, index) => (
         <PlayerComponent
           key={player.name}
-          name={player.name}
-          rating={player.rating}
+          player={player}
           ranking={index + 1}
         />
       ))}

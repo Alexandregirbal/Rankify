@@ -5,12 +5,14 @@ export const updatePlayerRating = async (
   rating: number
 ) => {
   const db = getDatabaseClient();
-  const player = await db
-    .collection("players")
-    .findOneAndUpdate(
-      { name: playerName },
-      { $set: { rating }, $inc: { games: 1 } },
-      { returnDocument: "after" }
-    );
+  const player = await db.collection("players").findOneAndUpdate(
+    { name: playerName },
+    {
+      $set: { rating },
+      $inc: { games: 1 },
+      $push: { ratingHistory: { rating, date: new Date() } } as any,
+    },
+    { returnDocument: "after" }
+  );
   return player;
 };

@@ -9,8 +9,11 @@ export const createPlayer = async (playerName: string) => {
     throw new Error("Player already exists");
   }
 
-  const newPlayer = await db
-    .collection("players")
-    .insertOne({ name: playerName, rating: DEFAULT_RATING, games: 0 });
+  const newPlayer = await db.collection("players").insertOne({
+    name: playerName,
+    rating: DEFAULT_RATING,
+    ratingHistory: [{ date: new Date(), rating: DEFAULT_RATING }],
+    games: 0,
+  });
   return newPlayer;
 };
