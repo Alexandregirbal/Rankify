@@ -29,7 +29,7 @@ export const calculatePlayersRatings = (
   team1: Team,
   team2: Team,
   result: [number, number]
-): Array<Player> => {
+): Array<Omit<Player, "ratingHistory">> => {
   const newRatings = [];
   const gamePFactor = calculatePFactor(result[0], result[1]);
   for (const player of team1) {
