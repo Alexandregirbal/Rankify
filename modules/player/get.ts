@@ -1,13 +1,14 @@
 import { getDatabaseClient } from "@/database/db";
+import { Player } from "../elo/types";
 
-export const getAllPlayers = async () => {
+export const getAllPlayers = async (): Promise<Player[]> => {
   const db = getDatabaseClient();
   const players = await db
     .collection("players")
     .find({})
     .sort({ rating: -1 })
     .toArray();
-  return players;
+  return players as unknown as Player[];
 };
 
 export const getPlayer = async (playerName: string) => {

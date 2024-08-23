@@ -1,11 +1,5 @@
 import { createPlayer } from "@/modules/player/create";
-import { getAllPlayers, getPlayer } from "@/modules/player/get";
-
-export async function GET() {
-  const players = await getAllPlayers();
-
-  return Response.json({ players });
-}
+import { getPlayer } from "@/modules/player/get";
 
 export async function POST(request: Request) {
   const { name } = await request.json();

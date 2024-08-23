@@ -1,19 +1,8 @@
-"use client";
-
-import { Player } from "@/modules/elo/types";
-import { useEffect, useState } from "react";
+import { getAllPlayers } from "@/modules/player/get";
 import PlayerComponent from "./components/player";
 
-export default function Leaderboard() {
-  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
-
-  useEffect(() => {
-    fetch("/api/players")
-      .then((res) => res.json())
-      .then((data) => {
-        setAllPlayers(data.players);
-      });
-  }, []);
+export default async function Leaderboard() {
+  const allPlayers = await getAllPlayers();
 
   return (
     <div className="h-full flex flex-col items-center gap-4 p-4 overflow-y-scroll">
