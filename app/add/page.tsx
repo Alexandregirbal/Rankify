@@ -1,5 +1,6 @@
 "use client";
 
+import { calculateTeamsExpectations } from "@/modules/elo/expectations";
 import { Player } from "@/modules/elo/types";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -93,6 +94,8 @@ export default function AddGame() {
       });
   }, []);
 
+  const expectations = calculateTeamsExpectations(team1.players, team2.players);
+
   return (
     <div className="h-full flex flex-col items-center gap-4 p-4 overflow-y-scroll">
       <h1 className="text-center text-2xl">Add a game result</h1>
@@ -152,9 +155,22 @@ export default function AddGame() {
           </div>
         </div>
 
+        <div
+          className="tooltip w-full"
+          data-tip={`Expected score of team 1 : ${
+            (expectations?.team1 ?? 0.5) * 100
+          } %`}
+        >
+          <progress
+            className="progress progress-accent w-3/4"
+            value={(expectations?.team1 ?? 0.5) * 100}
+            max="100"
+          />
+        </div>
+
         <div className="flex  items-center gap-4">
           <div className="flex flex-col items-center gap-4">
-            Score team 1
+            <span>Score team 1</span>
             <input
               className="input input-bordered w-1/2 focus:outline-accent"
               type="number"
@@ -164,7 +180,7 @@ export default function AddGame() {
             />
           </div>
           <div className="flex flex-col items-center gap-4">
-            Score team 2
+            <span>Score team 2</span>
             <input
               className="input input-bordered w-1/2 focus:outline-accent"
               type="number"

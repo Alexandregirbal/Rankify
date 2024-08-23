@@ -12,14 +12,13 @@ export const calculatePlayerRating = (
 ): { rating: number } => {
   const playerKFactor = calculateKFactor(player.games);
 
-  const { team1: playerExpectation } = calculateTeamsExpectations(
-    [player],
-    team
-  );
+  const expectations = calculateTeamsExpectations([player], team);
+  if (!expectations) return { rating: player.rating };
+
   const win = result[0] > result[1] ? 1 : 0;
 
   const rating =
-    player.rating + playerKFactor * gamePFactor * (win - playerExpectation);
+    player.rating + playerKFactor * gamePFactor * (win - expectations.team1);
   return {
     rating: Number(rating.toFixed(2)),
   };
