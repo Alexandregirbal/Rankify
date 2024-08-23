@@ -22,7 +22,8 @@ export const calculateTeamsExpectations = (
 ): {
   team1: number;
   team2: number;
-} => {
+} | null => {
+  if (team1.length === 0 || team2.length === 0) return null;
   const team1Rating =
     team1.reduce((acc, cur) => acc + cur.rating, 0) / team1.length;
   const team2Rating =

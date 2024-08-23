@@ -1,13 +1,14 @@
 "use client";
 
-import { Player } from "@/modules/elo/types";
+import { calculateTeamsExpectations } from "@/modules/elo/expectations";
+import { Player, TeamScoring } from "@/modules/elo/types";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export default function AddGame() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
-  const [player1, setPlayer1] = useState({ name: "", score: 0 });
-  const [player2, setPlayer2] = useState({ name: "", score: 0 });
+  const [team2, setTeam2] = useState<TeamScoring>({ players: [], score: 0 });
+  const [team1, setTeam1] = useState<TeamScoring>({ players: [], score: 0 });
   const [newPlayerName, setNewPlayerName] = useState("");
 
   const router = useRouter();
@@ -31,24 +32,40 @@ export default function AddGame() {
       });
   };
 
-  const handleChangePlayer1Name = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeTeam1Player = (
+    e: ChangeEvent<HTMLSelectElement>,
+    index: number
+  ) => {
     const { value } = e.target;
-    setPlayer1({ ...player1, name: value });
+    const player = allPlayers.find((p) => p.name === value);
+    if (!player) return;
+
+    const newTeam1Players = [...team1.players];
+    newTeam1Players[index] = player;
+    setTeam1({ ...team1, players: newTeam1Players });
   };
 
-  const handleChangePlayer2Name = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeTeam2Player = (
+    e: ChangeEvent<HTMLSelectElement>,
+    index: number
+  ) => {
     const { value } = e.target;
-    setPlayer2({ ...player2, name: value });
+    const player = allPlayers.find((p) => p.name === value);
+    if (!player) return;
+
+    const newTeam2Players = [...team2.players];
+    newTeam2Players[index] = player;
+    setTeam2({ ...team2, players: newTeam2Players });
   };
 
-  const handleChangePlayer1Score = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeTeam1Score = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setPlayer1({ ...player1, score: parseInt(value) });
+    setTeam1({ ...team1, score: parseInt(value) });
   };
 
-  const handleChangePlayer2Score = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeTeam2Score = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setPlayer2({ ...player2, score: parseInt(value) });
+    setTeam2({ ...team2, score: parseInt(value) });
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -56,7 +73,7 @@ export default function AddGame() {
 
     fetch("/api/game", {
       method: "POST",
-      body: JSON.stringify({ player1, player2 }),
+      body: JSON.stringify({ team1, team2 }),
     }).then((res) => {
       if (res.status === 200) {
         router.push("/");
@@ -72,8 +89,10 @@ export default function AddGame() {
       });
   }, []);
 
+  const expectations = calculateTeamsExpectations(team1.players, team2.players);
+
   return (
-    <div className="h-full flex flex-col items-center gap-4 p-4">
+    <div className="h-full flex flex-col items-center gap-4 p-4 overflow-y-scroll">
       <h1 className="text-center text-2xl">Add a game result</h1>
       <form
         onSubmit={handleSubmit}
@@ -81,60 +100,99 @@ export default function AddGame() {
       >
         <div className="flex gap-4">
           <div className="flex flex-col items-center gap-4">
-            <select
-              className="select w-full border border-slate-300 focus:outline-accent"
-              onChange={handleChangePlayer1Name}
-            >
-              <option disabled selected>
-                Player 1
-              </option>
-              {allPlayers.map((player) => (
-                <option
-                  disabled={player.name === player2.name}
-                  key={player.name}
-                >
-                  {player.name}
+            Team 1
+            {new Array(team1.players.length + 1).fill(null).map((_, i) => (
+              <select
+                className="select w-full border border-slate-300 focus:outline-accent"
+                onChange={(e) => handleChangeTeam1Player(e, i)}
+                key={i}
+              >
+                <option disabled selected>
+                  Player {i + 1}
                 </option>
-              ))}
-            </select>
-            <input
-              className="input input-bordered w-full focus:outline-accent"
-              type="number"
-              name="score"
-              defaultValue={player1.score}
-              onChange={handleChangePlayer1Score}
-            />
+                {allPlayers.map((player) => (
+                  <option
+                    disabled={[...team1.players, ...team2.players]
+                      .map((p) => p.name)
+                      .includes(player.name)}
+                    key={player.name}
+                  >
+                    {player.name}
+                  </option>
+                ))}
+              </select>
+            ))}
           </div>
 
           <div className="flex flex-col items-center gap-4">
-            <select
-              className="select w-full border border-slate-300 focus:outline-accent"
-              onChange={handleChangePlayer2Name}
-            >
-              <option disabled selected>
-                Player 2
-              </option>
-              {allPlayers.map((player) => (
-                <option
-                  disabled={player.name === player1.name}
-                  key={player.name}
-                >
-                  {player.name}
+            Team 2
+            {new Array(team2.players.length + 1).fill(null).map((_, i) => (
+              <select
+                className="select w-full border border-slate-300 focus:outline-accent"
+                onChange={(e) => handleChangeTeam2Player(e, i)}
+                key={i}
+              >
+                <option disabled selected>
+                  Player {i + 1}
                 </option>
-              ))}
-            </select>
+                {allPlayers.map((player) => (
+                  <option
+                    disabled={[...team1.players, ...team2.players]
+                      .map((p) => p.name)
+                      .includes(player.name)}
+                    key={player.name}
+                  >
+                    {player.name}
+                  </option>
+                ))}
+              </select>
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="tooltip w-full"
+          data-tip={`Expected score of team 1 : ${
+            (expectations?.team1 ?? 0.5) * 100
+          } %`}
+        >
+          <progress
+            className="progress progress-accent w-3/4"
+            value={(expectations?.team1 ?? 0.5) * 100}
+            max="100"
+          />
+        </div>
+
+        <div className="flex  items-center gap-4">
+          <div className="flex flex-col items-center gap-4">
+            <span>Score team 1</span>
             <input
-              className="input input-bordered w-full focus:outline-accent"
+              className="input input-bordered w-1/2 focus:outline-accent"
               type="number"
               name="score"
-              defaultValue={player2.score}
-              onChange={handleChangePlayer2Score}
+              defaultValue={team1.score}
+              onChange={handleChangeTeam1Score}
+            />
+          </div>
+          <div className="flex flex-col items-center gap-4">
+            <span>Score team 2</span>
+            <input
+              className="input input-bordered w-1/2 focus:outline-accent"
+              type="number"
+              name="score"
+              defaultValue={team2.score}
+              onChange={handleChangeTeam2Score}
             />
           </div>
         </div>
+
         <button
           disabled={
-            !(player1.score !== player2.score && player1.name && player2.name)
+            !(
+              team1.score !== team2.score &&
+              team1.players.length &&
+              team2.players.length
+            )
           }
           type="submit"
           className="btn btn-accent text-white"
@@ -142,7 +200,9 @@ export default function AddGame() {
           Add
         </button>
       </form>
+
       <div className="divider"></div>
+
       <h1 className="text-center text-2xl">Add a player</h1>
       <form
         onSubmit={handleSubmitNewPlayer}

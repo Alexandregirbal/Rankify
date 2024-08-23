@@ -1,8 +1,23 @@
-export type Player = {
-  name: string;
-  rating: number;
-  ratingHistory: { date: Date; rating: number }[];
-  games: number;
-};
+import { z } from "zod";
 
-export type Team = Player[];
+export const playerSchema = z.object({
+  name: z.string(),
+  rating: z.number(),
+  ratingHistory: z.array(
+    z.object({
+      date: z.date(),
+      rating: z.number(),
+    })
+  ),
+  games: z.number(),
+});
+export type Player = z.infer<typeof playerSchema>;
+
+export const teamSchema = z.array(playerSchema);
+export type Team = z.infer<typeof teamSchema>;
+
+export const teamScoringSchema = z.object({
+  players: teamSchema,
+  score: z.number(),
+});
+export type TeamScoring = z.infer<typeof teamScoringSchema>;
