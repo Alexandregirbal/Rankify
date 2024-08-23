@@ -2,7 +2,7 @@
 
 import { calculateTeamsExpectations } from "./expectations";
 import { calculateKFactor, calculatePFactor } from "./factors";
-import { Player, Team } from "./types";
+import { Player, Team, TeamScoring } from "./types";
 
 export const calculatePlayerRating = (
   player: Player,
@@ -25,17 +25,16 @@ export const calculatePlayerRating = (
 };
 
 export const calculatePlayersRatings = (
-  team1: Team,
-  team2: Team,
-  result: [number, number]
+  team1: TeamScoring,
+  team2: TeamScoring
 ): Array<Omit<Player, "ratingHistory">> => {
   const newRatings = [];
-  const gamePFactor = calculatePFactor(result[0], result[1]);
-  for (const player of team1) {
+  const gamePFactor = calculatePFactor(team1.score, team2.score);
+  for (const player of team1.players) {
     const { rating: newRating } = calculatePlayerRating(
       player,
-      team2,
-      result,
+      team2.players,
+      [team1.score, team2.score],
       gamePFactor
     );
     newRatings.push({
@@ -45,11 +44,11 @@ export const calculatePlayersRatings = (
     });
   }
 
-  for (const player of team2) {
+  for (const player of team2.players) {
     const { rating: newRating } = calculatePlayerRating(
       player,
-      team1,
-      [result[1], result[0]],
+      team1.players,
+      [team2.score, team1.score],
       gamePFactor
     );
     newRatings.push({

@@ -5,10 +5,10 @@ describe("Testing the ratings part of the elo module", () => {
   it("should return a coherent rating", () => {
     const originRating = 1000;
     const result = calculatePlayerRating(
-      { rating: originRating, games: 0, name: "player1" },
+      { rating: originRating, games: 0, name: "player1", ratingHistory: [] },
       [
-        { rating: 1000, games: 0, name: "player2" },
-        { rating: 1500, games: 0, name: "player3" },
+        { rating: 1000, games: 0, name: "player2", ratingHistory: [] },
+        { rating: 1500, games: 0, name: "player3", ratingHistory: [] },
       ],
       [8, 7]
     );
@@ -16,10 +16,10 @@ describe("Testing the ratings part of the elo module", () => {
     expect(result.rating).toBeGreaterThan(originRating);
 
     const result2 = calculatePlayerRating(
-      { rating: originRating, games: 0, name: "player1" },
+      { rating: originRating, games: 0, name: "player1", ratingHistory: [] },
       [
-        { rating: 1000, games: 0, name: "player2" },
-        { rating: 1500, games: 0, name: "player3" },
+        { rating: 1000, games: 0, name: "player2", ratingHistory: [] },
+        { rating: 1500, games: 0, name: "player3", ratingHistory: [] },
       ],
       [0, 1]
     );
@@ -33,15 +33,40 @@ describe("Testing the ratings part of the elo module", () => {
     const originRating3 = 900;
     const originRating4 = 1500;
     const result = calculatePlayersRatings(
-      [
-        { rating: originRating1, games: 0, name: "player1" },
-        { rating: originRating2, games: 10, name: "player2" },
-      ],
-      [
-        { rating: originRating3, games: 8, name: "player3" },
-        { rating: originRating4, games: 100, name: "player4" },
-      ],
-      [8, 7]
+      {
+        players: [
+          {
+            rating: originRating1,
+            games: 0,
+            name: "player1",
+            ratingHistory: [],
+          },
+          {
+            rating: originRating2,
+            games: 10,
+            name: "player2",
+            ratingHistory: [],
+          },
+        ],
+        score: 8,
+      },
+      {
+        players: [
+          {
+            rating: originRating3,
+            games: 8,
+            name: "player3",
+            ratingHistory: [],
+          },
+          {
+            rating: originRating4,
+            games: 100,
+            name: "player4",
+            ratingHistory: [],
+          },
+        ],
+        score: 7,
+      }
     );
 
     expect(result[0].rating).toBeGreaterThan(originRating1);

@@ -1,14 +1,9 @@
 "use client";
 
 import { calculateTeamsExpectations } from "@/modules/elo/expectations";
-import { Player } from "@/modules/elo/types";
+import { Player, TeamScoring } from "@/modules/elo/types";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-
-type TeamScoring = {
-  players: Array<Player>;
-  score: number;
-};
 
 export default function AddGame() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);

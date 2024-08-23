@@ -1,19 +1,19 @@
 import { getDatabaseClient } from "@/database/db";
+import { TeamScoring } from "../elo/types";
 
-export const createGame = async (params: {
-  player1Name: string;
-  player2Name: string;
-  scores: [number, number];
+export const createGame = async ({
+  team1,
+  team2,
+}: {
+  team1: TeamScoring;
+  team2: TeamScoring;
 }) => {
   const db = getDatabaseClient();
   const game = await db.collection("games").insertOne({
-    player1: params.player1Name,
-    player2: params.player2Name,
-    scores: params.scores,
-    winner:
-      params.scores[0] > params.scores[1]
-        ? params.player1Name
-        : params.player2Name,
+    team1: team1.players,
+    team2: team2.players,
+    scores: [team1.score, team2.score],
+    winner: team1.score > team2.score ? "1" : "2",
   });
   return game;
 };
