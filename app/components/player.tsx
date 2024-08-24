@@ -13,7 +13,7 @@ export default function PlayerComponent({
   const wonLastGame = previousRating < player.rating;
 
   return (
-    <div className=" flex rounded-xl items-center gap-4 border bg-slate-50 border-slate-300 p-4 w-full">
+    <div className="flex rounded-xl items-center gap-4 border bg-neutral-content border-base-300 p-4 w-full">
       <div className=" w-8 text-3xl text-center">{ranking}</div>
       <div className="flex justify-between grow">
         <div className="text-xl flex gap-4 items-center">

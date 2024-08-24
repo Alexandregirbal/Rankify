@@ -2,35 +2,19 @@
 
 import { calculateTeamsExpectations } from "@/modules/elo/expectations";
 import { Player, TeamScoring } from "@/modules/elo/types";
-import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FormEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useState,
+} from "react";
+import AddPlayer from "./components/addPlayer";
 
 export default function AddGame() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [team2, setTeam2] = useState<TeamScoring>({ players: [], score: 0 });
   const [team1, setTeam1] = useState<TeamScoring>({ players: [], score: 0 });
-  const [newPlayerName, setNewPlayerName] = useState("");
-
-  const router = useRouter();
-
-  const handleChangeNewPlayerName = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewPlayerName(value);
-  };
-
-  const handleSubmitNewPlayer = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    fetch("/api/players", {
-      method: "POST",
-      body: JSON.stringify({ name: newPlayerName }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setAllPlayers([...allPlayers, data.player]);
-        setNewPlayerName("");
-      });
-  };
 
   const handleChangeTeam1Player = (
     e: ChangeEvent<HTMLSelectElement>,
@@ -68,7 +52,12 @@ export default function AddGame() {
     setTeam2({ ...team2, score: parseInt(value) });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleReset: MouseEventHandler<HTMLButtonElement> = (e) => {
+    setTeam1({ players: [], score: 0 });
+    setTeam2({ players: [], score: 0 });
+  };
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
     fetch("/api/game", {
@@ -76,7 +65,7 @@ export default function AddGame() {
       body: JSON.stringify({ team1, team2 }),
     }).then((res) => {
       if (res.status === 200) {
-        router.push("/");
+        window.location.href = "/";
       }
     });
   };
@@ -98,7 +87,7 @@ export default function AddGame() {
         onSubmit={handleSubmit}
         className="flex flex-col items-center gap-4"
       >
-        <div className="flex gap-4">
+        <div className="flex gap-4 w-full justify-evenly">
           <div className="flex flex-col items-center gap-4">
             Team 1
             {new Array(team1.players.length + 1).fill(null).map((_, i) => (
@@ -157,13 +146,13 @@ export default function AddGame() {
           } %`}
         >
           <progress
-            className="progress progress-accent w-3/4"
+            className="progress progress-accent w-10/12"
             value={(expectations?.team1 ?? 0.5) * 100}
             max="100"
           />
         </div>
 
-        <div className="flex  items-center gap-4">
+        <div className="flex gap-4 justify-evenly">
           <div className="flex flex-col items-center gap-4">
             <span>Score team 1</span>
             <input
@@ -174,6 +163,7 @@ export default function AddGame() {
               onChange={handleChangeTeam1Score}
             />
           </div>
+
           <div className="flex flex-col items-center gap-4">
             <span>Score team 2</span>
             <input
@@ -186,39 +176,34 @@ export default function AddGame() {
           </div>
         </div>
 
-        <button
-          disabled={
-            !(
-              team1.score !== team2.score &&
-              team1.players.length &&
-              team2.players.length
-            )
-          }
-          type="submit"
-          className="btn btn-accent text-white"
-        >
-          Add
-        </button>
+        <div className="flex gap-4">
+          <button
+            className="btn btn-outline btn-error"
+            type="reset"
+            onClick={handleReset}
+          >
+            Reset
+          </button>
+
+          <button
+            disabled={
+              !(
+                team1.score !== team2.score &&
+                team1.players.length &&
+                team2.players.length
+              )
+            }
+            type="submit"
+            className="btn btn-accent text-white"
+          >
+            Add
+          </button>
+        </div>
       </form>
 
       <div className="divider"></div>
 
-      <h1 className="text-center text-2xl">Add a player</h1>
-      <form
-        onSubmit={handleSubmitNewPlayer}
-        className="flex flex-col items-center gap-4"
-      >
-        <input
-          className="input input-bordered w-full focus:outline-accent"
-          type="text"
-          name="name"
-          placeholder="Player name"
-          onChange={handleChangeNewPlayerName}
-        />
-        <button type="submit" className="btn btn-accent text-white">
-          Add
-        </button>
-      </form>
+      <AddPlayer />
     </div>
   );
 }
