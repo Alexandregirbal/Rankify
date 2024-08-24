@@ -87,8 +87,8 @@ export default function AddGame() {
         onSubmit={handleSubmit}
         className="flex flex-col items-center gap-4"
       >
-        <div className="flex gap-4 w-full justify-evenly">
-          <div className="flex flex-col items-center gap-4">
+        <div className="flex w-full justify-evenly">
+          <div className="flex flex-col items-center gap-4 w-1/3">
             Team 1
             {new Array(team1.players.length + 1).fill(null).map((_, i) => (
               <select
@@ -113,7 +113,7 @@ export default function AddGame() {
             ))}
           </div>
 
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-4 w-1/3">
             Team 2
             {new Array(team2.players.length + 1).fill(null).map((_, i) => (
               <select
@@ -152,7 +152,7 @@ export default function AddGame() {
           />
         </div>
 
-        <div className="flex gap-4 justify-evenly">
+        <div className="flex justify-evenly">
           <div className="flex flex-col items-center gap-4">
             <span>Score team 1</span>
             <input
