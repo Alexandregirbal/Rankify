@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Elo World",
+  title: "Rankify",
   description: "Live pool rankings at Waapi",
 };
 
