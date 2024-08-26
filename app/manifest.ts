@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Rankify",
     description: "Ranking app of the Waapi pool community",
     start_url: "/",
-    display: "fullscreen",
+    display: "minimal-ui",
     theme_color: "#00CDB8",
     background_color: "#ffffff",
     icons: [
