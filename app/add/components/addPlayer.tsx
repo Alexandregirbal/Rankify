@@ -15,12 +15,10 @@ export default function AddPlayer() {
 
     fetch("/api/players", {
       method: "POST",
-      body: JSON.stringify({ name: newPlayerName }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        window.location.href = "/add";
-      });
+      body: JSON.stringify({ name: newPlayerName.trim() }),
+    }).then(() => {
+      window.location.href = "/add";
+    });
   };
 
   return (

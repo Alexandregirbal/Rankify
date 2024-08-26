@@ -1,7 +1,9 @@
 import { getDatabaseClient } from "@/database/db";
+import { revalidatePath } from "next/cache";
 import { Player } from "../elo/types";
 
 export const getAllPlayers = async (): Promise<Player[]> => {
+  revalidatePath("/");
   const db = getDatabaseClient();
   const players = await db
     .collection("players")

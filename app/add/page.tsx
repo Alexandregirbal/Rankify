@@ -95,10 +95,9 @@ export default function AddGame() {
                 className="select w-full border border-slate-300 focus:outline-accent"
                 onChange={(e) => handleChangeTeam1Player(e, i)}
                 key={i}
+                defaultValue={`Player ${i + 1}`}
               >
-                <option disabled selected>
-                  Player {i + 1}
-                </option>
+                <option disabled>Player {i + 1}</option>
                 {allPlayers.map((player) => (
                   <option
                     disabled={[...team1.players, ...team2.players]
@@ -120,10 +119,9 @@ export default function AddGame() {
                 className="select w-full border border-slate-300 focus:outline-accent"
                 onChange={(e) => handleChangeTeam2Player(e, i)}
                 key={i}
+                defaultValue={`Player ${i + 1}`}
               >
-                <option disabled selected>
-                  Player {i + 1}
-                </option>
+                <option disabled>Player {i + 1}</option>
                 {allPlayers.map((player) => (
                   <option
                     disabled={[...team1.players, ...team2.players]
