@@ -14,16 +14,12 @@ export const calculateKFactor = (games: number): number => {
 /**
  * J'ai choisi arbitrairement cette fonction pour calculer le "Point Factor".
  * Plus le delta des scores est grand, plus le PFact est grand.
+ * https://www.desmos.com/calculator ->
+ * \sqrt{x}
  * On aurait pu intégrer ça directement dans la formule de calcul de la note,
  * mais j'ai préféré le faire séparément par soucis de simplicité.
  */
-export const calculatePFactor = (
-  score1: number,
-  score2: number,
-  minDelta: number = 1
-): number => {
-  const min = Math.min(score1, score2);
-  const max = Math.max(score1, score2);
-  const result = max / (min + minDelta);
+export const calculatePFactor = (score1: number, score2: number): number => {
+  const result = Math.sqrt(Math.abs(score1 - score2));
   return Number(result.toFixed(2));
 };

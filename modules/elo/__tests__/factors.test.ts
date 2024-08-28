@@ -12,7 +12,12 @@ describe("Testing the factors part of the elo module", () => {
 
   it("should return a coherent PFactor", async () => {
     expect(calculatePFactor(8, 7)).toBe(1);
-    expect(calculatePFactor(8, 0)).toBe(8);
+
     expect(calculatePFactor(1, 0)).toBe(1);
+
+    expect(calculatePFactor(8, 4)).toBe(2);
+
+    expect(calculatePFactor(8, 0)).toBeGreaterThan(1);
+    expect(calculatePFactor(8, 0)).toBeLessThan(8);
   });
 });
