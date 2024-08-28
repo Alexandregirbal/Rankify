@@ -7,12 +7,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Rankify",
-  description: "Live pool rankings at Waapi",
+  description: "Ranking service",
 };
-
-// const DynamicFooter = dynamic(() => import("./components/footer"), {
-//   ssr: false,
-// });
 
 export default function RootLayout({
   children,
