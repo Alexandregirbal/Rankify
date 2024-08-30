@@ -1,4 +1,5 @@
 "use client";
+
 import { createContext, useContext, useRef, type ReactNode } from "react";
 import { useStore } from "zustand";
 import { createUIStore, type UIStoreApi } from "./store";
@@ -23,12 +24,12 @@ export const UIStoreProvider = ({ children }: UIStoreProviderProps) => {
   );
 };
 
-export const useUIStore = <T>(selector: (store: UIStore) => T): T => {
-  const UIStoreContext = useContext(UIStoreContext);
+export const useUIStore = <T,>(selector: (store: UIStore) => T): T => {
+  const uiStoreContext = useContext(UIStoreContext);
 
-  if (!UIStoreContext) {
+  if (!uiStoreContext) {
     throw new Error(`useUIStore must be used within UIStoreProvider`);
   }
 
-  return useStore(UIStoreContext, selector);
+  return useStore(uiStoreContext, selector);
 };
