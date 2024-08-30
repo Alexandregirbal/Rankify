@@ -2,6 +2,7 @@
 
 import { calculateTeamsExpectations } from "@/modules/elo/expectations";
 import { Player, TeamScoring } from "@/modules/elo/types";
+import { useUIStore } from "@/stores/ui";
 import {
   ChangeEvent,
   FormEventHandler,
@@ -15,7 +16,7 @@ export default function AddGame() {
   const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [team2, setTeam2] = useState<TeamScoring>({ players: [], score: 0 });
   const [team1, setTeam1] = useState<TeamScoring>({ players: [], score: 0 });
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setIsLoading } = useUIStore();
 
   const handleChangeTeam1Player = (
     e: ChangeEvent<HTMLSelectElement>,
@@ -71,7 +72,7 @@ export default function AddGame() {
           window.location.href = "/";
         }
       })
-      .catch(() => {
+      .finally(() => {
         setIsLoading(false);
       });
   };
