@@ -43,3 +43,14 @@ export const calculatePlayerStreak: CalculatePlayerStreak = ({
     }).count,
   };
 };
+
+export const getLastGamePoints = (
+  ratingHistory: Player["ratingHistory"]
+): string => {
+  if (ratingHistory.length <= 1) return "";
+  const lastGamePoints = +(
+    ratingHistory[ratingHistory.length - 1].rating -
+    ratingHistory[ratingHistory.length - 2].rating
+  ).toFixed(2);
+  return lastGamePoints > 0 ? `+${lastGamePoints}` : lastGamePoints.toString();
+};

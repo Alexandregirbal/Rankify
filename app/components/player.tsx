@@ -1,5 +1,8 @@
 import { Player } from "@/modules/elo/types";
-import { calculatePlayerStreak } from "@/modules/player/utils";
+import {
+  calculatePlayerStreak,
+  getLastGamePoints,
+} from "@/modules/player/utils";
 import { ChevronDown, ChevronUp, Crown, Minus } from "lucide-react";
 export default function PlayerComponent({
   player,
@@ -15,24 +18,29 @@ export default function PlayerComponent({
     switch (streak.result) {
       case "win":
         return (
-          <>
+          <div className="flex items-center gap-2">
             <ChevronUp color="green" />
             {streak.count}
-          </>
+          </div>
         );
 
       case "loss":
         return (
-          <>
+          <div className="flex justify-center">
             <ChevronDown color="red" />
-            {streak.count}
-          </>
+          </div>
         );
 
       default:
-        return <Minus color="gray" />;
+        return (
+          <div className="flex justify-center">
+            <Minus color="gray" />
+          </div>
+        );
     }
   };
+
+  const lastGamePoints = getLastGamePoints(player.ratingHistory);
 
   return (
     <div className="flex rounded-xl items-center gap-4 border bg-neutral-content border-base-300 p-4 w-full">
@@ -43,7 +51,10 @@ export default function PlayerComponent({
         </div>
         <div className="flex gap-2 items-center">
           <span>{player.rating}</span>
-          {getLastGameStateComponent()}
+          <div className="flex flex-col w-12">
+            {getLastGameStateComponent()}
+            <span className="text-xs text-center">{lastGamePoints}</span>
+          </div>
         </div>
       </div>
     </div>
