@@ -1,8 +1,10 @@
 import { DEFAULT_RATING } from "../elo/constants";
 import { Player } from "../elo/types";
 
+export type GameResult = "win" | "loss" | "tie";
+
 type CalculatePlayerStreakResult = {
-  result: "win" | "loss" | "tie";
+  result: GameResult;
   count: number;
 };
 
@@ -44,13 +46,17 @@ export const calculatePlayerStreak: CalculatePlayerStreak = ({
   };
 };
 
-export const getLastGamePoints = (
-  ratingHistory: Player["ratingHistory"]
-): string => {
-  if (ratingHistory.length <= 1) return "";
+export const getLastGamePoints = ({
+  ratingHistory,
+}: {
+  ratingHistory: Player["ratingHistory"];
+}): string | null => {
+  if (ratingHistory.length <= 1) return null;
+
   const lastGamePoints = +(
     ratingHistory[ratingHistory.length - 1].rating -
     ratingHistory[ratingHistory.length - 2].rating
   ).toFixed(2);
+
   return lastGamePoints > 0 ? `+${lastGamePoints}` : lastGamePoints.toString();
 };
