@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { calculatePlayersRatings } from "../ratings";
 
 describe("Testing the ratings part of the elo module", () => {
-  it("should return more points for a victory, less for a loss", () => {
+  it("should reward with positive points for a victory, and negative points for a loss", () => {
     const player1 = {
       rating: 1000,
       games: 0,
