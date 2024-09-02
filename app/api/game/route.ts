@@ -1,5 +1,6 @@
 import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { createGame } from "@/modules/game/create";
+import { getGames } from "@/modules/game/get";
 import { updatePlayerRating } from "@/modules/player/update";
 
 export async function POST(request: Request) {
@@ -23,4 +24,11 @@ export async function POST(request: Request) {
     { message: "Game added successfully", details: result },
     { status: 200 }
   );
+}
+
+export async function GET(request: Request) {
+  const { name } = await request.json();
+
+  const games = await getGames(name);
+  return Response.json({ games });
 }
