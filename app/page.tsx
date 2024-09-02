@@ -13,7 +13,7 @@ export default async function Leaderboard() {
     <div className="h-full flex flex-col items-center gap-4 p-4 overflow-y-scroll">
       <h1 className="text-center text-2xl">Leaderboard</h1>
       {allPlayers.map((player, index) => (
-        <div onClick={(player) => handleClickOnPlayer(player)}>
+        <div key={player.name} onClick={() =>handleClickOnPlayer(player)}>
           <PlayerComponent
             key={player.name}
             player={player}

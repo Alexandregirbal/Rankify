@@ -25,7 +25,7 @@ export type TeamScoring = z.infer<typeof teamScoringSchema>;
 export const gameSchema = z.object({
   team1: z.any(),
   team2: z.any(),
-  scores: z.array(z.number),
+  scores: z.any(),
   winner: z.number(),
 });
 
