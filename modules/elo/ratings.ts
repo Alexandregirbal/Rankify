@@ -2,25 +2,21 @@
 
 import { calculateTeamsExpectations } from "./expectations";
 import { calculateKFactor, calculatePFactor } from "./factors";
-import { Player, Team, TeamScoring } from "./types";
+import { Player, TeamScoring } from "./types";
 
-export const calculatePlayerRating = (
-  player: Player,
-  team: Team,
-  result: [number, number],
-  gamePFactor: number = 1
-): { rating: number } => {
-  const playerKFactor = calculateKFactor(player.games);
+const calculateResultPart = (
+  team1: TeamScoring,
+  team2: TeamScoring
+): { team1: number; team2: number } => {
+  const result = calculateTeamsExpectations(team1.players, team2.players);
+  if (!result) throw new Error("Teams are not comparable");
 
-  const expectations = calculateTeamsExpectations([player], team);
-  if (!expectations) return { rating: player.rating };
+  const { team1: team1Expectation, team2: team2Expectation } = result;
+  const team1Won = team1.score > team2.score;
 
-  const win = result[0] > result[1] ? 1 : 0;
-
-  const rating =
-    player.rating + playerKFactor * gamePFactor * (win - expectations.team1);
   return {
-    rating: Number(rating.toFixed(2)),
+    team1: (team1Won ? 1 : 0) - team1Expectation,
+    team2: (team1Won ? 0 : 1) - team2Expectation,
   };
 };
 
@@ -28,31 +24,27 @@ export const calculatePlayersRatings = (
   team1: TeamScoring,
   team2: TeamScoring
 ): Array<Omit<Player, "ratingHistory">> => {
-  const newRatings = [];
+  const resultPart = calculateResultPart(team1, team2);
   const gamePFactor = calculatePFactor(team1.score, team2.score);
+  const newRatings = [];
+
   for (const player of team1.players) {
-    const { rating: newRating } = calculatePlayerRating(
-      player,
-      team2.players,
-      [team1.score, team2.score],
-      gamePFactor
-    );
+    const playerKFactor = calculateKFactor(player.games);
+    const newRating =
+      player.rating + playerKFactor * gamePFactor * resultPart.team1;
     newRatings.push({
-      rating: newRating,
+      rating: +newRating.toFixed(0),
       name: player.name,
       games: player.games + 1,
     });
   }
 
   for (const player of team2.players) {
-    const { rating: newRating } = calculatePlayerRating(
-      player,
-      team1.players,
-      [team2.score, team1.score],
-      gamePFactor
-    );
+    const playerKFactor = calculateKFactor(player.games);
+    const newRating =
+      player.rating + playerKFactor * gamePFactor * resultPart.team2;
     newRatings.push({
-      rating: newRating,
+      rating: +newRating.toFixed(0),
       name: player.name,
       games: player.games + 1,
     });
