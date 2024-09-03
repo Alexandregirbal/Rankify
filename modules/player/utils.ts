@@ -60,3 +60,18 @@ export const getLastGamePoints = ({
 
   return lastGamePoints > 0 ? `+${lastGamePoints}` : lastGamePoints.toString();
 };
+
+export const getExtremeRankings = (ratingHistory: Player["ratingHistory"]) => {
+  return ratingHistory?.reduce(
+    (acc, cur) => {
+      if (acc.max < cur.rating) {
+        acc.max = cur.rating;
+      }
+      if (acc.min > cur.rating) {
+        acc.min = cur.rating;
+      }
+      return acc;
+    },
+    { max: DEFAULT_RATING, min: DEFAULT_RATING }
+  );
+};

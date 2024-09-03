@@ -12,10 +12,13 @@
   },
   "dependencies": {
     "@next/env": "^14.2.5",
+    "chart.js": "^4.4.4",
+    "dayjs": "^1.11.13",
     "lucide-react": "^0.427.0",
     "mongodb": "^6.8.0",
     "next": "14.2.5",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "ts-node": "^10.9.2",
     "zod": "^3.23.8"
