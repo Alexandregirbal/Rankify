@@ -24,7 +24,7 @@ export default async function Charts() {
       <p className="w-full">
         Number of games played today: {numberOfGamesPlayedToday}
       </p>
-      <div className="grow w-full">
+      <div className="grow w-full flex flex-col gap-4 items-center">
         <RatingHistories players={allPlayers} />
       </div>
     </div>
