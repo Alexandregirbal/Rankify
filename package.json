@@ -13,6 +13,7 @@
   "dependencies": {
     "@next/env": "^14.2.5",
     "chart.js": "^4.4.4",
+    "dayjs": "^1.11.13",
     "lucide-react": "^0.427.0",
     "mongodb": "^6.8.0",
     "next": "14.2.5",
