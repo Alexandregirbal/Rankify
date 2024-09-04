@@ -1,5 +1,6 @@
 import { getDatabaseClient } from "@/database/db";
 import { revalidatePath } from "next/cache";
+import { Game } from "./types";
 
 export const getTotalNumberOfGames = ({
   playerName,
@@ -43,4 +44,13 @@ export const getNumberOfGamesSince = async ({
   }
 
   return db.collection("games").countDocuments(conditions);
+};
+
+export const getGames = async (since: Date) => {
+  revalidatePath("/charts");
+  const db = getDatabaseClient();
+  return db
+    .collection("games")
+    .find<Game>({ createdAt: { $gte: since } })
+    .toArray();
 };
