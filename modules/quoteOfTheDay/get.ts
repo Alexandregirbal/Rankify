@@ -1,14 +1,25 @@
 import dayjs from "dayjs";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/src/resources/index.js";
-import { getGames } from "../game/get";
+import { getGamesSince } from "../game/get";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const getClient = () => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+
+  return new OpenAI({
+    apiKey,
+  });
+};
 
 export const getQuoteOfTheDay = async (): Promise<string> => {
-  const games = await getGames(dayjs().startOf("day").toDate());
+  const games = await getGamesSince(dayjs().startOf("day").toDate());
+  const client = getClient();
+  if (!client) {
+    return "ChatGPT fait la grève ou il n'est pas configuré.";
+  }
 
   const quote = await client.chat.completions.create({
     messages: [
