@@ -27,7 +27,11 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  const { name } = await request.json();
+  const url = new URL(request.url);
+  const name = url.searchParams.get("playerName");
+  if (!name) {
+    return Response.json({ error: "playerName is required" }, { status: 400 });
+  }
 
   const games = await getGames(name);
   return Response.json({ games });

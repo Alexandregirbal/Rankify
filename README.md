@@ -70,7 +70,7 @@ The `elo` module is following these rules:
   - $S_{p}$ the score of the player: 1 for win, 0 for loss
   - $E_p$ the winning expectation of the player against its opponent
 
-  > $ R_{new} = R_{old} + K \cdot P \cdot (S_{p} - E_{p}) $
+  > $R_{new} = R_{old} + K \cdot P \cdot (S_{p} - E_{p})$
 
 
 ### Factors
@@ -78,7 +78,7 @@ The `elo` module is following these rules:
   - $K$ the K-Factor
   - $x$ the number of games played
 
-  > $ K = 20 \cdot(1 + \frac{1}{1+\frac{x}{10}}) $
+  > $K = 20 \cdot(1 + \frac{1}{1+\frac{x}{10}})$
 
   ![K-Factor](assets/k-factor.png)
 
@@ -87,7 +87,7 @@ The `elo` module is following these rules:
   - $s1$ the score of player 1 
   - $s2$ the score of player 2
   
-  > $ P = \sqrt{|s1 - s2|} $
+  > $P = \sqrt{|s1 - s2|}$
 
   ![PFactor](assets/p-factor.png)
 
@@ -111,9 +111,9 @@ The `elo` module is following these rules:
     - $r_in$ the ratings of the players of team A and `n` the number of players in team A:
     - $r_jm$ the ratings of the players of team B and `m` the number of players in team B:
 
-    > $ R_{tA} = \frac{r_1 ... r_i ... r_n}{n} $
+    > $R_{tA} = \frac{r_1 ... r_i ... r_n}{n}$
   
-    > $ R_{tB} = \frac{r_1 ... r_j ... r_m}{m} $
+    > $R_{tB} = \frac{r_1 ... r_j ... r_m}{m}$
 
   The Expectation is calculated as follows, with:
 

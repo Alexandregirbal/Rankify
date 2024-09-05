@@ -1,56 +1,79 @@
-import { Game, Player } from "@/modules/elo/types";
-import { getGames } from "@/modules/game/get";
-import React from "react";
+"use client";
 
-type propTypes = {
-  open: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-  player: Player;
-};
+import { Player } from "@/modules/elo/types";
+import { Game } from "@/modules/game/types";
+import { useEffect, useState } from "react";
 
-const gameHistory = (game: Game) => {
+const GameHistory = ({ game, player }: { game: Game; player: Player }) => {
+  const isInTeam1 = game.team1
+    .map((player) => player.name)
+    .includes(player.name);
+  const isWinner = game.winner === (isInTeam1 ? "1" : "2");
+
   return (
-    <div>
-      <div>{game.team1}</div>
-      <div>{game.team2}</div>
-      <div>{game.scores[0]}</div>
-      <div>{game.scores[1]}</div>
-      <div>{game.winner}</div>
+    <div className="h-14 flex gap-2 items-center justify-center text-center bg-neutral rounded-lg">
+      <div
+        className={`w-2 h-full rounded-l-lg ${
+          isWinner ? "bg-green-400" : "bg-red-500"
+        }`}
+      ></div>
+      <div
+        className={`w-5/12 h-full flex flex-col justify-center gap-1 ${
+          isInTeam1 ? "font-bold" : ""
+        }`}
+      >
+        <div className="text-nowrap overflow-x-scroll">
+          {game.team1.map((player) => player.name).join(" & ")}
+        </div>
+        <div>{game.scores[0]}</div>
+      </div>
+      <div className="w-1/12 text-center">vs</div>
+      <div
+        className={`w-5/12 h-full flex flex-col justify-center gap-1 ${
+          isInTeam1 ? "" : "font-bold"
+        }`}
+      >
+        <div className="text-nowrap overflow-x-scroll">
+          {game.team2.map((player) => player.name).join(" & ")}
+        </div>
+        <div className={isInTeam1 ? "" : "bold"}>{game.scores[1]}</div>
+      </div>
     </div>
   );
 };
 
-export const HistoryComponent: React.FC<propTypes> = async ({ open, onClose, children, player }) => {
-
-  const games = await getGames(player.name);
+const GamesSkeleton = () => {
   return (
-    <div
-      className={`fixed inset-0 flex justify-center items-center 
-    transition-colors ${open ? "visible bg-black/20" : "invisible"}
-    `}
-      onClick={onClose}
-    >
-      <div
-        className={`bg-white rounded-lg shadow p-6
-        transition-all max-w-md 
-        ${open ? "scale-100 opacity-100" : "scale-110 opacitiy-0"}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          className="absolute top-2 right-2 py-1 px-2 
-            border border-neutral-200 rounded-md text-gray-400
-            bg-white hover:bg-gray-50 hover:text-gray-600"
-          onClick={onClose}
-        >
-            <div className="flex rounded-xl items-center gap-4 border bg-neutral-content border-base-300 p-4 w-full">
-      <div className="flex justify-between grow">
-        {games.map((g) => gameHistory(g))}
-      </div>
+    <div className="flex flex-col gap-4 items-center">
+      {new Array(5).fill(null).map((_, i) => (
+        <div key={i} className="skeleton w-full h-14"></div>
+      ))}
     </div>
-        </button>
-        {children}
-      </div>
+  );
+};
+
+const HistoryComponent = ({ player }: { player: Player }) => {
+  const [games, setGames] = useState<Game[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/game?playerName=${player.name}`, { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => {
+        setGames(data.games);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [player.name]);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl">{player.name}</h1>
+      {isLoading && <GamesSkeleton />}
+      {games.toReversed().map((game, index) => (
+        <GameHistory key={index} game={game} player={player} />
+      ))}
     </div>
   );
 };

@@ -8,6 +8,7 @@ export const getAllPlayers = async (): Promise<Player[]> => {
   const players = await db
     .collection("players")
     .find({})
+    .project({ _id: 0, name: 1, ratingHistory: 1, games: 1, rating: 1 })
     .sort({ rating: -1 })
     .toArray();
   return players as unknown as Player[];
