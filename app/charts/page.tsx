@@ -10,10 +10,10 @@ import RatingHistories from "./ratingHistories";
 
 export default async function Charts() {
   const allPlayers = await getAllPlayersRatingHistories();
-  const totalNumberOfGamesPlayed = await getTotalNumberOfGames();
-  const numberOfGamesPlayedToday = await getNumberOfGamesSince(
-    dayjs().startOf("day").toDate()
-  );
+  const totalNumberOfGamesPlayed = await getTotalNumberOfGames({});
+  const numberOfGamesPlayedToday = await getNumberOfGamesSince({
+    since: dayjs().startOf("day").toDate(),
+  });
 
   return (
     <div className="h-full flex flex-col items-center gap-2 p-4 overflow-y-scroll">
