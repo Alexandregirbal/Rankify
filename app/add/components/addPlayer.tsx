@@ -1,3 +1,4 @@
+"use client";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 
 export default function AddPlayer() {

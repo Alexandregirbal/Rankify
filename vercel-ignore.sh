@@ -1,4 +1,5 @@
 #!/bin/bash
+# Setup in https://vercel.com/.../settings/git
 
 echo "VERCEL_GIT_COMMIT_REF: $VERCEL_GIT_COMMIT_REF"
 

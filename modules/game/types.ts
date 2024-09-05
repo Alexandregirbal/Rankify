@@ -1,9 +1,11 @@
-import { Player } from "@/modules/elo/types";
+import { z } from "zod";
+import { playerSchema } from "../elo/types";
 
-export type Game = {
-  team1: Array<Player>;
-  team2: Array<Player>;
-  scores: Array<number>;
-  winner: string;
-  createdAt: Date;
-};
+export const gameSchema = z.object({
+  team1: z.array(playerSchema),
+  team2: z.array(playerSchema),
+  scores: z.array(z.number()),
+  winner: z.string(),
+});
+
+export type Game = z.infer<typeof gameSchema>;

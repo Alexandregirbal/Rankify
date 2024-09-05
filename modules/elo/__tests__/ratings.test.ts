@@ -92,9 +92,6 @@ describe("Testing the ratings part of the elo module", () => {
       }
     );
 
-    console.log(`~~~~~ Girbalog | it | 1: `, resultTeam1Wins);
-    console.log(`~~~~~ Girbalog | it | 2: `, resultTeam2Wins);
-
     const deltaPlayer1Win = resultTeam1Wins[0].rating - player1.rating;
     const deltaPlayer2Win = resultTeam1Wins[1].rating - player2.rating;
     const deltaPlayer3Loss = resultTeam1Wins[2].rating - player3.rating;

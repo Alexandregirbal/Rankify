@@ -22,15 +22,13 @@ export const getTotalNumberOfGames = ({
   return db.collection("games").countDocuments(conditions);
 };
 
-type GetNumberOfGamesSinceParams = {
-  since?: Date;
-  playerName?: string;
-};
-
 export const getNumberOfGamesSince = async ({
   since = new Date(2024, 0, 1),
   playerName,
-}: GetNumberOfGamesSinceParams) => {
+}: {
+  since?: Date;
+  playerName?: string;
+}) => {
   revalidatePath("/charts");
   const db = getDatabaseClient();
 
@@ -46,11 +44,34 @@ export const getNumberOfGamesSince = async ({
   return db.collection("games").countDocuments(conditions);
 };
 
-export const getGames = async (since: Date) => {
+export const getGamesSince = async (since: Date) => {
   revalidatePath("/charts");
   const db = getDatabaseClient();
   return db
     .collection("games")
     .find<Game>({ createdAt: { $gte: since } })
     .toArray();
+};
+
+export const getAllGames = async (): Promise<Game[]> => {
+  revalidatePath("/");
+  const db = getDatabaseClient();
+  const games = await db
+    .collection("games")
+    .find({})
+    .sort({ rating: -1 })
+    .toArray();
+  return games as unknown as Game[];
+};
+
+export const getPlayerGames = async (playerName: string): Promise<Game[]> => {
+  const db = getDatabaseClient();
+  const games = await db
+    .collection("games")
+    .find({
+      $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
+    })
+    .sort({ createdAt: -1 })
+    .toArray();
+  return games as unknown as Game[];
 };

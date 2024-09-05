@@ -1,5 +1,6 @@
 import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { createGame } from "@/modules/game/create";
+import { getPlayerGames } from "@/modules/game/get";
 import { updatePlayerRating } from "@/modules/player/update";
 
 export async function POST(request: Request) {
@@ -23,4 +24,15 @@ export async function POST(request: Request) {
     { message: "Game added successfully", details: result },
     { status: 200 }
   );
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const name = url.searchParams.get("playerName");
+  if (!name) {
+    return Response.json({ error: "playerName is required" }, { status: 400 });
+  }
+
+  const games = await getPlayerGames(name);
+  return Response.json({ games });
 }

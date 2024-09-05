@@ -13,11 +13,8 @@ export const playerSchema = z.object({
 });
 export type Player = z.infer<typeof playerSchema>;
 
-export const teamSchema = z.array(playerSchema);
-export type Team = z.infer<typeof teamSchema>;
-
 export const teamScoringSchema = z.object({
-  players: teamSchema,
+  players: z.array(playerSchema),
   score: z.number(),
 });
 export type TeamScoring = z.infer<typeof teamScoringSchema>;
