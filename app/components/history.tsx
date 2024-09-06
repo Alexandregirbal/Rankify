@@ -34,7 +34,7 @@ const GameHistory = ({ game, player }: { game: Game; player: Player }) => {
   const isWinner = game.winner === (isInTeam1 ? "1" : "2");
 
   return (
-    <div className="h-14 flex gap-2 items-center justify-center text-center bg-neutral rounded-lg">
+    <div className="h-14 flex gap-2 items-center justify-center text-center bg-neutral-content rounded-lg">
       <div
         className={`w-2 h-full rounded-l-lg ${
           isWinner ? "bg-green-400" : "bg-red-500"
