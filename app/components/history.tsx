@@ -4,6 +4,29 @@ import { Player } from "@/modules/elo/types";
 import { Game } from "@/modules/game/types";
 import { useEffect, useState } from "react";
 
+const GameHistoryPart = ({
+  players,
+  score,
+  isOwnedTeam,
+}: {
+  players: Array<Player>;
+  score: number;
+  isOwnedTeam: boolean;
+}) => {
+  return (
+    <div
+      className={`w-5/12 h-full flex flex-col justify-center gap-1 ${
+        isOwnedTeam ? "font-bold" : ""
+      }`}
+    >
+      <div className="text-nowrap overflow-y-hidden ">
+        {players.map((player) => player.name).join(" & ")}
+      </div>
+      <div>{score}</div>
+    </div>
+  );
+};
+
 const GameHistory = ({ game, player }: { game: Game; player: Player }) => {
   const isInTeam1 = game.team1
     .map((player) => player.name)
@@ -17,27 +40,17 @@ const GameHistory = ({ game, player }: { game: Game; player: Player }) => {
           isWinner ? "bg-green-400" : "bg-red-500"
         }`}
       ></div>
-      <div
-        className={`w-5/12 h-full flex flex-col justify-center gap-1 ${
-          isInTeam1 ? "font-bold" : ""
-        }`}
-      >
-        <div className="text-nowrap overflow-x-scroll">
-          {game.team1.map((player) => player.name).join(" & ")}
-        </div>
-        <div>{game.scores[0]}</div>
-      </div>
+      <GameHistoryPart
+        players={game.team1}
+        score={game.scores[0]}
+        isOwnedTeam={isInTeam1}
+      />
       <div className="w-1/12 text-center">vs</div>
-      <div
-        className={`w-5/12 h-full flex flex-col justify-center gap-1 ${
-          isInTeam1 ? "" : "font-bold"
-        }`}
-      >
-        <div className="text-nowrap overflow-x-scroll">
-          {game.team2.map((player) => player.name).join(" & ")}
-        </div>
-        <div className={isInTeam1 ? "" : "bold"}>{game.scores[1]}</div>
-      </div>
+      <GameHistoryPart
+        players={game.team2}
+        score={game.scores[1]}
+        isOwnedTeam={!isInTeam1}
+      />
     </div>
   );
 };
@@ -69,7 +82,6 @@ const HistoryComponent = ({ player }: { player: Player }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl">{player.name}</h1>
       {isLoading && <GamesSkeleton />}
       {games.toReversed().map((game, index) => (
         <GameHistory key={index} game={game} player={player} />

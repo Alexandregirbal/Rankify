@@ -19,6 +19,7 @@ export default function PlayerComponent({
     <Modal
       className="flex rounded-xl items-center gap-4 border bg-neutral-content border-base-300 p-4 w-full"
       content={<HistoryComponent player={player} />}
+      title={player.name}
     >
       <>
         <div className=" w-8 text-3xl text-center">{ranking}</div>
