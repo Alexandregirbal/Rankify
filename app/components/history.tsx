@@ -83,7 +83,7 @@ const HistoryComponent = ({ player }: { player: Player }) => {
   return (
     <div className="flex flex-col gap-4">
       {isLoading && <GamesSkeleton />}
-      {games.toReversed().map((game, index) => (
+      {games.map((game, index) => (
         <GameHistory key={index} game={game} player={player} />
       ))}
     </div>
