@@ -132,8 +132,14 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
 
       {nameInput !== "all" && (
         <>
-          <h2 className="text-2xl">{nameInput} statistics</h2>
+          <h2 className="text-2xl">{`${nameInput}'s stats`}</h2>
           <ul className="text-lg text-left w-full">
+            <li>
+              <span>Current rating:</span>{" "}
+              <span className="font-bold">
+                {chartDatasets[0].data[chartDatasets[0].data.length - 1]}
+              </span>
+            </li>
             <li>
               <span>Games played:</span>{" "}
               <span className="font-bold">{totalNumberOfGamesPlayed}</span>
