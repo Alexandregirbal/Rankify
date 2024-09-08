@@ -1,8 +1,9 @@
 // https://towardsdatascience.com/developing-an-elo-based-data-driven-ranking-system-for-2v2-multiplayer-games-7689f7d42a53
 
+import { MinimalPlayer } from "../player/types";
 import { calculateTeamsExpectations } from "./expectations";
 import { calculateKFactor, calculatePFactor } from "./factors";
-import { Player, TeamScoring } from "./types";
+import { TeamScoring } from "./types";
 
 const calculateResultPart = (
   team1: TeamScoring,
@@ -23,7 +24,7 @@ const calculateResultPart = (
 export const calculatePlayersRatings = (
   team1: TeamScoring,
   team2: TeamScoring
-): Array<Omit<Player, "ratingHistory">> => {
+): Array<MinimalPlayer> => {
   const resultPart = calculateResultPart(team1, team2);
   const gamePFactor = calculatePFactor(team1.score, team2.score);
   const newRatings = [];

@@ -1,9 +1,10 @@
 import { getDatabaseClient } from "@/database/db";
-import { Player, TeamScoring } from "../elo/types";
+import { TeamScoring } from "../elo/types";
+import { MinimalPlayer } from "../player/types";
 
-const playerToMinimalPlayer = (
-  player: Player
-): Pick<Player, "name" | "rating" | "games"> => ({
+const playerToMinimalPlayer = <T extends MinimalPlayer>(
+  player: T
+): MinimalPlayer => ({
   name: player.name,
   rating: player.rating,
   games: player.games,

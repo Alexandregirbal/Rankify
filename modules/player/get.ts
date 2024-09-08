@@ -1,6 +1,6 @@
 import { getDatabaseClient } from "@/database/db";
 import { revalidatePath } from "next/cache";
-import { Player } from "../elo/types";
+import { Player } from "./types";
 
 export const getAllPlayers = async (): Promise<Player[]> => {
   revalidatePath("/");

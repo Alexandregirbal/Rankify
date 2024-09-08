@@ -1,7 +1,8 @@
 "use client";
 
 import { calculateTeamsExpectations } from "@/modules/elo/expectations";
-import { Player, TeamScoring } from "@/modules/elo/types";
+import { TeamScoring } from "@/modules/elo/types";
+import { Player } from "@/modules/player/types";
 import { useUIStore } from "@/stores/ui/provider";
 import {
   ChangeEvent,

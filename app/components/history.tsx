@@ -1,7 +1,7 @@
 "use client";
 
-import { Player } from "@/modules/elo/types";
 import { Game } from "@/modules/game/types";
+import { MinimalPlayer, Player } from "@/modules/player/types";
 import { useEffect, useState } from "react";
 
 const GameHistoryPart = ({
@@ -9,7 +9,7 @@ const GameHistoryPart = ({
   score,
   isOwnedTeam,
 }: {
-  players: Array<Player>;
+  players: Array<MinimalPlayer>;
   score: number;
   isOwnedTeam: boolean;
 }) => {

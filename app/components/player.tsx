@@ -1,6 +1,6 @@
 "use client";
 
-import { Player } from "@/modules/elo/types";
+import { Player } from "@/modules/player/types";
 import { Crown } from "lucide-react";
 import dynamic from "next/dynamic";
 import LastGameStats from "./lastGameStats";

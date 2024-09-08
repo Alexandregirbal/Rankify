@@ -1,5 +1,5 @@
 import { DEFAULT_RATING } from "../elo/constants";
-import { Player } from "../elo/types";
+import { Player } from "./types";
 
 export type GameResult = "win" | "loss" | "tie";
 
