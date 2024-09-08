@@ -9,6 +9,8 @@ import { ChangeEvent, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { stringToColor } from "./utils";
 
+const NEAREST_MULTIPLE = 50;
+
 type PlayerNameSelect = Pick<Player, "name">["name"] | "all";
 
 type RatingHistoriesProps = {
@@ -19,6 +21,11 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
   const [nameInput, setNameInput] = useState<PlayerNameSelect>("all");
   const [totalNumberOfGamesPlayed, setTotalNumberOfGamesPlayed] = useState(0);
   const [numberOfGamesPlayedToday, setNumberOfGamesPlayedToday] = useState(0);
+  const [winLossRatio, setWinLossRatio] = useState(0);
+  const [extremeStreaks, setExtremeStreaks] = useState({
+    win: 0,
+    loss: 0,
+  });
 
   const filterPlayers = (player: RatingHistoriesProps["players"][number]) => {
     return (
@@ -54,7 +61,6 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     },
     { max: DEFAULT_RATING, min: DEFAULT_RATING }
   );
-  const margin = +((extremeRatings.max - extremeRatings.min) / 10).toFixed(0);
 
   const chartData: ChartData<"line", number[], string> = {
     labels: Array.from({ length: maxGamesPlayed }, (_, i) => `${i}`),
@@ -76,6 +82,12 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
 
     setTotalNumberOfGamesPlayed(response.totalNumberOfGamesPlayed);
     setNumberOfGamesPlayedToday(response.numberOfGamesPlayedToday);
+    setWinLossRatio(response.winLossRatio);
+    setExtremeStreaks(response.extremeStreaks);
+  };
+
+  const resetPlayerName = () => {
+    setNameInput("all");
   };
 
   return (
@@ -88,32 +100,68 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
               display: false,
             },
           },
-          aspectRatio: 1,
+          aspectRatio: 1.2,
           scales: {
             y: {
-              min: Math.floor((extremeRatings.min - margin) / 100) * 100,
-              max: Math.ceil((extremeRatings.max + margin) / 100) * 100,
+              min:
+                Math.floor(extremeRatings.min / NEAREST_MULTIPLE) *
+                NEAREST_MULTIPLE,
+              max:
+                Math.ceil(extremeRatings.max / NEAREST_MULTIPLE) *
+                NEAREST_MULTIPLE,
             },
           },
         }}
       />
+      <div className="w-full flex gap-4 justify-center">
+        <select
+          className="w-2/5 select border border-slate-300 focus:outline-accent"
+          onChange={handlePlayerNameChange}
+        >
+          <option value="all" className="text-error">
+            All players
+          </option>
+          {players.map((player) => (
+            <option key={player.name}>{player.name}</option>
+          ))}
+        </select>
+        <button className="btn btn-outline btn-error" onClick={resetPlayerName}>
+          ✕
+        </button>
+      </div>
 
-      <select
-        className="w-1/2 select border border-slate-300 focus:outline-accent"
-        onChange={handlePlayerNameChange}
-      >
-        <option value="all">All players</option>
-        {players.map((player) => (
-          <option key={player.name}>{player.name}</option>
-        ))}
-      </select>
       {nameInput !== "all" && (
-        <p className="text-lg">
-          <span className="font-bold">{nameInput}</span> played{" "}
-          <span className="font-bold">{numberOfGamesPlayedToday}</span> games
-          today (All time:{" "}
-          <span className="font-bold">{totalNumberOfGamesPlayed}</span>)
-        </p>
+        <>
+          <h2 className="text-2xl">{`${nameInput}'s stats`}</h2>
+          <ul className="text-lg text-left w-full">
+            <li>
+              <span>Current rating:</span>{" "}
+              <span className="font-bold">
+                {chartDatasets[0].data[chartDatasets[0].data.length - 1]}
+              </span>
+            </li>
+            <li>
+              <span>Games played:</span>{" "}
+              <span className="font-bold">{totalNumberOfGamesPlayed}</span>
+            </li>
+            <li>
+              <span>Games played today:</span>{" "}
+              <span className="font-bold">{numberOfGamesPlayedToday}</span>
+            </li>
+            <li>
+              <span>Win/Loss ratio:</span>{" "}
+              <span className="font-bold">{winLossRatio}</span>
+            </li>
+            <li>
+              <span>Best win streak:</span>{" "}
+              <span className="font-bold">{extremeStreaks.win}</span>
+            </li>
+            <li>
+              <span>Worst loss streak:</span>{" "}
+              <span className="font-bold">{extremeStreaks.loss}</span>
+            </li>
+          </ul>
+        </>
       )}
     </>
   );

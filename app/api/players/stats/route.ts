@@ -1,7 +1,10 @@
 import {
   getNumberOfGamesSince,
   getTotalNumberOfGames,
+  getTotalNumberOfWins,
 } from "@/modules/game/get";
+import { getPlayerRatingHistory } from "@/modules/player/get";
+import { getExtremPlayerStreak } from "@/modules/player/utils";
 import dayjs from "dayjs";
 
 export async function GET(request: Request): Promise<Response> {
@@ -12,14 +15,27 @@ export async function GET(request: Request): Promise<Response> {
     return Response.json({ error: "playerName is required" }, { status: 400 });
   }
 
-  const totalNumberOfGamesPlayed = await getTotalNumberOfGames({ playerName });
-  const numberOfGamesPlayedToday = await getNumberOfGamesSince({
-    since: dayjs().startOf("day").toDate(),
-    playerName,
-  });
+  const [
+    totalNumberOfGamesPlayed,
+    numberOfGamesPlayedToday,
+    totalNumberOfWins,
+    playerRatingHistory,
+  ] = await Promise.all([
+    getTotalNumberOfGames({ playerName }),
+    getNumberOfGamesSince({
+      since: dayjs().startOf("day").toDate(),
+      playerName,
+    }),
+    getTotalNumberOfWins(playerName),
+    getPlayerRatingHistory(playerName),
+  ]);
 
   return Response.json({
     totalNumberOfGamesPlayed,
     numberOfGamesPlayedToday,
+    winLossRatio: +(totalNumberOfWins / totalNumberOfGamesPlayed).toFixed(2),
+    extremeStreaks: getExtremPlayerStreak({
+      ratingHistory: playerRatingHistory,
+    }),
   });
 }

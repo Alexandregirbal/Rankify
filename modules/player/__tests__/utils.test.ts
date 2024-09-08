@@ -1,6 +1,6 @@
 import { Player } from "@/modules/elo/types";
 import { describe, expect, it } from "vitest";
-import { calculatePlayerStreak } from "../utils";
+import { calculatePlayerStreak, getExtremPlayerStreak } from "../utils";
 
 describe("calculatePlayerStreak", () => {
   it("should return default result if rating history is empty", () => {
@@ -106,5 +106,81 @@ describe("calculatePlayerStreak", () => {
       ratingHistory,
     });
     expect(result).toEqual({ result: "loss", count: ratingHistory.length - 1 });
+  });
+});
+
+describe("getExtremPlayerStreak", () => {
+  it("should return 0 for a player with only one game played", () => {
+    const ratingHistory: Player["ratingHistory"] = [
+      { rating: 1000, date: new Date() },
+    ];
+    const result = getExtremPlayerStreak({ ratingHistory });
+    expect(result).toEqual({ win: 0, loss: 0 });
+  });
+
+  it("should match one loss", () => {
+    const ratingHistory: Player["ratingHistory"] = [
+      { rating: 1000, date: new Date() },
+      { rating: 900, date: new Date() },
+    ];
+    const result = getExtremPlayerStreak({ ratingHistory });
+    expect(result).toEqual({ win: 0, loss: 1 });
+  });
+
+  it("should match one win", () => {
+    const ratingHistory: Player["ratingHistory"] = [
+      { rating: 1000, date: new Date() },
+      { rating: 1100, date: new Date() },
+    ];
+    const result = getExtremPlayerStreak({ ratingHistory });
+    expect(result).toEqual({ win: 1, loss: 0 });
+  });
+
+  it("should return multiple wins", () => {
+    const ratingHistory: Player["ratingHistory"] = [
+      { rating: 950, date: new Date() },
+      { rating: 1000, date: new Date() },
+      { rating: 1050, date: new Date() },
+    ];
+    const result = getExtremPlayerStreak({ ratingHistory });
+    expect(result).toEqual({ win: 2, loss: 0 });
+  });
+
+  it("should return multiple losses and a win", () => {
+    const ratingHistory: Player["ratingHistory"] = [
+      { rating: 1000, date: new Date() },
+      { rating: 1050, date: new Date() },
+      { rating: 1000, date: new Date() },
+      { rating: 950, date: new Date() },
+    ];
+    const result = getExtremPlayerStreak({ ratingHistory });
+    expect(result).toEqual({ win: 1, loss: 2 });
+  });
+
+  it("should match a complex history", () => {
+    const ratingHistory: Player["ratingHistory"] = [
+      { rating: 950, date: new Date() },
+      { rating: 900, date: new Date() },
+      { rating: 800, date: new Date() },
+      { rating: 850, date: new Date() },
+      { rating: 900, date: new Date() },
+      { rating: 1000, date: new Date() },
+      { rating: 1100, date: new Date() },
+      { rating: 1200, date: new Date() },
+      { rating: 1300, date: new Date() },
+      { rating: 1400, date: new Date() },
+      { rating: 1500, date: new Date() },
+      { rating: 1600, date: new Date() },
+      { rating: 1700, date: new Date() },
+      { rating: 1600, date: new Date() },
+      { rating: 1500, date: new Date() },
+      { rating: 1400, date: new Date() },
+      { rating: 1300, date: new Date() },
+      { rating: 1200, date: new Date() },
+      { rating: 1300, date: new Date() },
+      { rating: 1400, date: new Date() },
+    ];
+    const result = getExtremPlayerStreak({ ratingHistory });
+    expect(result).toEqual({ win: 10, loss: 5 });
   });
 });

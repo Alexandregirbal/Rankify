@@ -142,9 +142,9 @@ export default function AddGame({ allPlayers }: { allPlayers: Player[] }) {
 
         <div
           className="tooltip w-full"
-          data-tip={`Expected score of team 1 : ${
+          data-tip={`Expected score of team 1 : ${(
             (expectations?.team1 ?? 0.5) * 100
-          } %`}
+          ).toFixed(0)} %`}
         >
           <progress
             className="progress progress-accent w-10/12"

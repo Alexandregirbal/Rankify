@@ -22,6 +22,24 @@ export const getTotalNumberOfGames = ({
   return db.collection("games").countDocuments(conditions);
 };
 
+export const getTotalNumberOfWins = async (
+  playerName: string
+): Promise<number> => {
+  revalidatePath("/charts");
+  const db = getDatabaseClient();
+
+  const [winsInTeam1, winsInTeam2] = await Promise.all([
+    db
+      .collection("games")
+      .countDocuments({ "team1.name": playerName, winner: "1" }),
+    db
+      .collection("games")
+      .countDocuments({ "team2.name": playerName, winner: "2" }),
+  ]);
+
+  return winsInTeam1 + winsInTeam2;
+};
+
 export const getNumberOfGamesSince = async ({
   since = new Date(2024, 0, 1),
   playerName,

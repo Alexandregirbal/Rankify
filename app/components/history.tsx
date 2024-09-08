@@ -81,7 +81,7 @@ const HistoryComponent = ({ player }: { player: Player }) => {
   }, [player.name]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 px-2">
       {isLoading && <GamesSkeleton />}
       {games.map((game, index) => (
         <GameHistory key={index} game={game} player={player} />
