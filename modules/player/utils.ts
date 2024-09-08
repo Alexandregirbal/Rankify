@@ -75,3 +75,58 @@ export const getExtremeRankings = (ratingHistory: Player["ratingHistory"]) => {
     { max: DEFAULT_RATING, min: DEFAULT_RATING }
   );
 };
+
+export const getExtremPlayerStreak = ({
+  ratingHistory,
+}: {
+  ratingHistory: Player["ratingHistory"];
+}): {
+  win: number;
+  loss: number;
+} => {
+  const tmp = ratingHistory.reduce(
+    (accumulator, currentValue, currentIndex, array) => {
+      const previousValue = array[currentIndex - 1];
+      if (!previousValue) return accumulator;
+
+      const result =
+        previousValue.rating < currentValue.rating ? "win" : "loss";
+
+      if (result === "win") {
+        if (accumulator.currentStreakType !== "win") {
+          accumulator.currentStreakType = "win";
+          accumulator.currentWinStreak = 0;
+        }
+
+        const newWinStreak = accumulator.currentWinStreak + 1;
+        accumulator.currentWinStreak = newWinStreak;
+        if (newWinStreak > accumulator.maxWin) {
+          accumulator.maxWin = newWinStreak;
+        }
+      } else {
+        if (accumulator.currentStreakType !== "loss") {
+          accumulator.currentStreakType = "loss";
+          accumulator.currentLossStreak = 0;
+        }
+
+        const newLossStreak = accumulator.currentLossStreak + 1;
+        accumulator.currentLossStreak = newLossStreak;
+        if (newLossStreak > accumulator.maxLoss) {
+          accumulator.maxLoss = newLossStreak;
+        }
+      }
+      return accumulator;
+    },
+    {
+      maxWin: 0,
+      maxLoss: 0,
+      currentWinStreak: 0,
+      currentLossStreak: 0,
+      currentStreakType: "tie",
+    }
+  );
+  return {
+    win: tmp.maxWin,
+    loss: tmp.maxLoss,
+  };
+};
