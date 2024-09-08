@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import OpenAI from "openai";
-import { ChatCompletionMessageParam } from "openai/src/resources/index.js";
+import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { getGamesSince } from "../game/get";
 
 const getClient = () => {
