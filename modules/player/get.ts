@@ -1,17 +1,22 @@
+import mongooseConnect from "@/database/config/mongoose";
 import { getDatabaseClient } from "@/database/db";
 import { revalidatePath } from "next/cache";
+import { playerModel } from "./model";
 import { Player } from "./types";
 
 export const getAllPlayers = async (): Promise<Player[]> => {
   revalidatePath("/");
-  const db = getDatabaseClient();
-  const players = await db
-    .collection("players")
-    .find({})
-    .project({ _id: 0, name: 1, ratingHistory: 1, games: 1, rating: 1 })
-    .sort({ rating: -1 })
-    .toArray();
-  return players as unknown as Player[];
+  await mongooseConnect();
+  const players = await playerModel
+    .find(
+      {},
+      { _id: 0, name: 1, ratingHistory: 1, games: 1, rating: 1 },
+      { sort: { rating: -1 } }
+    )
+    .lean();
+  console.log(`~~~~~ Girbalog | getAllPlayers | players: `, players);
+
+  return players;
 };
 
 export const getAllPlayersRatingHistories = async (): Promise<

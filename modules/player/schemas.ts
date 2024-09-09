@@ -1,4 +1,4 @@
-import { z } from "zod";
+import z from "@/database/extendedZod";
 import { DEFAULT_RATING } from "../elo/constants";
 
 const ratingHistorySchema = z.array(

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import z from "@/database/extendedZod";
 import { teamSchema } from "../player/schemas";
 
 export const gameSchema = z.object({

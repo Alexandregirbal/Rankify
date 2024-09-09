@@ -4,4 +4,4 @@ import { playerSchema } from "./schemas";
 
 const playerModelSchema = zodSchema(playerSchema);
 
-export const playerModel = model("player", playerModelSchema);
+export const playerModel = model("Player", playerModelSchema);
