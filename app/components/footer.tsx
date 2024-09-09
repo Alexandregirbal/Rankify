@@ -1,6 +1,7 @@
 "use client";
 
 import { ChartNoAxesCombined, SquarePlus, Trophy } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function Footer() {
@@ -13,23 +14,17 @@ export default function Footer() {
 
   return (
     <footer className="btm-nav">
-      <button
-        className={isActiveTab("/charts")}
-        onClick={() => router.push("/charts")}
-      >
+      <Link className={isActiveTab("/charts")} href={"/charts"}>
         <ChartNoAxesCombined />
-      </button>
+      </Link>
 
-      <button className={isActiveTab("/")} onClick={() => router.push("/")}>
+      <Link className={isActiveTab("/")} href={"/"}>
         <Trophy />
-      </button>
+      </Link>
 
-      <button
-        className={isActiveTab("/add")}
-        onClick={() => router.push("/add")}
-      >
+      <Link className={isActiveTab("/add")} href={"/add"}>
         <SquarePlus />
-      </button>
+      </Link>
     </footer>
   );
 }
