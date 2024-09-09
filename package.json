@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@next/env": "^14.2.5",
-    "@zodyac/zod-mongoose": "^2.1.0",
     "chart.js": "^4.4.4",
     "dayjs": "^1.11.13",
     "lucide-react": "^0.427.0",

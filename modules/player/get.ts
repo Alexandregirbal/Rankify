@@ -2,21 +2,18 @@ import mongooseConnect from "@/database/config/mongoose";
 import { getDatabaseClient } from "@/database/db";
 import { revalidatePath } from "next/cache";
 import { playerModel } from "./model";
-import { Player } from "./types";
+import { Player, PlayerMongo } from "./types";
 
-export const getAllPlayers = async (): Promise<Player[]> => {
+export const getAllPlayers = async (): Promise<PlayerMongo[]> => {
   revalidatePath("/");
   await mongooseConnect();
-  const players = await playerModel
+  return playerModel
     .find(
       {},
       { _id: 0, name: 1, ratingHistory: 1, games: 1, rating: 1 },
       { sort: { rating: -1 } }
     )
     .lean();
-  console.log(`~~~~~ Girbalog | getAllPlayers | players: `, players);
-
-  return players;
 };
 
 export const getAllPlayersRatingHistories = async (): Promise<

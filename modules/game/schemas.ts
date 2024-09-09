@@ -1,4 +1,5 @@
-import z from "@/database/extendedZod";
+import { baseMongoSchema } from "@/database/utils";
+import { z } from "zod";
 import { teamSchema } from "../player/schemas";
 
 export const gameSchema = z.object({
@@ -7,3 +8,5 @@ export const gameSchema = z.object({
   scores: z.array(z.number()).length(2),
   winner: z.enum(["1", "2"]),
 });
+
+export const gameMongoSchema = baseMongoSchema.merge(gameSchema);

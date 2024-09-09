@@ -1,4 +1,5 @@
-import z from "@/database/extendedZod";
+import { baseMongoSchema } from "@/database/utils";
+import { z } from "zod";
 import { DEFAULT_RATING } from "../elo/constants";
 
 const ratingHistorySchema = z.array(
@@ -14,6 +15,8 @@ export const playerSchema = z.object({
   rating: z.number().default(DEFAULT_RATING),
   ratingHistory: ratingHistorySchema.default([]),
 });
+
+export const playerMongoSchema = baseMongoSchema.merge(playerSchema);
 
 export const minimalPlayerSchema = playerSchema
   .pick({

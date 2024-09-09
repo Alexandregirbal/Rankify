@@ -1,7 +1,27 @@
-import { zodSchema } from "@zodyac/zod-mongoose";
-import { model } from "mongoose";
-import { gameSchema } from "./schemas";
+import { Model, model, models, Schema } from "mongoose";
+import { GameMongo } from "./types";
 
-const gameModelSchema = zodSchema(gameSchema);
+const minimalPlayerModelSchema = {
+  name: { type: String, required: true },
+  rating: { type: Number, required: true },
+  games: { type: Number, required: true },
+};
 
-export const gameModel = model("Game", gameModelSchema);
+const gameModelSchema = new Schema<GameMongo>(
+  {
+    team1: {
+      type: [minimalPlayerModelSchema],
+      required: true,
+    },
+    team2: {
+      type: [minimalPlayerModelSchema],
+      required: true,
+    },
+    scores: { type: [Number], required: true },
+    winner: { type: String, required: true },
+  },
+  { _id: true, timestamps: true }
+);
+
+export const gameModel =
+  (models.Game as Model<GameMongo>) ?? model("Game", gameModelSchema);
