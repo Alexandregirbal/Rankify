@@ -7,6 +7,7 @@ import { type ChartData } from "chart.js";
 import "chart.js/auto";
 import { ChangeEvent, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { PlayerStatsSkeleton } from "./skeletons";
 import { stringToColor } from "./utils";
 
 const NEAREST_MULTIPLE = 50;
@@ -18,6 +19,7 @@ type RatingHistoriesProps = {
 };
 
 export default function RatingHistories({ players }: RatingHistoriesProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const [nameInput, setNameInput] = useState<PlayerNameSelect>("all");
   const [totalNumberOfGamesPlayed, setTotalNumberOfGamesPlayed] = useState(0);
   const [numberOfGamesPlayedToday, setNumberOfGamesPlayedToday] = useState(0);
@@ -72,7 +74,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     setNameInput(selectedName);
 
     if (selectedName === "all") return;
-
+    setIsLoading(true);
     const response = await fetch(
       `api/players/stats?playerName=${selectedName}`,
       {
@@ -84,6 +86,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     setNumberOfGamesPlayedToday(response.numberOfGamesPlayedToday);
     setWinLossRatio(response.winLossRatio);
     setExtremeStreaks(response.extremeStreaks);
+    setIsLoading(false);
   };
 
   const resetPlayerName = () => {
@@ -140,26 +143,32 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
                 {chartDatasets[0].data[chartDatasets[0].data.length - 1]}
               </span>
             </li>
-            <li>
-              <span>Games played:</span>{" "}
-              <span className="font-bold">{totalNumberOfGamesPlayed}</span>
-            </li>
-            <li>
-              <span>Games played today:</span>{" "}
-              <span className="font-bold">{numberOfGamesPlayedToday}</span>
-            </li>
-            <li>
-              <span>Win/Loss ratio:</span>{" "}
-              <span className="font-bold">{winLossRatio}</span>
-            </li>
-            <li>
-              <span>Best win streak:</span>{" "}
-              <span className="font-bold">{extremeStreaks.win}</span>
-            </li>
-            <li>
-              <span>Worst loss streak:</span>{" "}
-              <span className="font-bold">{extremeStreaks.loss}</span>
-            </li>
+            {isLoading ? (
+              <PlayerStatsSkeleton />
+            ) : (
+              <>
+                <li>
+                  <span>Games played:</span>{" "}
+                  <span className="font-bold">{totalNumberOfGamesPlayed}</span>
+                </li>
+                <li>
+                  <span>Games played today:</span>{" "}
+                  <span className="font-bold">{numberOfGamesPlayedToday}</span>
+                </li>
+                <li>
+                  <span>Win/Loss ratio:</span>{" "}
+                  <span className="font-bold">{winLossRatio}</span>
+                </li>
+                <li>
+                  <span>Best win streak:</span>{" "}
+                  <span className="font-bold">{extremeStreaks.win}</span>
+                </li>
+                <li>
+                  <span>Worst loss streak:</span>{" "}
+                  <span className="font-bold">{extremeStreaks.loss}</span>
+                </li>
+              </>
+            )}
           </ul>
         </>
       )}
