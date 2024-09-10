@@ -8,6 +8,19 @@ import Modal from "./ui/modal";
 
 const HistoryComponent = dynamic(() => import("./history"));
 
+const getRankingIcon = (ranking: number) => {
+  switch (ranking) {
+    case 1:
+      return <Crown className="stroke-gold" />;
+    case 2:
+      return <Crown className="stroke-silver" />;
+    case 3:
+      return <Crown className="stroke-bronze" />;
+    default:
+      return <></>;
+  }
+};
+
 export default function PlayerComponent({
   player,
   ranking,
@@ -25,7 +38,7 @@ export default function PlayerComponent({
         <div className=" w-8 text-3xl text-center">{ranking}</div>
         <div className="flex justify-between grow">
           <div className="text-xl flex gap-4 items-center">
-            {ranking === 1 ? <Crown /> : <></>} {player.name}
+            {getRankingIcon(ranking)} {player.name}
           </div>
           <div className="flex gap-2 items-center">
             <span>{player.rating}</span>
