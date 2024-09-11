@@ -1,4 +1,4 @@
-export const EightBallIcon = ({
+export const EightBallIconOutline = ({
   color = "#00CDB8",
   size = 35,
 }: {
