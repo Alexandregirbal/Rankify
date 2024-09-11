@@ -69,7 +69,7 @@ export default function AddGame({ allPlayers }: { allPlayers: Player[] }) {
           window.location.href = "/";
         }
       })
-      .finally(() => {
+      .catch(() => {
         setIsLoading(false);
       });
   };
