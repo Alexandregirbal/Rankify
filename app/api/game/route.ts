@@ -9,6 +9,7 @@ export async function POST(request: Request) {
   if (!team1 || !team2) {
     return Response.json({ error: "teams are required" }, { status: 400 });
   }
+  revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
 
   await createGame({
     team1,
@@ -20,8 +21,6 @@ export async function POST(request: Request) {
   for (const player of newPlayersRatings) {
     result.push(await updatePlayerRating(player.name, player.rating));
   }
-
-  revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
 
   return Response.json(
     { message: "Game added successfully", details: result },
