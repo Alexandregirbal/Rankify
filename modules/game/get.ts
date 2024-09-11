@@ -1,12 +1,13 @@
-import { getDatabaseClient } from "@/database/db";
-import { Game } from "./types";
+import mongooseConnect from "@/database/config/mongoose";
+import { gameModel } from "./model";
+import { GameMongo } from "./types";
 
-export const getTotalNumberOfGames = ({
+export const getTotalNumberOfGames = async ({
   playerName,
 }: {
   playerName?: string;
-}) => {
-  const db = getDatabaseClient();
+}): Promise<number> => {
+  await mongooseConnect();
 
   const conditions: Record<string, any> = {};
 
@@ -17,21 +18,17 @@ export const getTotalNumberOfGames = ({
     ];
   }
 
-  return db.collection("games").countDocuments(conditions);
+  return gameModel.countDocuments(conditions).lean();
 };
 
 export const getTotalNumberOfWins = async (
   playerName: string
 ): Promise<number> => {
-  const db = getDatabaseClient();
+  await mongooseConnect();
 
   const [winsInTeam1, winsInTeam2] = await Promise.all([
-    db
-      .collection("games")
-      .countDocuments({ "team1.name": playerName, winner: "1" }),
-    db
-      .collection("games")
-      .countDocuments({ "team2.name": playerName, winner: "2" }),
+    gameModel.countDocuments({ "team1.name": playerName, winner: "1" }).lean(),
+    gameModel.countDocuments({ "team2.name": playerName, winner: "2" }).lean(),
   ]);
 
   return winsInTeam1 + winsInTeam2;
@@ -44,7 +41,7 @@ export const getNumberOfGamesSince = async ({
   since?: Date;
   playerName?: string;
 }) => {
-  const db = getDatabaseClient();
+  await mongooseConnect();
 
   const conditions: Record<string, any> = { createdAt: { $gte: since } };
 
@@ -55,35 +52,27 @@ export const getNumberOfGamesSince = async ({
     ];
   }
 
-  return db.collection("games").countDocuments(conditions);
+  return gameModel.countDocuments(conditions).lean();
 };
 
-export const getGamesSince = async (since: Date) => {
-  const db = getDatabaseClient();
-  return db
-    .collection("games")
-    .find<Game>({ createdAt: { $gte: since } })
-    .toArray();
+export const getGamesSince = async (since: Date): Promise<GameMongo[]> => {
+  await mongooseConnect();
+  return gameModel.find({ createdAt: { $gte: since } }).lean();
 };
 
-export const getAllGames = async (): Promise<Game[]> => {
-  const db = getDatabaseClient();
-  const games = await db
-    .collection("games")
-    .find({})
-    .sort({ rating: -1 })
-    .toArray();
-  return games as unknown as Game[];
+export const getAllGames = async (): Promise<GameMongo[]> => {
+  await mongooseConnect();
+  return gameModel.find({}).sort({ rating: -1 }).lean();
 };
 
-export const getPlayerGames = async (playerName: string): Promise<Game[]> => {
-  const db = getDatabaseClient();
-  const games = await db
-    .collection("games")
+export const getPlayerGames = async (
+  playerName: string
+): Promise<GameMongo[]> => {
+  await mongooseConnect();
+  return gameModel
     .find({
       $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
     })
     .sort({ createdAt: -1 })
-    .toArray();
-  return games as unknown as Game[];
+    .lean();
 };

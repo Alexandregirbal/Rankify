@@ -15,4 +15,5 @@ export const baseMongoSchema = z.object({
 export const baseSchemaOptions: SchemaOptions<any> = {
   _id: true,
   timestamps: true,
+  versionKey: false,
 };
