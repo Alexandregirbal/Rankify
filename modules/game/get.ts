@@ -62,7 +62,7 @@ export const getGamesSince = async (since: Date): Promise<GameMongo[]> => {
 
 export const getAllGames = async (): Promise<GameMongo[]> => {
   await mongooseConnect();
-  return gameModel.find({}).sort({ rating: -1 }).lean();
+  return gameModel.find({}, null, { sort: { rating: -1 } }).lean();
 };
 
 export const getPlayerGames = async (
@@ -70,9 +70,12 @@ export const getPlayerGames = async (
 ): Promise<GameMongo[]> => {
   await mongooseConnect();
   return gameModel
-    .find({
-      $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
-    })
-    .sort({ createdAt: -1 })
+    .find(
+      {
+        $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
+      },
+      null,
+      { sort: { createdAt: -1 } }
+    )
     .lean();
 };
