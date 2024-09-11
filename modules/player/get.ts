@@ -31,11 +31,11 @@ export const getPlayer = async (
 
 export const getPlayerRatingHistory = async (
   playerName: string
-): Promise<PlayerMongo["ratingHistory"] | undefined> => {
+): Promise<PlayerMongo["ratingHistory"]> => {
   await mongooseConnect();
   const player = await playerModel
     .findOne({ name: playerName }, { _id: 0, ratingHistory: 1 })
     .lean();
 
-  return player?.ratingHistory;
+  return player ? player.ratingHistory : [];
 };

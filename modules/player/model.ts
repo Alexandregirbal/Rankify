@@ -2,10 +2,15 @@ import { baseSchemaOptions } from "@/database/utils";
 import { Model, model, models, Schema } from "mongoose";
 import { PlayerMongo } from "./types";
 
-const ratingHistoryModelSchema = {
-  date: { type: Date, required: true },
-  rating: { type: Number, required: true },
-};
+const ratingHistoryModelSchema = new Schema<
+  PlayerMongo["ratingHistory"][number]
+>(
+  {
+    date: { type: Date, required: true },
+    rating: { type: Number, required: true },
+  },
+  { _id: false }
+);
 
 const playerModelSchema = new Schema<PlayerMongo>(
   {
