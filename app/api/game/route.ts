@@ -2,6 +2,7 @@ import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { createGame } from "@/modules/game/create";
 import { getPlayerGames } from "@/modules/game/get";
 import { updatePlayerRating } from "@/modules/player/update";
+import { revalidatePath } from "next/cache";
 
 export async function POST(request: Request) {
   const { team1, team2 } = await request.json();
@@ -19,6 +20,8 @@ export async function POST(request: Request) {
   for (const player of newPlayersRatings) {
     result.push(await updatePlayerRating(player.name, player.rating));
   }
+
+  revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
 
   return Response.json(
     { message: "Game added successfully", details: result },

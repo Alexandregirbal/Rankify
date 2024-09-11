@@ -1,11 +1,9 @@
 import mongooseConnect from "@/database/config/mongoose";
 import { getDatabaseClient } from "@/database/db";
-import { revalidatePath } from "next/cache";
 import { playerModel } from "./model";
 import { Player, PlayerMongo } from "./types";
 
 export const getAllPlayers = async (): Promise<PlayerMongo[]> => {
-  revalidatePath("/");
   await mongooseConnect();
   return playerModel
     .find(
@@ -19,7 +17,6 @@ export const getAllPlayers = async (): Promise<PlayerMongo[]> => {
 export const getAllPlayersRatingHistories = async (): Promise<
   Array<Pick<Player, "name" | "ratingHistory">>
 > => {
-  revalidatePath("/charts");
   const db = getDatabaseClient();
   const players = await db
     .collection("players")
