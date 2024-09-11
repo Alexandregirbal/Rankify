@@ -1,5 +1,4 @@
 import { getDatabaseClient } from "@/database/db";
-import { revalidatePath } from "next/cache";
 import { Game } from "./types";
 
 export const getTotalNumberOfGames = ({
@@ -7,7 +6,6 @@ export const getTotalNumberOfGames = ({
 }: {
   playerName?: string;
 }) => {
-  revalidatePath("/charts");
   const db = getDatabaseClient();
 
   const conditions: Record<string, any> = {};
@@ -25,7 +23,6 @@ export const getTotalNumberOfGames = ({
 export const getTotalNumberOfWins = async (
   playerName: string
 ): Promise<number> => {
-  revalidatePath("/charts");
   const db = getDatabaseClient();
 
   const [winsInTeam1, winsInTeam2] = await Promise.all([
@@ -47,7 +44,6 @@ export const getNumberOfGamesSince = async ({
   since?: Date;
   playerName?: string;
 }) => {
-  revalidatePath("/charts");
   const db = getDatabaseClient();
 
   const conditions: Record<string, any> = { createdAt: { $gte: since } };
@@ -63,7 +59,6 @@ export const getNumberOfGamesSince = async ({
 };
 
 export const getGamesSince = async (since: Date) => {
-  revalidatePath("/charts");
   const db = getDatabaseClient();
   return db
     .collection("games")
@@ -72,7 +67,6 @@ export const getGamesSince = async (since: Date) => {
 };
 
 export const getAllGames = async (): Promise<Game[]> => {
-  revalidatePath("/");
   const db = getDatabaseClient();
   const games = await db
     .collection("games")
