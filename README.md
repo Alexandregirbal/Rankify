@@ -2,6 +2,10 @@
 
 Open source ranking app for diverse activities like pool, fussball, table tennis, etc.
 
+## Contributing
+
+Please read the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file for details on how to contribute to this project.
+
 ## Development
 
 ### Requirements

@@ -1,6 +1,7 @@
+import AddPlayer from "@/app/components/player/addPlayer";
+import PlayerComponent from "@/app/components/player/player";
 import { getAllPlayers } from "@/modules/player/get";
 import { getQuoteOfTheDay } from "@/modules/quoteOfTheDay/get";
-import PlayerComponent from "./components/player";
 
 export default async function Leaderboard() {
   const allPlayers = await getAllPlayers();
@@ -17,6 +18,7 @@ export default async function Leaderboard() {
           ranking={index + 1}
         />
       ))}
+      <AddPlayer />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default function Footer() {
 
   return (
     <footer className="btm-nav">
-      <Link className={isActiveTab("/charts")} href={"/charts"}>
+      <Link className={isActiveTab("/stats")} href={"/stats"}>
         <ChartNoAxesCombined />
       </Link>
 

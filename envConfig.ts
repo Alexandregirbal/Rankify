@@ -6,6 +6,7 @@ loadEnvConfig(projectDir);
 
 const envSchema = z.object({
   MONGODB_URI: z.string().url(),
+  OPENAI_API_KEY: z.string().optional(),
 });
 
 export const getEnvConfigs = () => {
