@@ -1,10 +1,11 @@
+import { getEnvConfigs } from "@/envConfig";
 import dayjs from "dayjs";
 import OpenAI from "openai";
 import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { getGamesSince } from "../game/get";
 
 const getClient = () => {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = getEnvConfigs().OPENAI_API_KEY;
   if (!apiKey) {
     return null;
   }

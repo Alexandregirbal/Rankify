@@ -6,7 +6,7 @@ import {
 } from "@/modules/game/get";
 import { getAllPlayersRatingHistories } from "@/modules/player/get";
 import dayjs from "dayjs";
-import RatingHistories from "./ratingHistories";
+import RatingHistories from "./components/ratingHistories";
 
 export default async function Charts() {
   const allPlayers = await getAllPlayersRatingHistories();

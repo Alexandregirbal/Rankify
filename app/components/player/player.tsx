@@ -1,10 +1,10 @@
 "use client";
 
+import { EightBallIconFull } from "@/app/components/ui/icons/8BallIconFull";
+import Modal from "@/app/components/ui/modal";
 import { Player } from "@/modules/player/types";
 import dynamic from "next/dynamic";
 import LastGameStats from "./lastGameStats";
-import { EightBallIconFull } from "./ui/8BallIconFull";
-import Modal from "./ui/modal";
 
 const HistoryComponent = dynamic(() => import("./history"));
 

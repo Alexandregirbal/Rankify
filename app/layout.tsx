@@ -1,8 +1,8 @@
 import { UIStoreProvider } from "@/stores/ui/provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Footer from "./components/footer";
-import GlobalLoading from "./components/globalLoading";
+import Footer from "./components/layout/footer";
+import GlobalLoading from "./components/ui/globalLoading";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });

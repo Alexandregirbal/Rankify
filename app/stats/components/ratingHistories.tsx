@@ -7,8 +7,8 @@ import { type ChartData } from "chart.js";
 import "chart.js/auto";
 import { ChangeEvent, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { stringToColor } from "../utils";
 import { PlayerStatsSkeleton } from "./skeletons";
-import { stringToColor } from "./utils";
 
 const NEAREST_MULTIPLE = 50;
 
