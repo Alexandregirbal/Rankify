@@ -1,5 +1,5 @@
-import { Player } from "@/modules/elo/types";
 import { describe, expect, it } from "vitest";
+import { Player } from "../types";
 import { calculatePlayerStreak, getExtremPlayerStreak } from "../utils";
 
 describe("calculatePlayerStreak", () => {

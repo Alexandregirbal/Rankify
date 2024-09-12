@@ -1,19 +1,24 @@
-import { getDatabaseClient } from "@/database/db";
+import mongooseConnect from "@/database/config/mongoose";
 import { DEFAULT_RATING } from "@/modules/elo/constants";
+import { playerModel } from "./model";
+import { PlayerMongo } from "./types";
 
-export const createPlayer = async (playerName: string) => {
-  const db = getDatabaseClient();
+export const createPlayer = async (
+  playerName: string
+): Promise<PlayerMongo> => {
+  await mongooseConnect();
 
-  const player = await db.collection("players").findOne({ name: playerName });
+  const player = await playerModel.findOne({ name: playerName });
   if (player) {
     throw new Error("Player already exists");
   }
 
-  const newPlayer = await db.collection("players").insertOne({
+  const newPlayer = await playerModel.create({
     name: playerName,
     rating: DEFAULT_RATING,
     ratingHistory: [{ date: new Date(), rating: DEFAULT_RATING }],
     games: 0,
   });
+
   return newPlayer;
 };

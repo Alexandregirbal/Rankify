@@ -1,4 +1,4 @@
-import { Player } from "@/modules/elo/types";
+import { Player } from "@/modules/player/types";
 import {
   calculatePlayerStreak,
   GameResult,

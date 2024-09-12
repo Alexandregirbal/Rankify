@@ -1,47 +1,41 @@
-import { getDatabaseClient } from "@/database/db";
-import { Player } from "../elo/types";
+import mongooseConnect from "@/database/config/mongoose";
+import { playerModel } from "./model";
+import { PlayerMongo } from "./types";
 
-export const getAllPlayers = async (): Promise<Player[]> => {
-  const db = getDatabaseClient();
-  const players = await db
-    .collection("players")
-    .find({})
-    .project({ _id: 0, name: 1, ratingHistory: 1, games: 1, rating: 1 })
-    .sort({ rating: -1 })
-    .toArray();
-  return players as unknown as Player[];
+export const getAllPlayers = async (): Promise<PlayerMongo[]> => {
+  await mongooseConnect();
+  return playerModel
+    .find(
+      {},
+      { _id: 0, name: 1, ratingHistory: 1, games: 1, rating: 1 },
+      { sort: { rating: -1 } }
+    )
+    .lean();
 };
 
 export const getAllPlayersRatingHistories = async (): Promise<
-  Array<Pick<Player, "name" | "ratingHistory">>
+  Array<Pick<PlayerMongo, "name" | "ratingHistory">>
 > => {
-  const db = getDatabaseClient();
-  const players = await db
-    .collection("players")
-    .find({})
-    .project({ _id: 0, name: 1, ratingHistory: 1 })
-    .sort({ rating: -1 })
-    .toArray();
-  return players as unknown as Array<Pick<Player, "name" | "ratingHistory">>;
+  await mongooseConnect();
+  return playerModel
+    .find({}, { _id: 0, name: 1, ratingHistory: 1 }, { sort: { rating: -1 } })
+    .lean();
 };
 
-export const getPlayer = async (playerName: string) => {
-  const db = getDatabaseClient();
-  const player = await db.collection("players").findOne({ name: playerName });
-  return player;
+export const getPlayer = async (
+  playerName: string
+): Promise<PlayerMongo | null> => {
+  await mongooseConnect();
+  return playerModel.findOne({ name: playerName }).lean();
 };
 
 export const getPlayerRatingHistory = async (
   playerName: string
-): Promise<Player["ratingHistory"]> => {
-  const db = getDatabaseClient();
-  const players = await db
-    .collection("players")
-    .find({ name: playerName })
-    .project({ _id: 0, ratingHistory: 1 })
-    .limit(1)
-    .toArray();
-  return (
-    players as unknown as Array<Pick<Player, "name" | "ratingHistory">>
-  )[0]?.ratingHistory;
+): Promise<PlayerMongo["ratingHistory"]> => {
+  await mongooseConnect();
+  const player = await playerModel
+    .findOne({ name: playerName }, { _id: 0, ratingHistory: 1 })
+    .lean();
+
+  return player ? player.ratingHistory : [];
 };

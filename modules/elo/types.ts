@@ -1,20 +1,9 @@
 import { z } from "zod";
-
-export const playerSchema = z.object({
-  name: z.string(),
-  rating: z.number(),
-  ratingHistory: z.array(
-    z.object({
-      date: z.date(),
-      rating: z.number(),
-    })
-  ),
-  games: z.number(),
-});
-export type Player = z.infer<typeof playerSchema>;
+import { minimalPlayerSchema } from "../player/schemas";
 
 export const teamScoringSchema = z.object({
-  players: z.array(playerSchema),
+  players: z.array(minimalPlayerSchema),
   score: z.number(),
 });
+
 export type TeamScoring = z.infer<typeof teamScoringSchema>;

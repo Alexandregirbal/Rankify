@@ -1,7 +1,7 @@
 "use client";
 
 import { DEFAULT_RATING } from "@/modules/elo/constants";
-import { Player } from "@/modules/elo/types";
+import { Player } from "@/modules/player/types";
 import { getExtremeRankings } from "@/modules/player/utils";
 import { type ChartData } from "chart.js";
 import "chart.js/auto";

@@ -1,5 +1,5 @@
+import { getEnvConfigs } from "@/envConfig";
 import { MongoClient } from "mongodb";
-import "../envConfig";
 
 const getDatabaseConfigs = () => {
   const mongodbUri = process.env.MONGODB_URI;
@@ -15,7 +15,7 @@ const options = {};
 
 let client: MongoClient;
 
-const uri = getDatabaseConfigs().mongodbUri;
+const uri = getEnvConfigs().MONGODB_URI;
 
 if (process.env.NODE_ENV === "development") {
   // In development mode, use a global variable so that the value
