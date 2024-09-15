@@ -122,6 +122,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
         <select
           className="w-2/5 select border border-slate-300 focus:outline-accent"
           onChange={handlePlayerNameChange}
+          value={nameInput}
         >
           <option value="all" className="text-error">
             All players
