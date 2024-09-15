@@ -5,7 +5,7 @@ import {
 } from "@/modules/game/get";
 import { getPlayerRatingHistory } from "@/modules/player/get";
 import { getExtremPlayerStreak } from "@/modules/player/utils";
-import { getOrCreatePlayerQuoteOfTheDay } from "@/modules/quote/get";
+import { getPlayerQuoteOfTheDay } from "@/modules/quote/get";
 import dayjs from "dayjs";
 
 export async function GET(request: Request): Promise<Response> {
@@ -30,7 +30,7 @@ export async function GET(request: Request): Promise<Response> {
     }),
     getTotalNumberOfWins(playerName),
     getPlayerRatingHistory(playerName),
-    getOrCreatePlayerQuoteOfTheDay(playerName),
+    getPlayerQuoteOfTheDay(playerName),
   ]);
 
   return Response.json({

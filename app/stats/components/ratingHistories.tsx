@@ -8,7 +8,7 @@ import "chart.js/auto";
 import { ChangeEvent, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { stringToColor } from "../utils";
-import { PlayerStatsSkeleton } from "./skeletons";
+import { PlayerQuoteSkeleton, PlayerStatsSkeleton } from "./skeletons";
 
 const NEAREST_MULTIPLE = 50;
 
@@ -138,6 +138,11 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
       {nameInput !== "all" && (
         <>
           <h2 className="text-2xl">{`${nameInput}'s stats`}</h2>
+          {isLoading ? (
+            <PlayerQuoteSkeleton />
+          ) : (
+            <p className="text-center w-full">{playerQuote}</p>
+          )}
           <ul className="text-lg text-left w-full">
             <li>
               <span>Current rating:</span>{" "}
@@ -168,10 +173,6 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
                 <li>
                   <span>Worst loss streak:</span>{" "}
                   <span className="font-bold">{extremeStreaks.loss}</span>
-                </li>
-                <li>
-                  <span>Player quote of the day:</span>{" "}
-                  <span className="font-bold">{playerQuote}</span>
                 </li>
               </>
             )}
