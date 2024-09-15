@@ -8,7 +8,7 @@ import "chart.js/auto";
 import { ChangeEvent, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { stringToColor } from "../utils";
-import { PlayerStatsSkeleton } from "./skeletons";
+import { PlayerQuoteSkeleton, PlayerStatsSkeleton } from "./skeletons";
 
 const NEAREST_MULTIPLE = 50;
 
@@ -28,6 +28,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     win: 0,
     loss: 0,
   });
+  const [playerQuote, setPlayerQuote] = useState("");
 
   const filterPlayers = (player: RatingHistoriesProps["players"][number]) => {
     return (
@@ -86,6 +87,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     setNumberOfGamesPlayedToday(response.numberOfGamesPlayedToday);
     setWinLossRatio(response.winLossRatio);
     setExtremeStreaks(response.extremeStreaks);
+    setPlayerQuote(response.playerQuote);
     setIsLoading(false);
   };
 
@@ -120,6 +122,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
         <select
           className="w-2/5 select border border-slate-300 focus:outline-accent"
           onChange={handlePlayerNameChange}
+          value={nameInput}
         >
           <option value="all" className="text-error">
             All players
@@ -136,6 +139,11 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
       {nameInput !== "all" && (
         <>
           <h2 className="text-2xl">{`${nameInput}'s stats`}</h2>
+          {isLoading ? (
+            <PlayerQuoteSkeleton />
+          ) : (
+            <p className="text-center w-full">{playerQuote}</p>
+          )}
           <ul className="text-lg text-left w-full">
             <li>
               <span>Current rating:</span>{" "}

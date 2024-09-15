@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { SchemaOptions } from "mongoose";
 import { z } from "zod";
 
-const zodObjectId = z.custom<ObjectId | string>((value) =>
+export const zodObjectId = z.custom<ObjectId | string>((value) =>
   ObjectId.isValid(value)
 );
 

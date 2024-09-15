@@ -1,4 +1,5 @@
 import mongooseConnect from "@/database/config/mongoose";
+import { Player } from "../player/types";
 import { gameModel } from "./model";
 import { GameMongo } from "./types";
 
@@ -65,14 +66,19 @@ export const getAllGames = async (): Promise<GameMongo[]> => {
   return gameModel.find({}, null, { sort: { rating: -1 } }).lean();
 };
 
-export const getPlayerGames = async (
-  playerName: string
-): Promise<GameMongo[]> => {
+export const getPlayerGames = async ({
+  playerName,
+  since,
+}: {
+  playerName: Player["name"];
+  since?: Date;
+}): Promise<GameMongo[]> => {
   await mongooseConnect();
   return gameModel
     .find(
       {
         $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
+        ...(since ? { createdAt: { $gte: since } } : {}),
       },
       null,
       { sort: { createdAt: -1 } }

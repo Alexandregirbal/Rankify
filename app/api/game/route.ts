@@ -2,6 +2,10 @@ import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { createGame } from "@/modules/game/create";
 import { getPlayerGames } from "@/modules/game/get";
 import { updatePlayerRating } from "@/modules/player/update";
+import {
+  upsertPlayerQuoteOfTheDay,
+  upsertQuoteOfTheDay,
+} from "@/modules/quote/update";
 import { revalidatePath } from "next/cache";
 
 export async function POST(request: Request) {
@@ -11,10 +15,16 @@ export async function POST(request: Request) {
   }
   revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
 
-  await createGame({
+  const newGame = await createGame({
     team1,
     team2,
   });
+  Promise.all([
+    await upsertQuoteOfTheDay(newGame),
+    [...newGame.team1, ...newGame.team2].map((player) =>
+      upsertPlayerQuoteOfTheDay(player.name, newGame)
+    ),
+  ]);
 
   const newPlayersRatings = calculatePlayersRatings(team1, team2);
   const result = [];
@@ -35,6 +45,6 @@ export async function GET(request: Request) {
     return Response.json({ error: "playerName is required" }, { status: 400 });
   }
 
-  const games = await getPlayerGames(name);
+  const games = await getPlayerGames({ playerName: name });
   return Response.json({ games });
 }

@@ -9,3 +9,7 @@ export const PlayerStatsSkeleton = () => {
     </>
   );
 };
+
+export const PlayerQuoteSkeleton = () => {
+  return <p className="skeleton w-full h-24"></p>;
+};
