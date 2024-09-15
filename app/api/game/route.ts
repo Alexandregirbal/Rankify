@@ -2,6 +2,7 @@ import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { createGame } from "@/modules/game/create";
 import { getPlayerGames } from "@/modules/game/get";
 import { updatePlayerRating } from "@/modules/player/update";
+import { upsertQuoteOfTheDay } from "@/modules/quote/update";
 import { revalidatePath } from "next/cache";
 
 export async function POST(request: Request) {
@@ -11,10 +12,11 @@ export async function POST(request: Request) {
   }
   revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
 
-  await createGame({
+  const newGame = await createGame({
     team1,
     team2,
   });
+  await upsertQuoteOfTheDay(newGame);
 
   const newPlayersRatings = calculatePlayersRatings(team1, team2);
   const result = [];

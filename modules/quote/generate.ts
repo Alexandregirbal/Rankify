@@ -3,8 +3,10 @@ import dayjs from "dayjs";
 import OpenAI from "openai";
 import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { getGamesSince } from "../game/get";
+import { GameMongo } from "../game/types";
+import { OPEN_AI_MODEL } from "./constants";
 
-const getClient = () => {
+const getOpenAIClient = () => {
   const apiKey = getEnvConfigs().OPENAI_API_KEY;
   if (!apiKey) {
     return null;
@@ -15,14 +17,18 @@ const getClient = () => {
   });
 };
 
-export const getQuoteOfTheDay = async (): Promise<string> => {
+export const generateQuoteOfTheDay = async (
+  newGame?: GameMongo
+): Promise<string> => {
   const games = await getGamesSince(dayjs().startOf("day").toDate());
-  const client = getClient();
-  if (!client) {
-    return "ChatGPT fait la grève ou il n'est pas configuré.";
+  if (newGame) games.push(newGame);
+
+  const openAIClient = getOpenAIClient();
+  if (!openAIClient) {
+    return "ChatGPT n'est pas configuré.";
   }
 
-  const quote = await client.chat.completions.create({
+  const quote = await openAIClient.chat.completions.create({
     messages: [
       {
         role: "system",
@@ -46,7 +52,7 @@ export const getQuoteOfTheDay = async (): Promise<string> => {
             } as ChatCompletionMessageParam,
           ]),
     ],
-    model: "gpt-4o-mini",
+    model: OPEN_AI_MODEL,
   });
 
   return quote.choices[0].message.content || "ChatGPT fait la grève.";
