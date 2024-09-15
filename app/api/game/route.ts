@@ -37,6 +37,6 @@ export async function GET(request: Request) {
     return Response.json({ error: "playerName is required" }, { status: 400 });
   }
 
-  const games = await getPlayerGames(name);
+  const games = await getPlayerGames({ playerName: name });
   return Response.json({ games });
 }

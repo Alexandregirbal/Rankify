@@ -1,5 +1,9 @@
 export const OPEN_AI_MODEL = "gpt-4o-mini";
 
+export const NO_CONFIG = "ChatGPT n'est pas configuré.";
+
+export const OPENAI_DOWN = "ChatGPT fait la grève.";
+
 export const QUOTE_TYPES = {
   quote_of_the_day: "quote_of_the_day",
   player_quote: "player_quote",
