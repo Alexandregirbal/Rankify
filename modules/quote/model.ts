@@ -5,6 +5,7 @@ import { QuoteMongo } from "./types";
 const QuoteModel = new Schema<QuoteMongo>(
   {
     type: { type: String, required: true },
+    playerName: { type: String, required: false },
     quote: { type: String, required: true },
     quoteHistory: { type: [String], required: true, default: [] },
   },

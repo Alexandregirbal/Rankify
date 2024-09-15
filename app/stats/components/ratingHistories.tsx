@@ -28,6 +28,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     win: 0,
     loss: 0,
   });
+  const [playerQuote, setPlayerQuote] = useState("");
 
   const filterPlayers = (player: RatingHistoriesProps["players"][number]) => {
     return (
@@ -86,6 +87,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     setNumberOfGamesPlayedToday(response.numberOfGamesPlayedToday);
     setWinLossRatio(response.winLossRatio);
     setExtremeStreaks(response.extremeStreaks);
+    setPlayerQuote(response.playerQuote);
     setIsLoading(false);
   };
 
@@ -166,6 +168,10 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
                 <li>
                   <span>Worst loss streak:</span>{" "}
                   <span className="font-bold">{extremeStreaks.loss}</span>
+                </li>
+                <li>
+                  <span>Player quote of the day:</span>{" "}
+                  <span className="font-bold">{playerQuote}</span>
                 </li>
               </>
             )}

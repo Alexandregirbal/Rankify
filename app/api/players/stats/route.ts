@@ -5,6 +5,7 @@ import {
 } from "@/modules/game/get";
 import { getPlayerRatingHistory } from "@/modules/player/get";
 import { getExtremPlayerStreak } from "@/modules/player/utils";
+import { getOrCreatePlayerQuoteOfTheDay } from "@/modules/quote/get";
 import dayjs from "dayjs";
 
 export async function GET(request: Request): Promise<Response> {
@@ -20,6 +21,7 @@ export async function GET(request: Request): Promise<Response> {
     numberOfGamesPlayedToday,
     totalNumberOfWins,
     playerRatingHistory,
+    playerQuote,
   ] = await Promise.all([
     getTotalNumberOfGames({ playerName }),
     getNumberOfGamesSince({
@@ -28,6 +30,7 @@ export async function GET(request: Request): Promise<Response> {
     }),
     getTotalNumberOfWins(playerName),
     getPlayerRatingHistory(playerName),
+    getOrCreatePlayerQuoteOfTheDay(playerName),
   ]);
 
   return Response.json({
@@ -37,5 +40,6 @@ export async function GET(request: Request): Promise<Response> {
     extremeStreaks: getExtremPlayerStreak({
       ratingHistory: playerRatingHistory,
     }),
+    playerQuote,
   });
 }

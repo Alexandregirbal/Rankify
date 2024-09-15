@@ -2,7 +2,10 @@ import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { createGame } from "@/modules/game/create";
 import { getPlayerGames } from "@/modules/game/get";
 import { updatePlayerRating } from "@/modules/player/update";
-import { upsertQuoteOfTheDay } from "@/modules/quote/update";
+import {
+  upsertPlayerQuoteOfTheDay,
+  upsertQuoteOfTheDay,
+} from "@/modules/quote/update";
 import { revalidatePath } from "next/cache";
 
 export async function POST(request: Request) {
@@ -16,7 +19,12 @@ export async function POST(request: Request) {
     team1,
     team2,
   });
-  await upsertQuoteOfTheDay(newGame);
+  Promise.all([
+    await upsertQuoteOfTheDay(newGame),
+    [...newGame.team1, ...newGame.team2].map((player) =>
+      upsertPlayerQuoteOfTheDay(player.name, newGame)
+    ),
+  ]);
 
   const newPlayersRatings = calculatePlayersRatings(team1, team2);
   const result = [];

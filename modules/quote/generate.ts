@@ -61,9 +61,13 @@ export const generateQuoteOfTheDay = async (
   return quote.choices[0].message.content ?? OPENAI_DOWN;
 };
 
-export const generatePlayerQuote = async (
-  playerName: string
-): Promise<string> => {
+export const generatePlayerQuote = async ({
+  playerName,
+  newGame,
+}: {
+  playerName: string;
+  newGame?: GameMongo;
+}): Promise<string> => {
   const openAIClient = getOpenAIClient();
   if (!openAIClient) return NO_CONFIG;
 
@@ -71,6 +75,7 @@ export const generatePlayerQuote = async (
     playerName,
     since: dayjs().startOf("day").toDate(),
   });
+  if (newGame) games.push(newGame);
 
   const quote = await openAIClient.chat.completions.create({
     messages: [
