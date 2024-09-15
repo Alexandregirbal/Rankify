@@ -5,6 +5,7 @@ import { GameMongo } from "./types";
 
 const minimalPlayerModelSchema = new Schema<MinimalPlayer>(
   {
+    _id: { type: Schema.Types.ObjectId, required: true },
     name: { type: String, required: true },
     rating: { type: Number, required: true },
     games: { type: Number, required: true },

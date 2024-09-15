@@ -2,7 +2,7 @@
 
 import { calculateTeamsExpectations } from "@/modules/elo/expectations";
 import { TeamScoring } from "@/modules/elo/types";
-import { Player } from "@/modules/player/types";
+import { PlayerMongo } from "@/modules/player/types";
 import { useUIStore } from "@/stores/ui/provider";
 import {
   ChangeEvent,
@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 
-export default function AddGame({ allPlayers }: { allPlayers: Player[] }) {
+export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
   const [team2, setTeam2] = useState<TeamScoring>({ players: [], score: 0 });
   const [team1, setTeam1] = useState<TeamScoring>({ players: [], score: 0 });
   const { isLoading, setIsLoading } = useUIStore((state) => state);

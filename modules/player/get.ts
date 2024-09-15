@@ -4,13 +4,14 @@ import { PlayerMongo } from "./types";
 
 export const getAllPlayers = async (): Promise<PlayerMongo[]> => {
   await mongooseConnect();
-  return playerModel
+  const players = await playerModel
     .find(
       {},
-      { _id: 0, name: 1, ratingHistory: 1, games: 1, rating: 1 },
+      { _id: 1, name: 1, ratingHistory: 1, games: 1, rating: 1 },
       { sort: { rating: -1 } }
     )
-    .lean();
+    .exec();
+  return players.map((player) => player.toObject());
 };
 
 export const getAllPlayersRatingHistories = async (): Promise<
@@ -27,6 +28,13 @@ export const getPlayer = async (
 ): Promise<PlayerMongo | null> => {
   await mongooseConnect();
   return playerModel.findOne({ name: playerName }).lean();
+};
+
+export const getPlayers = async (
+  playerNames: string[]
+): Promise<PlayerMongo[]> => {
+  await mongooseConnect();
+  return playerModel.find({ name: { $in: playerNames } }).lean();
 };
 
 export const getPlayerRatingHistory = async (

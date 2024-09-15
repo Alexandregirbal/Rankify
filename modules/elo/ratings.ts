@@ -34,8 +34,9 @@ export const calculatePlayersRatings = (
     const newRating =
       player.rating + playerKFactor * gamePFactor * resultPart.team1;
     newRatings.push({
-      rating: +newRating.toFixed(0),
+      _id: player._id,
       name: player.name,
+      rating: +newRating.toFixed(0),
       games: player.games + 1,
     });
   }
@@ -45,8 +46,9 @@ export const calculatePlayersRatings = (
     const newRating =
       player.rating + playerKFactor * gamePFactor * resultPart.team2;
     newRatings.push({
-      rating: +newRating.toFixed(0),
+      _id: player._id,
       name: player.name,
+      rating: +newRating.toFixed(0),
       games: player.games + 1,
     });
   }

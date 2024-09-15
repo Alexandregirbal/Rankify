@@ -18,8 +18,9 @@ export const playerSchema = z.object({
 
 export const playerMongoSchema = baseMongoSchema.merge(playerSchema);
 
-export const minimalPlayerSchema = playerSchema
+export const minimalPlayerSchema = playerMongoSchema
   .pick({
+    _id: true,
     name: true,
     rating: true,
     games: true,
