@@ -42,9 +42,10 @@ export async function POST(request: Request) {
     team2: { players: team2Players, score: team2.score },
   });
 
-  Promise.all([
-    await upsertQuoteOfTheDay(newGame),
-    [...newGame.team1, ...newGame.team2].map((player) =>
+  const allPlayer = [...newGame.team1, ...newGame.team2];
+  await Promise.all([
+    upsertQuoteOfTheDay(newGame),
+    ...allPlayer.map((player) =>
       upsertPlayerQuoteOfTheDay(player.name, newGame)
     ),
   ]);

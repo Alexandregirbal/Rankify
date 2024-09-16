@@ -10,7 +10,7 @@ Please read the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file for details on h
 
 ### Requirements
 
-- Node.js >=18.x
+- Node.js >=20.x
 - MongoDB >=7.x
 
 ### Running the development server
