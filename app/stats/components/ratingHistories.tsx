@@ -165,7 +165,9 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
                 </li>
                 <li>
                   <span>Win/Loss ratio:</span>{" "}
-                  <span className="font-bold">{winLossRatio}</span>
+                  <span className="font-bold">
+                    {(winLossRatio * 100).toFixed(0)}%
+                  </span>
                 </li>
                 <li>
                   <span>Best win streak:</span>{" "}
