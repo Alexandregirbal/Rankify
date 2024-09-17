@@ -1,27 +1,18 @@
-import { ZodObjectId } from "@/database/utils";
 import { playerModel } from "../player/model";
 import { gameModel } from "./model";
 
-export const rollbackGame = async (gameId: ZodObjectId) => {
-  const gameToDelete = await gameModel.findOne({ _id: gameId }).lean();
-  if (!gameToDelete) return null;
-
+export const rollbackLastGame = async () => {
   const [lastGamePlayed] = await gameModel
     .find({}, null, { sort: { createdAt: -1 }, limit: 1 })
     .lean();
-  if (!lastGamePlayed) return null;
-
-  if (lastGamePlayed._id.toString() !== gameToDelete._id.toString())
+  if (!lastGamePlayed)
     return {
       success: false,
-      error: "Cannot rollback a game that is not the last one, yet.",
-      details: {
-        lastGamePlayedId: lastGamePlayed._id,
-        gameToDeleteId: gameToDelete._id,
-      },
+      error: "last_game_undefined",
+      details: "Last game played does not exist.",
     };
 
-  const players = [...gameToDelete.team1, ...gameToDelete.team2];
+  const players = [...lastGamePlayed.team1, ...lastGamePlayed.team2];
   const playersIds = players.map((player) => player._id);
 
   const activePlayers = await playerModel
@@ -40,7 +31,7 @@ export const rollbackGame = async (gameId: ZodObjectId) => {
     };
 
   const [deletedGame, ...updatedPlayers] = await Promise.all([
-    gameModel.deleteOne({ _id: gameId }).exec(),
+    gameModel.deleteOne({ _id: lastGamePlayed._id }).exec(),
     ...players.map((player) =>
       playerModel.updateOne(
         { _id: player._id },
@@ -57,7 +48,8 @@ export const rollbackGame = async (gameId: ZodObjectId) => {
 
   return {
     success: true,
-    deletedGame,
-    updatedPlayers,
+    lastGamePlayed,
+    updatedPlayers: updatedPlayers.length,
+    deletedGame: deletedGame.deletedCount,
   };
 };

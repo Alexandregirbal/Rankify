@@ -1,11 +1,9 @@
-import { zodObjectId } from "@/database/utils";
-import { rollbackGame } from "@/modules/game/update";
+import { rollbackLastGame } from "@/modules/game/update";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const putGameBodySchema = z.object({
   updateType: z.literal("rollback"),
-  gameId: zodObjectId,
 });
 
 export async function PUT(request: Request) {
@@ -15,13 +13,13 @@ export async function PUT(request: Request) {
   if (!bodyResult.success) {
     return Response.json({ error: bodyResult.error }, { status: 400 });
   }
-  const { updateType, gameId } = bodyResult.data;
+  const { updateType } = bodyResult.data;
 
   const report: Record<string, any> = {};
   switch (updateType) {
     case "rollback":
-      const rollbackResult = await rollbackGame(gameId);
-      revalidatePath("/layout");
+      const rollbackResult = await rollbackLastGame();
+      revalidatePath("/", "layout");
       report.rollback = rollbackResult;
   }
 
