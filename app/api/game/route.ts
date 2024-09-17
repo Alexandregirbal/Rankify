@@ -38,8 +38,16 @@ export async function POST(request: Request) {
   );
 
   const newGame = await createGame({
-    team1: { players: team1Players, score: team1.score },
-    team2: { players: team2Players, score: team2.score },
+    team1: {
+      players: team1Players,
+      score: team1.score,
+      eliminationFoul: team1.eliminationFoul,
+    },
+    team2: {
+      players: team2Players,
+      score: team2.score,
+      eliminationFoul: team2.eliminationFoul,
+    },
   });
 
   const allPlayer = [...newGame.team1, ...newGame.team2];

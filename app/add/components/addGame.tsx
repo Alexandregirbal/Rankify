@@ -11,9 +11,14 @@ import {
   useState,
 } from "react";
 
+const DEFAULT_TEAM_SCORING: TeamScoring = {
+  players: [],
+  score: 0,
+  eliminationFoul: "",
+};
 export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
-  const [team2, setTeam2] = useState<TeamScoring>({ players: [], score: 0 });
-  const [team1, setTeam1] = useState<TeamScoring>({ players: [], score: 0 });
+  const [team2, setTeam2] = useState<TeamScoring>(DEFAULT_TEAM_SCORING);
+  const [team1, setTeam1] = useState<TeamScoring>(DEFAULT_TEAM_SCORING);
   const { isLoading, setIsLoading } = useUIStore((state) => state);
 
   const handleChangeTeam1Player = (
@@ -52,9 +57,30 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
     setTeam2({ ...team2, score: parseInt(value) });
   };
 
+  const handleChangeEliminationFouls = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    const [eliminationFoulType, team] = name.split("-");
+
+    if (team === "team1") {
+      setTeam1({
+        ...team1,
+        score: 0,
+        eliminationFoul: checked ? eliminationFoulType : "",
+      });
+      setTeam2({ ...team2, score: 1, eliminationFoul: "" });
+    } else {
+      setTeam2({
+        ...team2,
+        score: 0,
+        eliminationFoul: checked ? eliminationFoulType : "",
+      });
+      setTeam1({ ...team1, score: 1, eliminationFoul: " " });
+    }
+  };
+
   const handleReset: MouseEventHandler<HTMLButtonElement> = (e) => {
-    setTeam1({ players: [], score: 0 });
-    setTeam2({ players: [], score: 0 });
+    setTeam1(DEFAULT_TEAM_SCORING);
+    setTeam2(DEFAULT_TEAM_SCORING);
   };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
@@ -154,6 +180,43 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
           />
         </div>
 
+        <div className="collapse collapse-arrow  w-4/5 rounded-md">
+          <input type="checkbox" />
+          <div className="collapse-title font-medium">
+            🎱 - Elimination Fouls
+          </div>
+
+          <div className="collapse-content">
+            <div className="flex justify-between">
+              <div className="form-control flex justify-between flex-col items-center gap-4">
+                <label className="label cursor-pointer">
+                  <span className="label-text mr-2">Black</span>
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    name="black-team1"
+                    checked={team1.eliminationFoul === "black"}
+                    onChange={handleChangeEliminationFouls}
+                  />
+                </label>
+              </div>
+
+              <div className="form-control flex flex-col items-center gap-4">
+                <label className="label cursor-pointer">
+                  <span className="label-text mr-2">Black</span>
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    name="black-team2"
+                    checked={team2.eliminationFoul === "black"}
+                    onChange={handleChangeEliminationFouls}
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="flex justify-evenly">
           <div className="flex flex-col items-center gap-4">
             <span>Score team 1</span>
@@ -161,7 +224,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
               className="input input-bordered w-1/2 focus:outline-accent"
               type="number"
               name="score"
-              defaultValue={team1.score}
+              value={team1.score}
               onChange={handleChangeTeam1Score}
             />
           </div>
@@ -172,7 +235,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
               className="input input-bordered w-1/2 focus:outline-accent"
               type="number"
               name="score"
-              defaultValue={team2.score}
+              value={team2.score}
               onChange={handleChangeTeam2Score}
             />
           </div>

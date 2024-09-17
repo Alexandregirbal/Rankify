@@ -23,6 +23,7 @@ const gameModelSchema = new Schema<GameMongo>(
       type: [minimalPlayerModelSchema],
       required: true,
     },
+    eliminationFoul: { type: String, required: false },
     scores: { type: [Number], required: true },
     winner: { type: String, enum: ["1", "2"], required: true },
   },
