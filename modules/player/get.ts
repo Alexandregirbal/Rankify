@@ -2,11 +2,13 @@ import mongooseConnect from "@/database/config/mongoose";
 import { playerModel } from "./model";
 import { PlayerMongo } from "./types";
 
-export const getAllPlayers = async (): Promise<PlayerMongo[]> => {
+export const getAllPlayers = async (
+  minimumGames: number = 0
+): Promise<PlayerMongo[]> => {
   await mongooseConnect();
   const players = await playerModel
     .find(
-      {},
+      { $or: [{ games: { $gte: minimumGames } }, { games: 0 }] },
       { _id: 1, name: 1, ratingHistory: 1, games: 1, rating: 1 },
       { sort: { rating: -1 } }
     )

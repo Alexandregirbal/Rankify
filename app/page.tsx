@@ -3,8 +3,10 @@ import PlayerComponent from "@/app/components/player/player";
 import { getAllPlayers } from "@/modules/player/get";
 import { getOrCreateQuoteOfTheDay } from "@/modules/quote/get";
 
+const GAMES_TO_BE_RANKABLE = 10;
+
 export default async function Leaderboard() {
-  const allPlayers = await getAllPlayers();
+  const allPlayers = await getAllPlayers(GAMES_TO_BE_RANKABLE);
   const quoteOfTheDay = await getOrCreateQuoteOfTheDay();
 
   return (
