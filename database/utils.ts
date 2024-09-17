@@ -6,6 +6,8 @@ export const zodObjectId = z.custom<ObjectId | string>((value) =>
   ObjectId.isValid(value)
 );
 
+export type ZodObjectId = z.infer<typeof zodObjectId>;
+
 export const baseMongoSchema = z.object({
   _id: zodObjectId,
   createdAt: z.date(),
