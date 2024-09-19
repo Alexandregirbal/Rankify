@@ -13,7 +13,7 @@ export const rollbackLastGame = async () => {
     };
 
   const players = [...lastGamePlayed.team1, ...lastGamePlayed.team2];
-  const playersIds = players.map((player) => player._id);
+  const playersIds = players.map((player) => player.playerId);
 
   const activePlayers = await playerModel
     .countDocuments({ _id: { $in: playersIds } })
@@ -34,7 +34,7 @@ export const rollbackLastGame = async () => {
     gameModel.deleteOne({ _id: lastGamePlayed._id }).exec(),
     ...players.map((player) =>
       playerModel.updateOne(
-        { _id: player._id },
+        { _id: player.playerId },
         {
           $set: {
             rating: player.rating,

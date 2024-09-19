@@ -35,11 +35,11 @@ export const upsertQuoteOfTheDay = async (
 };
 
 export const upsertPlayerQuoteOfTheDay = async (
-  playerName: PlayerMongo["name"],
+  playerId: PlayerMongo["_id"],
   newGame?: GameMongo
 ): Promise<QuoteMongo> => {
   await mongooseConnect();
-  const newQuote = await generatePlayerQuote({ playerName, newGame });
+  const newQuote = await generatePlayerQuote({ playerId, newGame });
 
   const today = dayjs().startOf("day").toDate();
   const tomorrow = dayjs().add(1, "day").startOf("day").toDate();
@@ -47,7 +47,7 @@ export const upsertPlayerQuoteOfTheDay = async (
   const quote = await quoteModel.findOneAndUpdate(
     {
       type: QUOTE_TYPES.player_quote,
-      playerName,
+      playerId,
       createdAt: { $gte: today, $lte: tomorrow },
     },
     { $set: { quote: newQuote }, $push: { quoteHistory: newQuote } },
@@ -58,7 +58,7 @@ export const upsertPlayerQuoteOfTheDay = async (
 
   return quoteModel.create({
     type: QUOTE_TYPES.player_quote,
-    playerName,
+    playerId,
     quote: newQuote,
     quoteHistory: [newQuote],
   });

@@ -1,5 +1,5 @@
 import { calculatePlayersRatings } from "@/modules/elo/ratings";
-import { teamScoringSchema } from "@/modules/elo/types";
+import { teamScoringSchema } from "@/modules/elo/schemas";
 import { createGame } from "@/modules/game/create";
 import { getPlayerGames } from "@/modules/game/get";
 import { getPlayers } from "@/modules/player/get";
@@ -27,59 +27,87 @@ export async function POST(request: Request) {
   }
 
   const { team1, team2 } = requestBodyResult.data;
+
   revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
 
-  const team1Players = await getPlayers(
-    team1.players.map((player) => player.name)
+  const [team1Players, team2Players] = await Promise.all([
+    getPlayers({
+      playersIds: team1.players.map((player) => player.playerId),
+    }),
+    getPlayers({
+      playersIds: team2.players.map((player) => player.playerId),
+    }),
+  ]);
+
+  const team1PlayersIds = team1Players.map((player) => player._id);
+  const team2PlayersIds = team2Players.map((player) => player._id);
+
+  const team1PlayersWithPlayerId = team1Players.map((player) => ({
+    ...player,
+    playerId: player._id,
+  }));
+  const team2PlayersWithPlayerId = team2Players.map((player) => ({
+    ...player,
+    playerId: player._id,
+  }));
+
+  const newPlayersRatings = calculatePlayersRatings(
+    {
+      ...team1,
+      players: team1PlayersWithPlayerId,
+    },
+    {
+      ...team2,
+      players: team2PlayersWithPlayerId,
+    }
   );
 
-  const team2Players = await getPlayers(
-    team2.players.map((player) => player.name)
+  const updatedPlayers = await Promise.all(
+    newPlayersRatings.map((player) =>
+      updatePlayerRating({
+        playerId: player.playerId,
+        newRating: player.newRating,
+      })
+    )
   );
 
   const newGame = await createGame({
     team1: {
-      players: team1Players,
+      players: newPlayersRatings.filter((player) =>
+        team1PlayersIds.includes(player.playerId)
+      ),
       score: team1.score,
       eliminationFoul: team1.eliminationFoul,
     },
     team2: {
-      players: team2Players,
+      players: newPlayersRatings.filter((player) =>
+        team2PlayersIds.includes(player.playerId)
+      ),
       score: team2.score,
       eliminationFoul: team2.eliminationFoul,
     },
   });
 
-  const allPlayer = [...newGame.team1, ...newGame.team2];
   await Promise.all([
     upsertQuoteOfTheDay(newGame),
-    ...allPlayer.map((player) =>
-      upsertPlayerQuoteOfTheDay(player.name, newGame)
+    ...[...team1Players, ...team1Players].map((player) =>
+      upsertPlayerQuoteOfTheDay(player._id, newGame)
     ),
   ]);
 
-  const newPlayersRatings = calculatePlayersRatings(team1, team2);
-
-  const result = [];
-  for (const player of newPlayersRatings) {
-    result.push(updatePlayerRating(player.name, player.rating));
-  }
-
-  await Promise.all(result);
-
   return Response.json(
-    { message: "Game added successfully", details: result },
+    { message: "Game added successfully", details: updatedPlayers },
     { status: 200 }
   );
 }
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const name = url.searchParams.get("playerName");
-  if (!name) {
-    return Response.json({ error: "playerName is required" }, { status: 400 });
+  const playerId = url.searchParams.get("playerId");
+  if (!playerId) {
+    return Response.json({ error: "playerId is required" }, { status: 400 });
   }
 
-  const games = await getPlayerGames({ playerName: name });
+  const games = await getPlayerGames({ playerId });
   return Response.json({ games });
 }

@@ -1,14 +1,14 @@
 import { baseSchemaOptions } from "@/database/utils";
 import { Model, model, models, Schema } from "mongoose";
-import { MinimalPlayer } from "../player/types";
-import { GameMongo } from "./types";
+import { GameMongo, GamePlayer } from "./types";
 
-const minimalPlayerModelSchema = new Schema<MinimalPlayer>(
+const gamePlayerModelSchema = new Schema<GamePlayer>(
   {
-    _id: { type: Schema.Types.ObjectId, required: true },
+    playerId: { type: Schema.Types.ObjectId, ref: "Player", required: true },
     name: { type: String, required: true },
-    rating: { type: Number, required: true },
     games: { type: Number, required: true },
+    rating: { type: Number, required: true },
+    newRating: { type: Number, required: false },
   },
   { _id: false }
 );
@@ -16,11 +16,11 @@ const minimalPlayerModelSchema = new Schema<MinimalPlayer>(
 const gameModelSchema = new Schema<GameMongo>(
   {
     team1: {
-      type: [minimalPlayerModelSchema],
+      type: [gamePlayerModelSchema],
       required: true,
     },
     team2: {
-      type: [minimalPlayerModelSchema],
+      type: [gamePlayerModelSchema],
       required: true,
     },
     eliminationFoul: { type: String, required: false },

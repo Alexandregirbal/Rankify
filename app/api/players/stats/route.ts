@@ -1,3 +1,4 @@
+import { zodObjectId } from "@/database/utils";
 import {
   getNumberOfGamesSince,
   getTotalNumberOfGames,
@@ -10,10 +11,17 @@ import dayjs from "dayjs";
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const playerName = searchParams.get("playerName") || "";
+  const playerId = searchParams.get("playerId") || "";
 
-  if (!playerName) {
-    return Response.json({ error: "playerName is required" }, { status: 400 });
+  if (!playerId) {
+    return Response.json({ error: "playerId is required" }, { status: 400 });
+  }
+
+  if (zodObjectId.safeParse(playerId).success === false) {
+    return Response.json(
+      { error: "playerId is not a valid ObjectId" },
+      { status: 400 }
+    );
   }
 
   const [
@@ -23,14 +31,14 @@ export async function GET(request: Request): Promise<Response> {
     playerRatingHistory,
     playerQuote,
   ] = await Promise.all([
-    getTotalNumberOfGames({ playerName }),
+    getTotalNumberOfGames({ playerId }),
     getNumberOfGamesSince({
       since: dayjs().startOf("day").toDate(),
-      playerName,
+      playerId,
     }),
-    getTotalNumberOfWins(playerName),
-    getPlayerRatingHistory(playerName),
-    getPlayerQuoteOfTheDay(playerName),
+    getTotalNumberOfWins(playerId),
+    getPlayerRatingHistory(playerId),
+    getPlayerQuoteOfTheDay(playerId),
   ]);
 
   return Response.json({

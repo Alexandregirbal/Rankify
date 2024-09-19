@@ -1,4 +1,5 @@
 import mongooseConnect from "@/database/config/mongoose";
+import { ZodObjectId } from "@/database/utils";
 import { playerModel } from "./model";
 import { PlayerMongo } from "./types";
 
@@ -17,34 +18,30 @@ export const getAllPlayers = async (
 };
 
 export const getAllPlayersRatingHistories = async (): Promise<
-  Array<Pick<PlayerMongo, "name" | "ratingHistory">>
+  Array<Pick<PlayerMongo, "_id" | "name" | "ratingHistory">>
 > => {
   await mongooseConnect();
-  return playerModel
-    .find({}, { _id: 0, name: 1, ratingHistory: 1 }, { sort: { rating: -1 } })
-    .lean();
+  const players = await playerModel
+    .find({}, { _id: 1, name: 1, ratingHistory: 1 }, { sort: { rating: -1 } })
+    .exec();
+  return players.map((player) => player.toObject());
 };
 
-export const getPlayer = async (
-  playerName: string
-): Promise<PlayerMongo | null> => {
+export const getPlayers = async ({
+  playersIds,
+}: {
+  playersIds: ZodObjectId[];
+}): Promise<PlayerMongo[]> => {
   await mongooseConnect();
-  return playerModel.findOne({ name: playerName }).lean();
-};
-
-export const getPlayers = async (
-  playerNames: string[]
-): Promise<PlayerMongo[]> => {
-  await mongooseConnect();
-  return playerModel.find({ name: { $in: playerNames } }).lean();
+  return playerModel.find({ _id: { $in: playersIds } }).lean();
 };
 
 export const getPlayerRatingHistory = async (
-  playerName: string
+  playerId: PlayerMongo["_id"]
 ): Promise<PlayerMongo["ratingHistory"]> => {
   await mongooseConnect();
   const player = await playerModel
-    .findOne({ name: playerName }, { _id: 0, ratingHistory: 1 })
+    .findOne({ _id: playerId }, { _id: 0, ratingHistory: 1 })
     .lean();
 
   return player ? player.ratingHistory : [];

@@ -1,7 +1,7 @@
 "use client";
 
-import { Game } from "@/modules/game/types";
-import { MinimalPlayer, Player } from "@/modules/player/types";
+import { Game, GamePlayer } from "@/modules/game/types";
+import { Player, PlayerMongo } from "@/modules/player/types";
 import { useEffect, useState } from "react";
 
 const GameHistoryPart = ({
@@ -9,7 +9,7 @@ const GameHistoryPart = ({
   score,
   isOwnedTeam,
 }: {
-  players: Array<MinimalPlayer>;
+  players: Array<GamePlayer>;
   score: number;
   isOwnedTeam: boolean;
 }) => {
@@ -65,12 +65,12 @@ const GamesSkeleton = () => {
   );
 };
 
-const HistoryComponent = ({ player }: { player: Player }) => {
+const HistoryComponent = ({ player }: { player: PlayerMongo }) => {
   const [games, setGames] = useState<Game[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/game?playerName=${player.name}`, { method: "GET" })
+    fetch(`/api/game?playerId=${player._id}`, { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
         setGames(data.games);
@@ -78,7 +78,7 @@ const HistoryComponent = ({ player }: { player: Player }) => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [player.name]);
+  }, [player._id]);
 
   return (
     <div className="flex flex-col gap-4 px-2">

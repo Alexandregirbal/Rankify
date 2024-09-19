@@ -1,7 +1,7 @@
 "use client";
 
 import { DEFAULT_RATING } from "@/modules/elo/constants";
-import { Player } from "@/modules/player/types";
+import { Player, PlayerMongo } from "@/modules/player/types";
 import { getExtremeRankings } from "@/modules/player/utils";
 import { type ChartData } from "chart.js";
 import "chart.js/auto";
@@ -12,10 +12,10 @@ import { PlayerQuoteSkeleton, PlayerStatsSkeleton } from "./skeletons";
 
 const NEAREST_MULTIPLE = 50;
 
-type PlayerNameSelect = Pick<Player, "name">["name"] | "all";
+type PlayerNameSelect = Player["name"] | "all";
 
 type RatingHistoriesProps = {
-  players: Array<Pick<Player, "name" | "ratingHistory">>;
+  players: Array<Pick<PlayerMongo, "_id" | "name" | "ratingHistory">>;
 };
 
 export default function RatingHistories({ players }: RatingHistoriesProps) {
@@ -75,13 +75,24 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     setNameInput(selectedName);
 
     if (selectedName === "all") return;
+
+    const selectedPlayer = players.find(
+      (player) => player.name === selectedName
+    );
+    if (!selectedPlayer) return;
+
     setIsLoading(true);
     const response = await fetch(
-      `api/players/stats?playerName=${selectedName}`,
+      `api/players/stats?playerId=${selectedPlayer._id}`,
       {
         method: "GET",
       }
     ).then((res) => res.json());
+
+    if (response.error) {
+      setIsLoading(false);
+      return;
+    }
 
     setTotalNumberOfGamesPlayed(response.totalNumberOfGamesPlayed);
     setNumberOfGamesPlayedToday(response.numberOfGamesPlayedToday);

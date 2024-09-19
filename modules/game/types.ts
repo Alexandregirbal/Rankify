@@ -1,5 +1,14 @@
 import { z } from "zod";
-import { gameMongoSchema, gameSchema } from "./schemas";
+import {
+  gameMongoSchema,
+  gamePlayerSchema,
+  gameSchema,
+  teamSchema,
+} from "./schemas";
+
+export type GamePlayer = z.infer<typeof gamePlayerSchema>;
+
+export type Team = z.infer<typeof teamSchema>;
 
 export type Game = z.infer<typeof gameSchema>;
 

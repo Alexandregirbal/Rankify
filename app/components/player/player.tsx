@@ -2,7 +2,7 @@
 
 import { EightBallIconFull } from "@/app/components/ui/icons/8BallIconFull";
 import Modal from "@/app/components/ui/modal";
-import { Player } from "@/modules/player/types";
+import { PlayerMongo } from "@/modules/player/types";
 import dynamic from "next/dynamic";
 import LastGameStats from "./lastGameStats";
 
@@ -25,7 +25,7 @@ export default function PlayerComponent({
   player,
   ranking,
 }: {
-  player: Player;
+  player: PlayerMongo;
   ranking: number;
 }) {
   return (

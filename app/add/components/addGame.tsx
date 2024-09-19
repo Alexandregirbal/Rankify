@@ -30,7 +30,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
     if (!player) return;
 
     const newTeam1Players = [...team1.players];
-    newTeam1Players[index] = player;
+    newTeam1Players[index] = { ...player, playerId: player._id };
     setTeam1({ ...team1, players: newTeam1Players });
   };
 
@@ -43,7 +43,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
     if (!player) return;
 
     const newTeam2Players = [...team2.players];
-    newTeam2Players[index] = player;
+    newTeam2Players[index] = { ...player, playerId: player._id };
     setTeam2({ ...team2, players: newTeam2Players });
   };
 

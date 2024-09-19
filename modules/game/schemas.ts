@@ -1,6 +1,15 @@
-import { baseMongoSchema } from "@/database/utils";
+import { baseMongoSchema, zodObjectId } from "@/database/utils";
 import { z } from "zod";
-import { teamSchema } from "../player/schemas";
+
+export const gamePlayerSchema = z.object({
+  playerId: zodObjectId,
+  name: z.string(),
+  games: z.number(),
+  rating: z.number(),
+  newRating: z.number().optional(),
+});
+
+export const teamSchema = z.array(gamePlayerSchema);
 
 export const gameSchema = z.object({
   team1: teamSchema,

@@ -4,7 +4,7 @@ import { playerModel } from "./model";
 import { PlayerMongo } from "./types";
 
 export const createPlayer = async (
-  playerName: string
+  playerName: PlayerMongo["name"]
 ): Promise<PlayerMongo> => {
   await mongooseConnect();
 

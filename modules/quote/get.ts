@@ -29,13 +29,13 @@ export const getOrCreateQuoteOfTheDay = async (): Promise<
 };
 
 export const getPlayerQuoteOfTheDay = async (
-  playerName: PlayerMongo["name"]
+  playerId: PlayerMongo["_id"]
 ): Promise<QuoteMongo["quote"]> => {
   await mongooseConnect();
   const quote = await quoteModel
     .findOne({
       type: QUOTE_TYPES.player_quote,
-      playerName,
+      playerId,
       createdAt: { $gte: dayjs().startOf("day").toDate() },
     })
     .lean();

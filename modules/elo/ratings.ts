@@ -1,9 +1,8 @@
 // https://towardsdatascience.com/developing-an-elo-based-data-driven-ranking-system-for-2v2-multiplayer-games-7689f7d42a53
 
-import { MinimalPlayer } from "../player/types";
 import { calculateTeamsExpectations } from "./expectations";
 import { calculateKFactor, calculatePFactor } from "./factors";
-import { TeamScoring } from "./types";
+import { NewPlayerRating, TeamScoring } from "./types";
 
 const calculateResultPart = (
   team1: TeamScoring,
@@ -24,20 +23,19 @@ const calculateResultPart = (
 export const calculatePlayersRatings = (
   team1: TeamScoring,
   team2: TeamScoring
-): Array<MinimalPlayer> => {
+): Array<NewPlayerRating> => {
   const resultPart = calculateResultPart(team1, team2);
   const gamePFactor = calculatePFactor(team1.score, team2.score);
-  const newRatings = [];
+  const newRatings: NewPlayerRating[] = [];
 
   for (const player of team1.players) {
     const playerKFactor = calculateKFactor(player.games);
     const newRating =
       player.rating + playerKFactor * gamePFactor * resultPart.team1;
     newRatings.push({
-      _id: player._id,
-      name: player.name,
-      rating: +newRating.toFixed(0),
+      ...player,
       games: player.games + 1,
+      newRating: +newRating.toFixed(0),
     });
   }
 
@@ -46,10 +44,9 @@ export const calculatePlayersRatings = (
     const newRating =
       player.rating + playerKFactor * gamePFactor * resultPart.team2;
     newRatings.push({
-      _id: player._id,
-      name: player.name,
-      rating: +newRating.toFixed(0),
+      ...player,
       games: player.games + 1,
+      newRating: +newRating.toFixed(0),
     });
   }
 

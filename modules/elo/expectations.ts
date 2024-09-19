@@ -1,6 +1,6 @@
 // https://towardsdatascience.com/developing-an-elo-based-data-driven-ranking-system-for-2v2-multiplayer-games-7689f7d42a53
 
-import { MinimalPlayer } from "@/modules/player/types";
+import { GamePlayer } from "@/modules/game/types";
 import { POWER, THRESHOLD } from "./constants";
 
 export const calculateExpectation = (
@@ -17,8 +17,8 @@ export const calculateExpectation = (
  * The number of players in teams can differ (it can be 1v1, 2v1, 3v2 4v4, etc.)
  */
 export const calculateTeamsExpectations = (
-  team1: MinimalPlayer[],
-  team2: MinimalPlayer[]
+  team1: GamePlayer[],
+  team2: GamePlayer[]
 ): {
   team1: number;
   team2: number;

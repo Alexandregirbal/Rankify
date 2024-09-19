@@ -1,3 +1,4 @@
+import { ZodObjectId } from "@/database/utils";
 import { getEnvConfigs } from "@/envConfig";
 import dayjs from "dayjs";
 import OpenAI from "openai";
@@ -62,17 +63,17 @@ export const generateQuoteOfTheDay = async (
 };
 
 export const generatePlayerQuote = async ({
-  playerName,
+  playerId,
   newGame,
 }: {
-  playerName: string;
+  playerId: ZodObjectId;
   newGame?: GameMongo;
 }): Promise<string> => {
   const openAIClient = getOpenAIClient();
   if (!openAIClient) return NO_CONFIG;
 
   const games = await getPlayerGames({
-    playerName,
+    playerId,
     since: dayjs().startOf("day").toDate(),
   });
   if (newGame) games.push(newGame);

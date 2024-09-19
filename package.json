@@ -11,7 +11,9 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "next lint"
+    "lint": "next lint",
+    "ts-check": "tsc --noEmit",
+    "validate": "npm run ts-check && npm run lint && npm run test"
   },
   "dependencies": {
     "@next/env": "^14.2.5",
