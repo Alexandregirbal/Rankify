@@ -46,6 +46,10 @@ export const calculatePlayerStreak: CalculatePlayerStreak = ({
   };
 };
 
+export const displayNumberWithSign = (number: number): string => {
+  return number > 0 ? `+${number}` : number.toString();
+};
+
 export const getLastGamePoints = ({
   ratingHistory,
 }: {
@@ -58,7 +62,7 @@ export const getLastGamePoints = ({
     ratingHistory[ratingHistory.length - 2].rating
   ).toFixed(2);
 
-  return lastGamePoints > 0 ? `+${lastGamePoints}` : lastGamePoints.toString();
+  return displayNumberWithSign(lastGamePoints);
 };
 
 export const getExtremeRankings = (ratingHistory: Player["ratingHistory"]) => {

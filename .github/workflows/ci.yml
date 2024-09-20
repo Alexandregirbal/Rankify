@@ -3,7 +3,7 @@ name: Rankify CI
 on:
   workflow_dispatch: # Manual trigger
   pull_request:
-    types: [opened, review_requested]
+    types: [opened, review_requested, synchronize]
     branches:
       - main
 
