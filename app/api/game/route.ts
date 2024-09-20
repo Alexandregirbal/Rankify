@@ -2,7 +2,7 @@ import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { teamScoringSchema } from "@/modules/elo/schemas";
 import { createGame } from "@/modules/game/create";
 import { getPlayerGames } from "@/modules/game/get";
-import { getPlayers } from "@/modules/player/get";
+import { getPlayer, getPlayers } from "@/modules/player/get";
 import { updatePlayerRating } from "@/modules/player/update";
 import {
   upsertPlayerQuoteOfTheDay,
@@ -107,7 +107,11 @@ export async function GET(request: Request) {
   if (!playerId) {
     return Response.json({ error: "playerId is required" }, { status: 400 });
   }
+  const player = await getPlayer({ playerId });
+  if (!player) {
+    return Response.json({ error: "player not found" }, { status: 404 });
+  }
 
-  const games = await getPlayerGames({ playerId });
+  const games = await getPlayerGames({ playerId, playerName: player.name });
   return Response.json({ games });
 }

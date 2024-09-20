@@ -3,6 +3,11 @@ import { ZodObjectId } from "@/database/utils";
 import { playerModel } from "./model";
 import { PlayerMongo } from "./types";
 
+export const getPlayer = async ({ playerId }: { playerId: ZodObjectId }) => {
+  await mongooseConnect();
+  return playerModel.findOne({ _id: playerId }).lean();
+};
+
 export const getAllPlayers = async (
   minimumGames: number = 0
 ): Promise<PlayerMongo[]> => {

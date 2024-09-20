@@ -4,14 +4,14 @@ import {
   getTotalNumberOfGames,
   getTotalNumberOfWins,
 } from "@/modules/game/get";
-import { getPlayerRatingHistory } from "@/modules/player/get";
+import { getPlayer } from "@/modules/player/get";
 import { getExtremPlayerStreak } from "@/modules/player/utils";
 import { getPlayerQuoteOfTheDay } from "@/modules/quote/get";
 import dayjs from "dayjs";
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const playerId = searchParams.get("playerId") || "";
+  const playerId = searchParams.get("playerId");
 
   if (!playerId) {
     return Response.json({ error: "playerId is required" }, { status: 400 });
@@ -24,20 +24,24 @@ export async function GET(request: Request): Promise<Response> {
     );
   }
 
+  const player = await getPlayer({ playerId });
+  if (!player) {
+    return Response.json({ error: "player not found" }, { status: 404 });
+  }
+
   const [
     totalNumberOfGamesPlayed,
     numberOfGamesPlayedToday,
     totalNumberOfWins,
-    playerRatingHistory,
     playerQuote,
   ] = await Promise.all([
-    getTotalNumberOfGames({ playerId }),
+    getTotalNumberOfGames({ playerId, playerName: player.name }),
     getNumberOfGamesSince({
       since: dayjs().startOf("day").toDate(),
       playerId,
+      playerName: player.name,
     }),
-    getTotalNumberOfWins(playerId),
-    getPlayerRatingHistory(playerId),
+    getTotalNumberOfWins(playerId, player.name),
     getPlayerQuoteOfTheDay(playerId),
   ]);
 
@@ -46,7 +50,7 @@ export async function GET(request: Request): Promise<Response> {
     numberOfGamesPlayedToday,
     winLossRatio: +(totalNumberOfWins / totalNumberOfGamesPlayed).toFixed(2),
     extremeStreaks: getExtremPlayerStreak({
-      ratingHistory: playerRatingHistory,
+      ratingHistory: player.ratingHistory,
     }),
     playerQuote,
   });
