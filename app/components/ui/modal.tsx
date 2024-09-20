@@ -43,7 +43,7 @@ export default function Modal({
           onClick={closeModal}
         >
           <div
-            className="modal-box h-3/4 flex flex-col"
+            className="modal-box h-3/4 flex flex-col p-2"
             onClick={(e) => e.stopPropagation()}
           >
             <div
