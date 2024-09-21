@@ -1,12 +1,19 @@
 import { baseSchemaOptions } from "@/database/utils";
 import { Model, model, models, Schema } from "mongoose";
-import { PlayerMongo } from "./types";
+import { PlayerMongo, RatingHistory, Trophy } from "./types";
 
-const ratingHistoryModelSchema = new Schema<
-  PlayerMongo["ratingHistory"][number]
->(
+const ratingHistoryModelSchema = new Schema<RatingHistory>(
   {
     date: { type: Date, required: true },
+    rating: { type: Number, required: true },
+  },
+  { _id: false }
+);
+
+const trophyModelSchema = new Schema<Trophy>(
+  {
+    season: { type: Number, required: true },
+    ranking: { type: Number, required: true },
     rating: { type: Number, required: true },
   },
   { _id: false }
@@ -21,6 +28,10 @@ const playerModelSchema = new Schema<PlayerMongo>(
       type: [ratingHistoryModelSchema],
       required: true,
       default: [],
+    },
+    trophies: {
+      type: [trophyModelSchema],
+      required: false,
     },
   },
   baseSchemaOptions
