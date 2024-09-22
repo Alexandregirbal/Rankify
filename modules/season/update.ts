@@ -10,10 +10,6 @@ export const endActiveSeason = async (leaderboard: Leaderboard[]) => {
     { $set: { state: "ended", leaderboard } },
     { upsert: true, new: true }
   );
-  console.log(
-    `~~~~~ Girbalog | endActiveSeason | updateResult: `,
-    updateResult
-  );
 
   return updateResult;
 };
