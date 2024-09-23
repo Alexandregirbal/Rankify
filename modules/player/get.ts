@@ -13,11 +13,9 @@ export const getAllPlayers = async (
 ): Promise<PlayerMongo[]> => {
   await mongooseConnect();
   const players = await playerModel
-    .find(
-      { $or: [{ games: { $gte: minimumGames } }, { games: 0 }] },
-      { _id: 1, name: 1, ratingHistory: 1, games: 1, rating: 1 },
-      { sort: { rating: -1 } }
-    )
+    .find({ $or: [{ games: { $gte: minimumGames } }, { games: 0 }] }, null, {
+      sort: { rating: -1 },
+    })
     .exec();
   return players.map((player) => player.toObject());
 };

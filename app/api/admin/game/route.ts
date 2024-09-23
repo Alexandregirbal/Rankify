@@ -1,3 +1,4 @@
+import { getEnvConfigs } from "@/envConfig";
 import { rollbackLastGame } from "@/modules/game/update";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -7,6 +8,11 @@ const putGameBodySchema = z.object({
 });
 
 export async function PUT(request: Request) {
+  const token = request.headers.get("x-admin-token");
+  if (token !== getEnvConfigs().ADMIN_TOKEN) {
+    return Response.json({ error: "Invalid admin token" }, { status: 401 });
+  }
+
   const body = await request.json();
 
   const bodyResult = putGameBodySchema.safeParse(body);

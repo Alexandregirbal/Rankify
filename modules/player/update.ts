@@ -1,6 +1,8 @@
 import mongooseConnect from "@/database/config/mongoose";
 import { ZodObjectId } from "@/database/utils";
+import { DEFAULT_RATING } from "../elo/constants";
 import { playerModel } from "./model";
+import { PlayerMongo } from "./types";
 
 export const updatePlayerRating = async ({
   playerId,
@@ -10,6 +12,7 @@ export const updatePlayerRating = async ({
   newRating: number;
 }) => {
   await mongooseConnect();
+
   const player = await playerModel.findOneAndUpdate(
     { _id: playerId },
     {
@@ -20,4 +23,44 @@ export const updatePlayerRating = async ({
     { new: true }
   );
   return player;
+};
+
+export const updatePlayerTrophies = async ({
+  player,
+  ranking,
+  seasonNumber,
+}: {
+  player: PlayerMongo;
+  ranking: number;
+  seasonNumber: number;
+}) => {
+  await mongooseConnect();
+
+  const updateResult = await playerModel.updateOne(
+    { _id: player._id },
+    {
+      $push: {
+        trophies: { season: seasonNumber, ranking, rating: player.rating },
+      },
+    }
+  );
+
+  return updateResult;
+};
+
+export const resetPlayersRating = async () => {
+  await mongooseConnect();
+
+  const updatedResult = await playerModel.updateMany(
+    {},
+    {
+      $set: {
+        rating: DEFAULT_RATING,
+        games: 0,
+        ratingHistory: [{ rating: DEFAULT_RATING, date: new Date() }],
+      },
+    },
+    { new: true }
+  );
+  return updatedResult;
 };
