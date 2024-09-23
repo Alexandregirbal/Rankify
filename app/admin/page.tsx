@@ -2,11 +2,16 @@
 
 import { useUIStore } from "@/stores/ui/provider";
 import { useState } from "react";
+import useLocalStorage, { localStorageKeys } from "../hooks/useLocalStorage";
 
 export default function AdminPage() {
   const { setIsLoading } = useUIStore((state) => state);
 
-  const [localAdminToken, setLocalAdminToken] = useState<string>("");
+  // const [localAdminToken, setLocalAdminToken] = useState<string>("");
+  const [adminToken, setAdminToken] = useLocalStorage<string>({
+    key: localStorageKeys.adminToken,
+    initialValue: "",
+  });
   const [rollbackResult, setRollbackResult] = useState<any>();
   const [endSeasonResult, setEndSeasonResult] = useState<any>();
 
@@ -16,10 +21,9 @@ export default function AdminPage() {
       method: "PUT",
       body: JSON.stringify({
         updateType: "rollback",
-        gameId: "62d0c839e9d2e3a1d5e5d6e7",
       }),
       headers: {
-        "x-admin-token": localAdminToken,
+        "x-admin-token": adminToken,
       },
     })
       .then((res) => res.json())
@@ -39,7 +43,7 @@ export default function AdminPage() {
         updateType: "end_season",
       }),
       headers: {
-        "x-admin-token": localAdminToken,
+        "x-admin-token": adminToken,
       },
     })
       .then((res) => res.json())
@@ -58,8 +62,8 @@ export default function AdminPage() {
         type="text"
         className="input input-bordered"
         placeholder="Enter admin token here"
-        value={localAdminToken}
-        onChange={(e) => setLocalAdminToken(e.target.value)}
+        value={adminToken}
+        onChange={(e) => setAdminToken(e.target.value)}
       />
 
       <ul className="w-full flex flex-col gap-4">
