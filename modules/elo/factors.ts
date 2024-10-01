@@ -7,7 +7,8 @@ import { BASE_K_FACTOR } from "./constants";
  * 20\ \cdot\ \left(1+\frac{1}{1+\frac{x}{10}}\right)
  */
 export const calculateKFactor = (games: number): number => {
-  const result = BASE_K_FACTOR * (1 + 1 / (1 + games / 10));
+  // const result = BASE_K_FACTOR * (1 + 1 / (1 + games / 10));
+  const result = BASE_K_FACTOR; // En vrai pas besoin avec le nombre de joueurs et le matchmaking inexistant
   return Number(result.toFixed(2));
 };
 
