@@ -56,12 +56,12 @@ export default function PlayerComponent({
 }) {
   return (
     <Modal
-      className="flex rounded-xl items-center gap-1 border bg-neutral-content border-base-300 p-4 w-full"
+      className="flex rounded-xl items-center gap-2 border bg-neutral-content border-base-300 p-4 w-full"
       content={<HistoryComponent player={player} />}
       title={player.name}
     >
       <>
-        <div className=" w-8 text-3xl text-center">{ranking}</div>
+        <div className="text-3xl text-center">{ranking}</div>
         <div className="flex justify-between grow">
           <div className="text-xl flex gap-2 items-center">
             {getRankingIcon(ranking)} {getNameWithTrophies(player)}
