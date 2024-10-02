@@ -44,6 +44,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
       fill: false,
       borderColor: stringToColor(player.name),
       tension: 0.1,
+      cubicInterpolationMode: "monotone" as const,
     };
   });
 
