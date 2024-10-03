@@ -29,6 +29,20 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     loss: 0,
   });
   const [playerQuote, setPlayerQuote] = useState("");
+  const [mostLossesAgainst, setMostLossesAgainst] = useState<{
+    name: string;
+    count: number;
+    totalScore: { for: number; against: number };
+  } | null>(null);
+  const [mostWinsAgainst, setMostWinsAgainst] = useState<{
+    name: string;
+    count: number;
+    totalScore: { for: number; against: number };
+  } | null>(null);
+  const [mostFrequentTeammate, setMostFrequentTeammate] = useState<{
+    name: string;
+    count: number;
+  } | null>(null);
 
   const filterPlayers = (player: RatingHistoriesProps["players"][number]) => {
     return (
@@ -100,6 +114,9 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     setWinLossRatio(response.winLossRatio);
     setExtremeStreaks(response.extremeStreaks);
     setPlayerQuote(response.playerQuote);
+    setMostLossesAgainst(response.mostLossesAgainst);
+    setMostWinsAgainst(response.mostWinsAgainst);
+    setMostFrequentTeammate(response.mostFrequentTeammate);
     setIsLoading(false);
   };
 
@@ -189,6 +206,35 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
                   <span>Worst loss streak:</span>{" "}
                   <span className="font-bold">{extremeStreaks.loss}</span>
                 </li>
+                {mostLossesAgainst && (
+                  <li>
+                    <span>Most losses:</span>{" "}
+                    <span className="font-bold">
+                      {mostLossesAgainst.name} ({mostLossesAgainst.count}{" "}
+                      losses, {mostLossesAgainst.totalScore.against} -{" "}
+                      {mostLossesAgainst.totalScore.for})
+                    </span>
+                  </li>
+                )}
+                {mostWinsAgainst && (
+                  <li>
+                    <span>Most wins:</span>{" "}
+                    <span className="font-bold">
+                      {mostWinsAgainst.name} ({mostWinsAgainst.count} wins,{" "}
+                      {mostWinsAgainst.totalScore.for}-
+                      {mostWinsAgainst.totalScore.against})
+                    </span>
+                  </li>
+                )}
+                {mostFrequentTeammate && (
+                  <li>
+                    <span>Most frequent teammate:</span>{" "}
+                    <span className="font-bold">
+                      {mostFrequentTeammate.name} ({mostFrequentTeammate.count}{" "}
+                      games)
+                    </span>
+                  </li>
+                )}
               </>
             )}
           </ul>

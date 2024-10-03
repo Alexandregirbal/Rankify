@@ -2,6 +2,7 @@ import mongooseConnect from "@/database/config/mongoose";
 import { PlayerMongo } from "../player/types";
 import { gameModel } from "./model";
 import { GameMongo } from "./types";
+import { ObjectId, PipelineStage } from "mongoose";
 
 export const getTotalNumberOfGames = async ({
   playerId,
@@ -112,4 +113,148 @@ export const getPlayerGames = async ({
       { sort: { createdAt: -1 } }
     )
     .lean();
+};
+
+export const getMostGamesAgainst = async (
+  playerName: PlayerMongo["name"],
+  type: "wins" | "losses"
+): Promise<{
+  name: string;
+  count: number;
+  totalScore: { for: number; against: number };
+} | null> => {
+  await mongooseConnect();
+
+  const pipeline = [
+    {
+      $match: {
+        $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
+      },
+    },
+    {
+      $addFields: {
+        playerTeam: {
+          $cond: [{ $in: [playerName, "$team1.name"] }, "$team1", "$team2"],
+        },
+        opponentTeam: {
+          $cond: [{ $in: [playerName, "$team1.name"] }, "$team2", "$team1"],
+        },
+        playerTeamNumber: {
+          $cond: [{ $in: [playerName, "$team1.name"] }, "1", "2"],
+        },
+      },
+    },
+    {
+      $project: {
+        opponentTeam: 1,
+        playerWon: { $eq: ["$winner", "$playerTeamNumber"] },
+        playerScore: {
+          $cond: [
+            { $eq: ["$playerTeamNumber", "1"] },
+            { $arrayElemAt: ["$scores", 0] },
+            { $arrayElemAt: ["$scores", 1] },
+          ],
+        },
+        opponentScore: {
+          $cond: [
+            { $eq: ["$playerTeamNumber", "1"] },
+            { $arrayElemAt: ["$scores", 1] },
+            { $arrayElemAt: ["$scores", 0] },
+          ],
+        },
+      },
+    },
+    {
+      $unwind: "$opponentTeam",
+    },
+    {
+      $group: {
+        _id: "$opponentTeam.name",
+        name: { $first: "$opponentTeam.name" },
+        wins: { $sum: { $cond: ["$playerWon", 1, 0] } },
+        losses: { $sum: { $cond: ["$playerWon", 0, 1] } },
+        totalGames: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { [type]: -1, totalGames: -1 },
+    },
+    {
+      $limit: 1,
+    },
+  ] as const;
+
+  // @ts-expect-error
+  const result = await gameModel.aggregate(pipeline);
+
+  if (result.length === 0) return null;
+
+  return {
+    name: result[0].name,
+    count: result[0][type],
+    totalScore: {
+      for: type === "wins" ? result[0].wins : result[0].losses,
+      against: type === "wins" ? result[0].losses : result[0].wins,
+    },
+  };
+};
+
+export const getMostWinsAgainst = (playerName: PlayerMongo["name"]) =>
+  getMostGamesAgainst(playerName, "wins");
+
+export const getMostLossesAgainst = (playerName: PlayerMongo["name"]) =>
+  getMostGamesAgainst(playerName, "losses");
+
+export const getMostFrequentTeammate = async (
+  playerName: PlayerMongo["name"]
+): Promise<{
+  name: string;
+  count: number;
+} | null> => {
+  await mongooseConnect();
+
+  const pipeline = [
+    {
+      $match: {
+        $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
+      },
+    },
+    {
+      $addFields: {
+        playerTeam: {
+          $cond: [{ $in: [playerName, "$team1.name"] }, "$team1", "$team2"],
+        },
+      },
+    },
+    {
+      $unwind: "$playerTeam",
+    },
+    {
+      $match: {
+        "playerTeam.name": { $ne: playerName },
+      },
+    },
+    {
+      $group: {
+        _id: "$playerTeam.name",
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { count: -1 },
+    },
+    {
+      $limit: 1,
+    },
+  ];
+
+  // @ts-expect-error
+  const result = await gameModel.aggregate(pipeline);
+
+  if (result.length === 0) return null;
+
+  return {
+    name: result[0]._id,
+    count: result[0].count,
+  };
 };
