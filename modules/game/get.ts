@@ -2,7 +2,9 @@ import mongooseConnect from "@/database/config/mongoose";
 import { PlayerMongo } from "../player/types";
 import { gameModel } from "./model";
 import { GameMongo } from "./types";
-import { ObjectId, PipelineStage } from "mongoose";
+import { PipelineStage } from "mongoose";
+import { log } from "console";
+import { ObjectId } from "mongodb";
 
 export const getTotalNumberOfGames = async ({
   playerId,
@@ -116,7 +118,7 @@ export const getPlayerGames = async ({
 };
 
 export const getMostGamesAgainst = async (
-  playerName: PlayerMongo["name"],
+  playerId: PlayerMongo["_id"],
   type: "wins" | "losses"
 ): Promise<{
   name: string;
@@ -125,22 +127,35 @@ export const getMostGamesAgainst = async (
 } | null> => {
   await mongooseConnect();
 
-  const pipeline = [
+  const playerIdObjectId = new ObjectId(playerId);
+
+  const pipeline: PipelineStage[] = [
     {
       $match: {
-        $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
+        $or: [
+          { "team1.playerId": playerIdObjectId },
+          { "team2.playerId": playerIdObjectId },
+        ],
       },
     },
     {
       $addFields: {
         playerTeam: {
-          $cond: [{ $in: [playerName, "$team1.name"] }, "$team1", "$team2"],
+          $cond: [
+            { $in: [playerIdObjectId, "$team1.playerId"] },
+            "$team1",
+            "$team2",
+          ],
         },
         opponentTeam: {
-          $cond: [{ $in: [playerName, "$team1.name"] }, "$team2", "$team1"],
+          $cond: [
+            { $in: [playerIdObjectId, "$team1.playerId"] },
+            "$team2",
+            "$team1",
+          ],
         },
         playerTeamNumber: {
-          $cond: [{ $in: [playerName, "$team1.name"] }, "1", "2"],
+          $cond: [{ $in: [playerIdObjectId, "$team1.playerId"] }, "1", "2"],
         },
       },
     },
@@ -169,7 +184,7 @@ export const getMostGamesAgainst = async (
     },
     {
       $group: {
-        _id: "$opponentTeam.name",
+        _id: "$opponentTeam.playerId",
         name: { $first: "$opponentTeam.name" },
         wins: { $sum: { $cond: ["$playerWon", 1, 0] } },
         losses: { $sum: { $cond: ["$playerWon", 0, 1] } },
@@ -184,7 +199,6 @@ export const getMostGamesAgainst = async (
     },
   ] as const;
 
-  // @ts-expect-error
   const result = await gameModel.aggregate(pipeline);
 
   if (result.length === 0) return null;
@@ -199,30 +213,39 @@ export const getMostGamesAgainst = async (
   };
 };
 
-export const getMostWinsAgainst = (playerName: PlayerMongo["name"]) =>
-  getMostGamesAgainst(playerName, "wins");
+export const getMostWinsAgainst = (playerId: PlayerMongo["_id"]) =>
+  getMostGamesAgainst(playerId, "wins");
 
-export const getMostLossesAgainst = (playerName: PlayerMongo["name"]) =>
-  getMostGamesAgainst(playerName, "losses");
+export const getMostLossesAgainst = (playerId: PlayerMongo["_id"]) =>
+  getMostGamesAgainst(playerId, "losses");
 
 export const getMostFrequentTeammate = async (
-  playerName: PlayerMongo["name"]
+  playerId: PlayerMongo["_id"]
 ): Promise<{
   name: string;
   count: number;
 } | null> => {
   await mongooseConnect();
 
-  const pipeline = [
+  const playerIdObjectId = new ObjectId(playerId);
+
+  const pipeline: PipelineStage[] = [
     {
       $match: {
-        $or: [{ "team1.name": playerName }, { "team2.name": playerName }],
+        $or: [
+          { "team1.playerId": playerIdObjectId },
+          { "team2.playerId": playerIdObjectId },
+        ],
       },
     },
     {
       $addFields: {
         playerTeam: {
-          $cond: [{ $in: [playerName, "$team1.name"] }, "$team1", "$team2"],
+          $cond: [
+            { $in: [playerIdObjectId, "$team1.playerId"] },
+            "$team1",
+            "$team2",
+          ],
         },
       },
     },
@@ -231,12 +254,13 @@ export const getMostFrequentTeammate = async (
     },
     {
       $match: {
-        "playerTeam.name": { $ne: playerName },
+        "playerTeam.playerId": { $ne: playerIdObjectId },
       },
     },
     {
       $group: {
-        _id: "$playerTeam.name",
+        _id: "$playerTeam.playerId",
+        name: { $first: "$playerTeam.name" },
         count: { $sum: 1 },
       },
     },
@@ -248,13 +272,12 @@ export const getMostFrequentTeammate = async (
     },
   ];
 
-  // @ts-expect-error
   const result = await gameModel.aggregate(pipeline);
 
   if (result.length === 0) return null;
 
   return {
-    name: result[0]._id,
+    name: result[0].name,
     count: result[0].count,
   };
 };

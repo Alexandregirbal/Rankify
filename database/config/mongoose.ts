@@ -37,6 +37,12 @@ const mongooseConnect = async (): Promise<MongooseConnectReturnType> => {
   if (cached.mongooseConnection && cached.mongoClient) {
     return cached as MongooseConnectReturnType;
   }
+  if (process.env.NODE_ENV === "test") {
+    return {
+      mongooseConnection: {} as Mongoose,
+      mongoClient: {} as MongoClient,
+    };
+  }
 
   if (!cached._mongoosePromise) {
     const opts = {
@@ -53,9 +59,9 @@ const mongooseConnect = async (): Promise<MongooseConnectReturnType> => {
   try {
     const mongooseConnection = await cached._mongoosePromise;
     if (!mongooseConnection) throw new Error("No connection returned");
-
     cached.mongooseConnection = mongooseConnection;
-    cached.mongoClient = mongooseConnection.connection.getClient();
+    cached.mongoClient =
+      mongooseConnection.connection.getClient() as unknown as MongoClient;
   } catch (e) {
     cached._mongoosePromise = null;
     throw e;

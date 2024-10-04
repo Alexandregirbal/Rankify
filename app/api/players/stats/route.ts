@@ -49,9 +49,9 @@ export async function GET(request: Request): Promise<Response> {
     }),
     getTotalNumberOfWins(playerId, player.name),
     getPlayerQuoteOfTheDay(playerId),
-    getMostLossesAgainst(player.name),
-    getMostWinsAgainst(player.name),
-    getMostFrequentTeammate(player.name),
+    getMostLossesAgainst(playerId),
+    getMostWinsAgainst(playerId),
+    getMostFrequentTeammate(playerId),
   ]);
 
   return Response.json({
