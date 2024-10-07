@@ -2,6 +2,9 @@ import mongooseConnect from "@/database/config/mongoose";
 import { PlayerMongo } from "../player/types";
 import { gameModel } from "./model";
 import { GameMongo } from "./types";
+import { PipelineStage } from "mongoose";
+import { log } from "console";
+import { ObjectId } from "mongodb";
 
 export const getTotalNumberOfGames = async ({
   playerId,
@@ -112,4 +115,169 @@ export const getPlayerGames = async ({
       { sort: { createdAt: -1 } }
     )
     .lean();
+};
+
+export const getMostGamesAgainst = async (
+  playerId: PlayerMongo["_id"],
+  type: "wins" | "losses"
+): Promise<{
+  name: string;
+  count: number;
+  totalScore: { for: number; against: number };
+} | null> => {
+  await mongooseConnect();
+
+  const playerIdObjectId = new ObjectId(playerId);
+
+  const pipeline: PipelineStage[] = [
+    {
+      $match: {
+        $or: [
+          { "team1.playerId": playerIdObjectId },
+          { "team2.playerId": playerIdObjectId },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        playerTeam: {
+          $cond: [
+            { $in: [playerIdObjectId, "$team1.playerId"] },
+            "$team1",
+            "$team2",
+          ],
+        },
+        opponentTeam: {
+          $cond: [
+            { $in: [playerIdObjectId, "$team1.playerId"] },
+            "$team2",
+            "$team1",
+          ],
+        },
+        playerTeamNumber: {
+          $cond: [{ $in: [playerIdObjectId, "$team1.playerId"] }, "1", "2"],
+        },
+      },
+    },
+    {
+      $project: {
+        opponentTeam: 1,
+        playerWon: { $eq: ["$winner", "$playerTeamNumber"] },
+        playerScore: {
+          $cond: [
+            { $eq: ["$playerTeamNumber", "1"] },
+            { $arrayElemAt: ["$scores", 0] },
+            { $arrayElemAt: ["$scores", 1] },
+          ],
+        },
+        opponentScore: {
+          $cond: [
+            { $eq: ["$playerTeamNumber", "1"] },
+            { $arrayElemAt: ["$scores", 1] },
+            { $arrayElemAt: ["$scores", 0] },
+          ],
+        },
+      },
+    },
+    {
+      $unwind: "$opponentTeam",
+    },
+    {
+      $group: {
+        _id: "$opponentTeam.playerId",
+        name: { $first: "$opponentTeam.name" },
+        wins: { $sum: { $cond: ["$playerWon", 1, 0] } },
+        losses: { $sum: { $cond: ["$playerWon", 0, 1] } },
+        totalGames: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { [type]: -1, totalGames: -1 },
+    },
+    {
+      $limit: 1,
+    },
+  ] as const;
+
+  const result = await gameModel.aggregate(pipeline);
+
+  if (result.length === 0) return null;
+
+  return {
+    name: result[0].name,
+    count: result[0][type],
+    totalScore: {
+      for: type === "wins" ? result[0].wins : result[0].losses,
+      against: type === "wins" ? result[0].losses : result[0].wins,
+    },
+  };
+};
+
+export const getMostWinsAgainst = (playerId: PlayerMongo["_id"]) =>
+  getMostGamesAgainst(playerId, "wins");
+
+export const getMostLossesAgainst = (playerId: PlayerMongo["_id"]) =>
+  getMostGamesAgainst(playerId, "losses");
+
+export const getMostFrequentTeammate = async (
+  playerId: PlayerMongo["_id"]
+): Promise<{
+  name: string;
+  count: number;
+} | null> => {
+  await mongooseConnect();
+
+  const playerIdObjectId = new ObjectId(playerId);
+
+  const pipeline: PipelineStage[] = [
+    {
+      $match: {
+        $or: [
+          { "team1.playerId": playerIdObjectId },
+          { "team2.playerId": playerIdObjectId },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        playerTeam: {
+          $cond: [
+            { $in: [playerIdObjectId, "$team1.playerId"] },
+            "$team1",
+            "$team2",
+          ],
+        },
+      },
+    },
+    {
+      $unwind: "$playerTeam",
+    },
+    {
+      $match: {
+        "playerTeam.playerId": { $ne: playerIdObjectId },
+      },
+    },
+    {
+      $group: {
+        _id: "$playerTeam.playerId",
+        name: { $first: "$playerTeam.name" },
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $sort: { count: -1 },
+    },
+    {
+      $limit: 1,
+    },
+  ];
+
+  const result = await gameModel.aggregate(pipeline);
+
+  if (result.length === 0) return null;
+
+  return {
+    name: result[0].name,
+    count: result[0].count,
+  };
 };
