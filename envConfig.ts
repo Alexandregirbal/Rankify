@@ -8,6 +8,7 @@ const envSchema = z.object({
   MONGODB_URI: z.string().url(),
   GAMES_TO_BE_RANKABLE: z.coerce.number().default(10),
   ADMIN_TOKEN: z.string().default("admin_token"),
+  VERCEL_URL: z.string().default("http://localhost:3000"),
   OPENAI_API_KEY: z.string().optional(),
 });
 

@@ -1,14 +1,12 @@
+import { getEnvConfigs } from "@/envConfig";
 import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { teamScoringSchema } from "@/modules/elo/schemas";
 import { createGame } from "@/modules/game/create";
 import { getPlayerGames } from "@/modules/game/get";
 import { getPlayer, getPlayers } from "@/modules/player/get";
 import { updatePlayerRating } from "@/modules/player/update";
-import {
-  upsertPlayerQuoteOfTheDay,
-  upsertQuoteOfTheDay,
-} from "@/modules/quote/update";
 import { revalidatePath } from "next/cache";
+import { join } from "path";
 import { z } from "zod";
 
 const requestBodySchema = z.object({
@@ -27,8 +25,6 @@ export async function POST(request: Request) {
   }
 
   const { team1, team2 } = requestBodyResult.data;
-
-  revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
 
   const [team1Players, team2Players] = await Promise.all([
     getPlayers({
@@ -62,6 +58,8 @@ export async function POST(request: Request) {
     }
   );
 
+  revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
+
   const updatedPlayers = await Promise.all(
     newPlayersRatings.map((player) =>
       updatePlayerRating({
@@ -71,7 +69,7 @@ export async function POST(request: Request) {
     )
   );
 
-  const newGame = await createGame({
+  await createGame({
     team1: {
       players: newPlayersRatings.filter((player) =>
         team1PlayersIds.includes(player.playerId)
@@ -88,12 +86,13 @@ export async function POST(request: Request) {
     },
   });
 
-  await Promise.all([
-    upsertQuoteOfTheDay(newGame),
-    ...[...team1Players, ...team1Players].map((player) =>
-      upsertPlayerQuoteOfTheDay(player._id, newGame)
-    ),
-  ]);
+  const playerIds = [...team1Players, ...team1Players].map(
+    (player) => player._id
+  );
+  fetch(join(getEnvConfigs().VERCEL_URL, "/api/quote"), {
+    method: "PUT",
+    body: JSON.stringify(playerIds),
+  });
 
   return Response.json(
     { message: "Game added successfully", details: updatedPlayers },
