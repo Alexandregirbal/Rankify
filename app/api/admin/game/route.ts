@@ -24,7 +24,10 @@ export async function PUT(request: Request) {
   const report: Record<string, any> = {};
   switch (updateType) {
     case "rollback":
+      console.log(`~~~~~ Girbalog | PUT | rollback: `, updateType);
       const rollbackResult = await rollbackLastGame();
+      console.log(`~~~~~ Girbalog | PUT | rollbackResult: `, rollbackResult);
+
       revalidatePath("/", "layout");
       report.rollback = rollbackResult;
   }

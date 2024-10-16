@@ -8,6 +8,7 @@ import { updatePlayerRating } from "@/modules/player/update";
 import { revalidatePath } from "next/cache";
 import { join } from "path";
 import { z } from "zod";
+import { buildFullUrl } from "../utils";
 
 const requestBodySchema = z.object({
   team1: teamScoringSchema,
@@ -89,7 +90,9 @@ export async function POST(request: Request) {
   const playerIds = [...team1Players, ...team1Players].map(
     (player) => player._id
   );
-  fetch(join(getEnvConfigs().VERCEL_URL, "/api/quote"), {
+
+  const urlWithoutProtocol = join(getEnvConfigs().VERCEL_URL, "/api/quote");
+  fetch(buildFullUrl(urlWithoutProtocol), {
     method: "PUT",
     body: JSON.stringify(playerIds),
   });
