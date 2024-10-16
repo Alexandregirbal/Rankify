@@ -8,12 +8,16 @@ const putGameBodySchema = z.object({
 });
 
 export async function PUT(request: Request) {
+  console.log(`~~~~~ Girbalog | PUT | START: `);
   const token = request.headers.get("x-admin-token");
+  console.log(`~~~~~ Girbalog | PUT | token: `, token);
+
   if (token !== getEnvConfigs().ADMIN_TOKEN) {
     return Response.json({ error: "Invalid admin token" }, { status: 401 });
   }
 
   const body = await request.json();
+  console.log(`~~~~~ Girbalog | PUT | body: `, body);
 
   const bodyResult = putGameBodySchema.safeParse(body);
   if (!bodyResult.success) {
