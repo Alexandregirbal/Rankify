@@ -8,7 +8,9 @@ export default async function AddPage() {
 
   return (
     <div className="h-full flex flex-col items-center gap-4 p-4 overflow-y-scroll">
-      <AddGame allPlayers={allPlayers} />
+      <AddGame
+        allPlayers={allPlayers.sort((a, b) => (a.name > b.name ? 1 : -1))}
+      />
     </div>
   );
 }
