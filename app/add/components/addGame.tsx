@@ -1,6 +1,7 @@
 "use client";
 
 import { calculateTeamsExpectations } from "@/modules/elo/expectations";
+import { estimateBaseRating } from "@/modules/elo/ratings";
 import { TeamScoring } from "@/modules/elo/types";
 import { PlayerMongo } from "@/modules/player/types";
 import { useUIStore } from "@/stores/ui/provider";
@@ -109,6 +110,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
   );
 
   const expectations = calculateTeamsExpectations(team1.players, team2.players);
+  const baseRating = estimateBaseRating(team1.players, team2.players);
 
   return (
     <>
@@ -169,7 +171,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
 
         <div
           className="tooltip w-full"
-          data-tip={`Expected score of team 1 : ${(
+          data-tip={`Pourcentage de chances que l'équipe 1 gagne : ${(
             (expectations?.team1 ?? 0.5) * 100
           ).toFixed(0)} %`}
         >
@@ -179,6 +181,17 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
             max="100"
           />
         </div>
+        {baseRating ? (
+          <>
+            <span>{"Points en jeu pour une victoire"}</span>
+            <div className="w-full flex flex-row justify-evenly">
+              <p>{baseRating.team1wins}</p>
+              <p>{baseRating.team2wins}</p>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
 
         <div className="collapse collapse-arrow  w-4/5 rounded-md">
           <input type="checkbox" />

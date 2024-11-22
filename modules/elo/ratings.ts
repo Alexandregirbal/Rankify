@@ -1,8 +1,9 @@
 // https://towardsdatascience.com/developing-an-elo-based-data-driven-ranking-system-for-2v2-multiplayer-games-7689f7d42a53
 
+import { BASE_K_FACTOR } from "./constants";
 import { calculateTeamsExpectations } from "./expectations";
 import { calculateKFactor, calculatePFactor } from "./factors";
-import { NewPlayerRating, TeamScoring } from "./types";
+import { MinimalPlayer, NewPlayerRating, TeamScoring } from "./types";
 
 const calculateResultPart = (
   team1: TeamScoring,
@@ -51,4 +52,37 @@ export const calculatePlayersRatings = (
   }
 
   return newRatings;
+};
+
+export const estimateBaseRating = (
+  playersTeam1: MinimalPlayer[],
+  playersTeam2: MinimalPlayer[]
+): { team1wins: number; team2wins: number } | null => {
+  if (!playersTeam1.length || !playersTeam2.length) return null;
+
+  const resultPartTeam1Wins = calculateResultPart(
+    {
+      players: playersTeam1,
+      score: 1,
+    },
+    {
+      players: playersTeam2,
+      score: 0,
+    }
+  );
+  const resultPartTeam2Wins = calculateResultPart(
+    {
+      players: playersTeam1,
+      score: 0,
+    },
+    {
+      players: playersTeam2,
+      score: 1,
+    }
+  );
+
+  return {
+    team1wins: +(BASE_K_FACTOR * resultPartTeam1Wins.team1).toFixed(0),
+    team2wins: +(BASE_K_FACTOR * resultPartTeam2Wins.team2).toFixed(0),
+  };
 };
