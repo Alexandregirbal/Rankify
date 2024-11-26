@@ -183,7 +183,9 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
         </div>
         {baseRating ? (
           <>
-            <span>{"Points en jeu pour une victoire"}</span>
+            <span>
+              {"Points en jeu pour une victoire avec 1 point d'écart)"}
+            </span>
             <div className="w-full flex flex-row justify-evenly">
               <p>{baseRating.team1wins}</p>
               <p>{baseRating.team2wins}</p>
