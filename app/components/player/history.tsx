@@ -15,7 +15,7 @@ const GameHistoryPart = ({
 }) => {
   return (
     <div
-      className={`h-full flex-1 flex flex-col justify-center items-${isLeft ? "start" : "end"} gap-y-0.5`}
+      className={`h-full flex-1 flex flex-col justify-center ${isLeft ? "items-start" : "items-end"} gap-y-0.5`}
     >
       {players.map(({ name }, key) => <span key={key}>{name}</span>)}
     </div>
