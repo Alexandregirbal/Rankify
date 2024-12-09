@@ -9,8 +9,6 @@ import { QueueIcon } from "../ui/icons/QueueIcon";
 import LastGameStats from "./lastGameStats";
 import { TrophyIcon } from "../ui/icons/TrophyIcon";
 
-const HistoryComponent = dynamic(() => import("./history"));
-
 export const getTrophyIcon = (ranking: number, key: number) => {
   switch (ranking) {
     case 1:
@@ -19,19 +17,6 @@ export const getTrophyIcon = (ranking: number, key: number) => {
       return <QueueIcon key={key} className="fill-silver -mr-4" />;
     case 3:
       return <QueueIcon key={key} className="fill-bronze -mr-4" />;
-    default:
-      return <></>;
-  }
-};
-
-const getRankingIcon = (ranking: number) => {
-  switch (ranking) {
-    case 1:
-      return <EightBallIconFull className="fill-gold" />;
-    case 2:
-      return <EightBallIconFull className="fill-silver" />;
-    case 3:
-      return <EightBallIconFull className="fill-bronze " />;
     default:
       return <></>;
   }
