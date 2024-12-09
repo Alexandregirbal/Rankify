@@ -31,19 +31,19 @@ export default function AddPlayer() {
     <>
       <form
         onSubmit={handleSubmitNewPlayer}
-        className="flex items-center gap-4 "
+        className="flex items-center gap-4 w-full p-1"
       >
         <input
-          className="input input-bordered w-full focus:outline-accent"
+          className="input input-bordered w-full focus:outline-accent h-12"
           type="text"
           name="name"
-          placeholder="Add a player"
+          placeholder="Pseudo"
           onChange={handleChangeNewPlayerName}
         />
         <button
           type="submit"
           disabled={isLoading}
-          className="btn btn-accent text-white w-20"
+          className="btn btn-outline btn-accent"
         >
           {isLoading ? <span className="loading text-accent"></span> : "Add"}
         </button>

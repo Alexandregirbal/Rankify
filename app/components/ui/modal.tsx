@@ -39,7 +39,7 @@ export default function Modal({
         <dialog
           open={isOpen}
           ref={dialogRef}
-          className="modal bg-accent bg-opacity-20"
+          className="modal bg-neutral bg-opacity-20"
           onClick={closeModal}
         >
           <div

@@ -7,7 +7,7 @@ export default function GlobalLoading() {
   if (isLoading) {
     return (
       <div className="z-10 h-full w-full absolute top-0 left-0 flex flex-col items-center justify-center gap-4 p-4 overflow-y-scroll bg-opacity-20 backdrop-blur-sm bg-accent">
-        <span className="loading loading-ring loading-lg text-white"></span>
+        <span className="loading loading-lg loading-spinner text-accent"></span>
       </div>
     );
   }

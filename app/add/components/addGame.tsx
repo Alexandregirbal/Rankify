@@ -11,6 +11,7 @@ import {
   MouseEventHandler,
   useState,
 } from "react";
+import TextCircle from "./textCircle";
 
 const DEFAULT_TEAM_SCORING: TeamScoring = {
   players: [],
@@ -20,33 +21,52 @@ const DEFAULT_TEAM_SCORING: TeamScoring = {
 export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
   const [team2, setTeam2] = useState<TeamScoring>(DEFAULT_TEAM_SCORING);
   const [team1, setTeam1] = useState<TeamScoring>(DEFAULT_TEAM_SCORING);
+  const [teamRadioValue, setTeamRadioValue] = useState(true);
   const { isLoading, setIsLoading } = useUIStore((state) => state);
 
-  const handleChangeTeam1Player = (
-    e: ChangeEvent<HTMLSelectElement>,
-    index: number
+  const addPlayerTeam1Player = (
+    player: PlayerMongo,
   ) => {
-    const { value } = e.target;
-    const player = allPlayers.find((p) => p.name === value);
-    if (!player) return;
-
-    const newTeam1Players = [...team1.players];
-    newTeam1Players[index] = { ...player, playerId: player._id };
-    setTeam1({ ...team1, players: newTeam1Players });
+    setTeam1((oldState) => ({ ...oldState, players: [...oldState.players, { ...player, playerId: player._id }] }));
   };
 
-  const handleChangeTeam2Player = (
-    e: ChangeEvent<HTMLSelectElement>,
-    index: number
+  const addPlayerTeam2Player = (
+    player: PlayerMongo,
   ) => {
-    const { value } = e.target;
-    const player = allPlayers.find((p) => p.name === value);
-    if (!player) return;
-
-    const newTeam2Players = [...team2.players];
-    newTeam2Players[index] = { ...player, playerId: player._id };
-    setTeam2({ ...team2, players: newTeam2Players });
+    setTeam2((oldState) => ({ ...oldState, players: [...oldState.players, { ...player, playerId: player._id }] }));
   };
+
+  const removeTeam1Player = (
+    player: PlayerMongo
+  ) => {
+    setTeam1((oldState) => {
+      const { players } = oldState;
+
+      const oldPlayerIndex = players.findIndex(p => p.playerId === player._id);
+      if (oldPlayerIndex === -1) return oldState;
+
+      const newPlayer = [...oldState.players];
+      newPlayer.splice(oldPlayerIndex, 1);
+
+      return { ...oldState, players: newPlayer };
+    });
+  }
+
+  const removeTeam2Player = (
+    player: PlayerMongo
+  ) => {
+    setTeam2((oldState) => {
+      const { players } = oldState;
+
+      const oldPlayerIndex = players.findIndex(p => p.playerId === player._id);
+      if (oldPlayerIndex === -1) return oldState;
+
+      const newPlayer = [...oldState.players];
+      newPlayer.splice(oldPlayerIndex, 1);
+
+      return { ...oldState, players: newPlayer };
+    });
+  }
 
   const handleChangeTeam1Score = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -84,9 +104,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
     setTeam2(DEFAULT_TEAM_SCORING);
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
     setIsLoading(true);
     fetch("/api/game", {
       method: "POST",
@@ -113,153 +131,169 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
   const baseRating = estimateBaseRating(team1.players, team2.players);
 
   return (
-    <>
-      <h1 className="text-center text-2xl">Add a game result</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center gap-4"
-      >
-        <div className="flex w-full justify-evenly">
-          <div className="flex flex-col items-center gap-4 w-1/3">
-            Team 1
-            {new Array(team1.players.length + 1).fill(null).map((_, i) => (
-              <select
-                className="select w-full border border-slate-300 focus:outline-accent"
-                onChange={(e) => handleChangeTeam1Player(e, i)}
-                key={i}
-                defaultValue={`Player ${i + 1}`}
-              >
-                <option disabled>Player {i + 1}</option>
-                {allPlayers.map((player) => (
-                  <option
-                    disabled={[...team1.players, ...team2.players]
-                      .map((p) => p.name)
-                      .includes(player.name)}
-                    key={player.name}
-                  >
-                    {player.name}
-                  </option>
-                ))}
-              </select>
-            ))}
+    <div className="w-full flex flex-col items-center text-center gap-10">
+      <h1 className="text-center text-2xl">New game</h1>
+      <div className="flex flex-col gap-2 w-full">
+        <div className="collapse bg-neutral collapse-arrow">
+          <input type="radio" onClick={() => setTeamRadioValue(true)} name="my-accordion-2" defaultChecked />
+          <div className="collapse-title text-xl font-medium flex flex-col gap-4">
+            <>
+              <div className="flex flex-row items-center gap-4">
+                <TextCircle text="1" size="10" />
+                <span>Players</span>
+              </div>
+              {!!team1.players.length && !!team2.players.length && !teamRadioValue &&
+                <div className="w-full flex flex-row justify-around">
+                  <div className="flex flex-col gap-2">
+                    <span className="text-base text-accent">
+                      Team 1
+                    </span>
+                    <div className="flex flex-col gap-1">
+                      {team1.players.map((player, key) => {
+                        return (
+                          <span key={key} className="text-sm">
+                            {player.name}
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-base text-accent">
+                      Team 2
+                    </span>
+                    <div className="flex flex-col gap-1">
+                      {team2.players.map((player, key) => {
+                        return (
+                          <span key={key} className="text-sm">
+                            {player.name}
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              }
+            </>
           </div>
-
-          <div className="flex flex-col items-center gap-4 w-1/3">
-            Team 2
-            {new Array(team2.players.length + 1).fill(null).map((_, i) => (
-              <select
-                className="select w-full border border-slate-300 focus:outline-accent"
-                onChange={(e) => handleChangeTeam2Player(e, i)}
-                key={i}
-                defaultValue={`Player ${i + 1}`}
-              >
-                <option disabled>Player {i + 1}</option>
-                {allPlayers.map((player) => (
-                  <option
-                    disabled={[...team1.players, ...team2.players]
-                      .map((p) => p.name)
-                      .includes(player.name)}
-                    key={player.name}
-                  >
-                    {player.name}
-                  </option>
-                ))}
-              </select>
-            ))}
-          </div>
-        </div>
-
-        <div
-          className="tooltip w-full"
-          data-tip={`Pourcentage de chances que l'équipe 1 gagne : ${(
-            (expectations?.team1 ?? 0.5) * 100
-          ).toFixed(0)} %`}
-        >
-          <progress
-            className="progress progress-accent w-10/12"
-            value={(expectations?.team1 ?? 0.5) * 100}
-            max="100"
-          />
-        </div>
-        {baseRating ? (
-          <>
-            <span>
-              {"Points en jeu pour une victoire avec 1 point d'écart)"}
-            </span>
-            <div className="w-full flex flex-row justify-evenly">
-              <p>{baseRating.team1wins}</p>
-              <p>{baseRating.team2wins}</p>
-            </div>
-          </>
-        ) : (
-          ""
-        )}
-
-        <div className="collapse collapse-arrow  w-4/5 rounded-md">
-          <input type="checkbox" />
-          <div className="collapse-title font-medium">
-            🎱 - Elimination Fouls
-          </div>
-
           <div className="collapse-content">
-            <div className="flex justify-between">
-              <div className="form-control flex justify-between flex-col items-center gap-4">
-                <label className="label cursor-pointer">
-                  <span className="label-text mr-2">Black</span>
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    name="black-team1"
-                    checked={team1.eliminationFoul === "black"}
-                    onChange={handleChangeEliminationFouls}
-                  />
-                </label>
-              </div>
+            <div className="w-full flex flex-row h-96 justify-between">
+              <div className="flex flex-1 flex-col overflow-y-scroll">
+                {
+                  allPlayers.map((player, key) => {
+                    const isSelected = team1.players.some(team1Player => team1Player.playerId === player._id);
 
-              <div className="form-control flex flex-col items-center gap-4">
-                <label className="label cursor-pointer">
-                  <span className="label-text mr-2">Black</span>
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    name="black-team2"
-                    checked={team2.eliminationFoul === "black"}
-                    onChange={handleChangeEliminationFouls}
-                  />
-                </label>
+                    return (
+                      <div key={key} onClick={() => isSelected ? removeTeam1Player(player) : addPlayerTeam1Player(player)} className={`flex flex-col h-10`}>
+                        <span className={`text-sm ${isSelected ? "text-accent" : ""}`}>{player.name}</span>
+                      </div>
+                    );
+                  })
+                }
+              </div>
+              <div className="divider divider-horizontal">VS</div>
+              <div className="flex flex-1 flex-col overflow-y-scroll">
+                {
+                  allPlayers.map((player, key) => {
+                    const isSelected = team2.players.some(team2Player => team2Player.playerId === player._id);
+
+                    return (
+                      <div key={key} onClick={() => isSelected ? removeTeam2Player(player) : addPlayerTeam2Player(player)} className="flex flex-col h-10">
+                        <span className={`text-sm ${isSelected ? "text-accent" : ""}`}>{player.name}</span>
+                      </div>
+                    );
+                  })
+                }
               </div>
             </div>
           </div>
         </div>
-
-        <div className="flex justify-evenly">
-          <div className="flex flex-col items-center gap-4">
-            <span>Score team 1</span>
-            <input
-              className="input input-bordered w-1/2 focus:outline-accent"
-              type="number"
-              name="score"
-              value={team1.score}
-              onChange={handleChangeTeam1Score}
-            />
+        <div className="collapse bg-neutral collapse-arrow">
+          <input type="radio" name="my-accordion-2" onClick={() => setTeamRadioValue(false)} />
+          <div className="collapse-title text-xl font-medium flex flex-row items-center gap-4">
+            <TextCircle text="2" size="10" />
+            Results
           </div>
+          <div className="collapse-content">
+            <>
+              <div
+                className="tooltip w-full"
+                data-tip={`Pourcentage de chances que l'équipe 1 gagne : ${(
+                  (expectations?.team1 ?? 0.5) * 100
+                ).toFixed(0)} %`}
+              >
+                <progress
+                  className="progress progress-accent w-10/12"
+                  value={(expectations?.team1 ?? 0.5) * 100}
+                  max="100"
+                />
+              </div>
+              <div className="collapse collapse-arrow  w-4/5 rounded-md">
+                <input type="checkbox" />
+                <div className="collapse-title font-medium">
+                  🎱 - Elimination Fouls
+                </div>
 
-          <div className="flex flex-col items-center gap-4">
-            <span>Score team 2</span>
-            <input
-              className="input input-bordered w-1/2 focus:outline-accent"
-              type="number"
-              name="score"
-              value={team2.score}
-              onChange={handleChangeTeam2Score}
-            />
+                <div className="collapse-content">
+                  <div className="flex justify-between">
+                    <div className="form-control flex justify-between flex-col items-center gap-4">
+                      <label className="label cursor-pointer">
+                        <span className="label-text mr-2">Black</span>
+                        <input
+                          type="checkbox"
+                          className="checkbox"
+                          name="black-team1"
+                          checked={team1.eliminationFoul === "black"}
+                          onChange={handleChangeEliminationFouls}
+                        />
+                      </label>
+                    </div>
+
+                    <div className="form-control flex flex-col items-center gap-4">
+                      <label className="label cursor-pointer">
+                        <span className="label-text mr-2">Black</span>
+                        <input
+                          type="checkbox"
+                          className="checkbox"
+                          name="black-team2"
+                          checked={team2.eliminationFoul === "black"}
+                          onChange={handleChangeEliminationFouls}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-evenly">
+                <div className="flex flex-col items-center gap-4">
+                  <span>Score team 1</span>
+                  <input
+                    className="input input-bordered w-1/2 focus:outline-accent"
+                    type="number"
+                    name="score"
+                    value={team1.score}
+                    onChange={handleChangeTeam1Score}
+                  />
+                </div>
+
+                <div className="flex flex-col items-center gap-4">
+                  <span>Score team 2</span>
+                  <input
+                    className="input input-bordered w-1/2 focus:outline-accent"
+                    type="number"
+                    name="score"
+                    value={team2.score}
+                    onChange={handleChangeTeam2Score}
+                  />
+                </div>
+              </div>
+            </>
           </div>
         </div>
-
-        <div className="flex gap-4">
+        <div className="w-full flex flex-row justify-center items-center gap-4 my-2">
           <button
             className="btn btn-outline btn-error"
-            type="reset"
             onClick={handleReset}
           >
             Reset
@@ -267,13 +301,13 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
 
           <button
             disabled={isSubmitDisabled}
-            type="submit"
             className="btn btn-accent text-white"
+            onClick={handleSubmit}
           >
             Add
           </button>
         </div>
-      </form>
-    </>
+      </div>
+    </div>
   );
 }
