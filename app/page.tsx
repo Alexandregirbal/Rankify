@@ -22,7 +22,7 @@ export default async function Leaderboard() {
     <div className="h-full w-full gap-10 bg-gray-950 flex flex-col overflow-y-scroll py-4" data-theme="mytheme">
       <div>
         <h1 className="text-center text-2xl">Leaderboard</h1>
-        <p className="text-center">{quoteOfTheDay}</p>
+        <p className="text-center text-sm">{quoteOfTheDay}</p>
       </div>
       <div className="flex flex-row mx-8 justify-between">
         {getFirstThree().map((el, key) => {
