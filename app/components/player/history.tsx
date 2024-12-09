@@ -8,20 +8,16 @@ import { useEffect, useState } from "react";
 
 const GameHistoryPart = ({
   players,
-  isOwnedTeam,
+  isLeft,
 }: {
   players: Array<GamePlayer>;
-  isOwnedTeam: boolean;
+  isLeft: boolean;
 }) => {
   return (
     <div
-      className={`grow h-full flex flex-col justify-center items-center gap-1 ${
-        isOwnedTeam ? "font-bold" : ""
-      }`}
+      className={`h-full flex-1 flex flex-col justify-center items-${isLeft ? "start" : "end"} gap-y-0.5`}
     >
-      <div className=" overflow-y-auto w-24">
-        {players.map((player) => player.name).join(", ")}
-      </div>
+      {players.map(({ name }, key) => <span key={key}>{name}</span>)}
     </div>
   );
 };
@@ -45,36 +41,23 @@ const GameHistory = ({
     : null;
 
   return (
-    <div className="h-14 flex gap-2 items-center justify-stretch text-center bg-neutral-content rounded-lg">
-      <div className="h-full flex items-center gap-1">
-        <div
-          className={`w-3 h-full rounded-l-lg ${
-            isWinner ? "bg-green-400" : "bg-red-500"
-          }`}
-        ></div>
-        {pointsReward ? (
-          <p className="text-sm">{displayNumberWithSign(pointsReward)}</p>
-        ) : (
-          <></>
-        )}
+    <div className="relative flex flex-row rounded-xl justify-around items-center gap-2 border bg-neutral border-base-300 py-2 px-8 w-full">
+      <GameHistoryPart players={game.team1} isLeft={true} />
+      <div className="text-center flex-col items-center justify-center">
+        <p className={`font-bold text-xl ${isWinner ? "text-success" : "text-error"}`}>{`${game.scores[0]} - ${game.scores[1]}`}</p>
+        <p className="text-xs">{dayjs(game.createdAt).format("DD MMM")}</p>
       </div>
-      <div className="h-full grow flex justify-center items-center gap-1">
-        <GameHistoryPart players={game.team1} isOwnedTeam={isInTeam1} />
-        <div className="w-16 text-center">
-          <p>{`${game.scores[0]} - ${game.scores[1]}`}</p>
-          <p className="text-xs">{dayjs(game.createdAt).format("DD MMM")}</p>
-        </div>
-        <GameHistoryPart players={game.team2} isOwnedTeam={!isInTeam1} />
-      </div>
+      <GameHistoryPart players={game.team2} isLeft={false} />
+      {!!pointsReward && <p className={`absolute top-1 right-2 text-sm text-primary`}>{displayNumberWithSign(pointsReward)}</p>}
     </div>
-  );
+  )
 };
 
 const GamesSkeleton = () => {
   return (
     <div className="flex flex-col gap-4 items-center">
       {new Array(5).fill(null).map((_, i) => (
-        <div key={i} className="skeleton w-full h-14"></div>
+        <div key={i} className="skeleton w-full h-16"></div>
       ))}
     </div>
   );

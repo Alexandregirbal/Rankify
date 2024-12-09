@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { QueueIcon } from "../ui/icons/QueueIcon";
 import LastGameStats from "./lastGameStats";
 import { getNameWithTrophies } from "./player";
+import Link from "next/link";
 
 export const getTrophyIcon = (ranking: number, key: number) => {
     console.log("RANKGing: ", ranking)
@@ -41,7 +42,7 @@ const getAvatarContent = (ranking: number) => {
     return texts[ranking - 1] || ""
 }
 
-export default function Avatar({
+export default function PodiumPlayer({
     player,
     ranking
 }: {
@@ -49,32 +50,24 @@ export default function Avatar({
     ranking: number;
 }) {
     const icon = getRankingIcon(ranking);
-    const { name, trophies } = player;
+    const { name, _id } = player;
 
     return (
-        <div className="flex flex-col text-center items-center gap-6" style={{ marginTop: ranking === 1 ? 0 : 20 }}>
+        <Link href={`/playerdetail/${_id}`} className="flex flex-col text-center items-center gap-1" style={{ marginTop: ranking === 1 ? 0 : 20 }}>
             <div className="flex flex-col text-center items-center gap-2">
                 <div className="avatar placeholder">
-                    <div className="bg-neutral text-neutral-content w-20 rounded-xl">
+                    <div className="bg-neutral text-neutral-content w-16 rounded-xl">
                         <span className="text-2xl">{getAvatarContent(ranking)}</span>
                     </div>
                 </div>
                 <span className="text-xl">{name}</span>
             </div>
             <div className="flex flex-col items-center gap-2">
-                {icon}
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center text-xs">
                     <span>{player.rating}</span>
                     <LastGameStats ratingHistory={player.ratingHistory} />
                 </div>
             </div>
-            {/* {
-                !!trophies?.length &&
-                <div className="flex w-full flex-col text-center">
-                    <span>Prize:</span>
-                    {trophies.map((trophy, index) => getTrophyIcon(trophy.ranking, index))}
-                </div>
-            } */}
-        </div>
+        </Link>
     );
 }

@@ -19,6 +19,7 @@
     "@next/env": "^14.2.5",
     "chart.js": "^4.4.4",
     "dayjs": "^1.11.13",
+    "lottie-react": "^2.4.0",
     "lucide-react": "^0.427.0",
     "mongoose": "^8.6.1",
     "next": "14.2.5",

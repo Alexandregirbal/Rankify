@@ -77,26 +77,5 @@ export default function PlayerComponent({
         </div>
       </div>
     </Link>
-    // <Modal
-    //   className="flex rounded-xl items-center gap-2 border bg-neutral border-base-300 py-2 px-4 h-12 w-full"
-    //   content={<HistoryComponent player={player} />}
-    //   title={player.name}
-    // >
-    //   <div className="flex flex-row items-center w-full justify-between">
-    //     <div className="flex flex-row items-center w-3/5">
-    //       <div className="flex flex-row items-center text-center w-3/12 gap-1">
-    //         <TrophyIcon />
-    //         <span>{ranking}</span>
-    //       </div>
-    //       <div className="flex flex-row items-centertext-center">
-    //         {player.name}
-    //       </div>
-    //     </div>
-    //     <div className="flex flex-row items-center text-center w-2/5 justify-between">
-    //       <span>{player.rating}</span>
-    //       <LastGameStats ratingHistory={player.ratingHistory} />
-    //     </div>
-    //   </div>
-    // </Modal>
   );
 }

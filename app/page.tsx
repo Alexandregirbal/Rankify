@@ -5,8 +5,7 @@ import PlayerComponent from "@/app/components/player/player";
 import { getEnvConfigs } from "@/envConfig";
 import { getAllPlayers } from "@/modules/player/get";
 import { getOrCreateQuoteOfTheDay } from "@/modules/quote/get";
-import Avatar from "./components/player/avatar";
-import { PlayerMongo } from "@/modules/player/types";
+import PodiumPlayer from "./components/player/podiumPlayer";
 
 export default async function Leaderboard() {
   const allPlayers = (await getAllPlayers(getEnvConfigs().GAMES_TO_BE_RANKABLE));
@@ -25,16 +24,16 @@ export default async function Leaderboard() {
         <h1 className="text-center text-2xl">Leaderboard</h1>
         <p className="text-center">{quoteOfTheDay}</p>
       </div>
-      <div className="flex flex-row mx-12 mt-14 justify-between">
+      <div className="flex flex-row mx-8 justify-between">
         {getFirstThree().map((el, key) => {
           if (!el) return <span key={key}>a</span>
 
           const { ranking, ...player } = el;
-          return <Avatar key={player.name} player={player} ranking={ranking} />
+          return <PodiumPlayer key={player.name} player={player} ranking={ranking} />
         })}
       </div>
 
-      <div className="flex flex-1 flex-col mx-12 gap-2 overflow-y-scroll">
+      <div className="flex flex-1 flex-col mx-8 gap-2 overflow-y-scroll">
         <div className="flex flex-row items-center w-full justify-between px-4">
           <div className="flex flex-row items-center w-3/5">
             <div className="flex flex-row items-center text-center w-3/12">
