@@ -8,28 +8,30 @@ import { getOrCreateQuoteOfTheDay } from "@/modules/quote/get";
 import PodiumPlayer from "./components/player/podiumPlayer";
 
 export default async function Leaderboard() {
-  const allPlayers = (await getAllPlayers(getEnvConfigs().GAMES_TO_BE_RANKABLE));
+  const allPlayers = await getAllPlayers(getEnvConfigs().GAMES_TO_BE_RANKABLE);
   const otherPlayers = allPlayers.slice(3, allPlayers.length);
   const quoteOfTheDay = await getOrCreateQuoteOfTheDay();
 
-  const getFirstThree = () => ([
+  const getFirstThree = () => [
     allPlayers[1] ? { ...allPlayers[1], ranking: 2 } : null,
     allPlayers[0] ? { ...allPlayers[0], ranking: 1 } : null,
     allPlayers[2] ? { ...allPlayers[2], ranking: 3 } : null,
-  ])
+  ];
 
   return (
-    <div className="h-full w-full gap-10 bg-gray-950 flex flex-col overflow-y-scroll py-4" data-theme="mytheme">
+    <div className="h-full w-full gap-10 bg-gray-950 flex flex-col overflow-y-scroll py-4">
       <div>
         <h1 className="text-center text-2xl">Leaderboard</h1>
         <p className="text-center text-sm">{quoteOfTheDay}</p>
       </div>
       <div className="flex flex-row mx-8 justify-between">
         {getFirstThree().map((el, key) => {
-          if (!el) return <span key={key}>a</span>
+          if (!el) return <span key={key}>a</span>;
 
           const { ranking, ...player } = el;
-          return <PodiumPlayer key={player.name} player={player} ranking={ranking} />
+          return (
+            <PodiumPlayer key={player.name} player={player} ranking={ranking} />
+          );
         })}
       </div>
 

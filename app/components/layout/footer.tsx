@@ -2,14 +2,15 @@
 
 import { ChartNoAxesCombined, SquarePlus, Trophy } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
-  const router = useRouter();
   const pathname = usePathname();
 
   const isActiveTab = (tab: string) => {
-    return pathname.toLowerCase() === tab.toLowerCase() ? "active bg-neutral" : "";
+    return pathname.toLowerCase() === tab.toLowerCase()
+      ? "active bg-neutral"
+      : "";
   };
 
   return (
