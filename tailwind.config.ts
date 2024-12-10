@@ -18,9 +18,30 @@ const config: Config = {
         gold: "#FFD700",
         silver: "#C0C0C0",
         bronze: "#CD7F32",
+        primary: "#576184",
+        accent: "#00a8ff",
+        neutral: "#141623",
       },
     },
   },
   plugins: [daisyui],
+  daisyui: {
+    themes: [
+      {
+        rankifyTheme: {
+          primary: "#576184",
+          accent: "#00a8ff",
+          neutral: "#141623",
+          "base-100": "#1C1E26",
+          info: "#2094f3",
+          success: "#3EB489",
+          warning: "#fbbf24",
+          error: "#ef4444",
+        },
+      },
+      "light",
+      "dark",
+    ],
+  },
 };
 export default config;

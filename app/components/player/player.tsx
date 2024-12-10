@@ -2,14 +2,14 @@
 
 import { EightBallIconFull } from "@/app/components/ui/icons/8BallIconFull";
 import Modal from "@/app/components/ui/modal";
+import Link from "next/link";
 import { PlayerMongo } from "@/modules/player/types";
 import dynamic from "next/dynamic";
 import { QueueIcon } from "../ui/icons/QueueIcon";
 import LastGameStats from "./lastGameStats";
+import { TrophyIcon } from "../ui/icons/TrophyIcon";
 
-const HistoryComponent = dynamic(() => import("./history"));
-
-const getTrophyIcon = (ranking: number, key: number) => {
+export const getTrophyIcon = (ranking: number, key: number) => {
   switch (ranking) {
     case 1:
       return <QueueIcon key={key} className="fill-gold -mr-4" />;
@@ -22,20 +22,7 @@ const getTrophyIcon = (ranking: number, key: number) => {
   }
 };
 
-const getRankingIcon = (ranking: number) => {
-  switch (ranking) {
-    case 1:
-      return <EightBallIconFull className="fill-gold" />;
-    case 2:
-      return <EightBallIconFull className="fill-silver" />;
-    case 3:
-      return <EightBallIconFull className="fill-bronze " />;
-    default:
-      return <></>;
-  }
-};
-
-const getNameWithTrophies = (player: PlayerMongo) => {
+export const getNameWithTrophies = (player: PlayerMongo) => {
   const { name, trophies } = player;
   if (!trophies) return <div>{name}</div>;
 
@@ -55,23 +42,25 @@ export default function PlayerComponent({
   ranking: number;
 }) {
   return (
-    <Modal
-      className="flex rounded-xl items-center gap-2 border bg-neutral-content border-base-300 p-4 w-full"
-      content={<HistoryComponent player={player} />}
-      title={player.name}
+    <Link
+      className="flex rounded-xl items-center gap-2 border bg-neutral border-base-300 py-2 px-4 h-12 w-full"
+      href={`/playerdetail/${player._id}`}
     >
-      <>
-        <div className="text-3xl text-center">{ranking}</div>
-        <div className="flex justify-between grow">
-          <div className="text-xl flex gap-2 items-center">
-            {getRankingIcon(ranking)} {getNameWithTrophies(player)}
+      <div className="flex flex-row items-center w-full justify-between">
+        <div className="flex flex-row items-center w-3/5">
+          <div className="flex flex-row items-center text-center w-3/12 gap-1">
+            <TrophyIcon />
+            <span>{ranking}</span>
           </div>
-          <div className="flex gap-2 items-center">
-            <span>{player.rating}</span>
-            <LastGameStats ratingHistory={player.ratingHistory} />
+          <div className="flex flex-row items-centertext-center">
+            {player.name}
           </div>
         </div>
-      </>
-    </Modal>
+        <div className="flex flex-row items-center text-center w-2/5 justify-between">
+          <span>{player.rating}</span>
+          <LastGameStats ratingHistory={player.ratingHistory} />
+        </div>
+      </div>
+    </Link>
   );
 }
