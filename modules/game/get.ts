@@ -1,10 +1,9 @@
 import mongooseConnect from "@/database/config/mongoose";
+import { ObjectId } from "mongodb";
+import { PipelineStage } from "mongoose";
 import { PlayerMongo } from "../player/types";
 import { gameModel } from "./model";
 import { GameMongo } from "./types";
-import { PipelineStage } from "mongoose";
-import { log } from "console";
-import { ObjectId } from "mongodb";
 
 export const getTotalNumberOfGames = async ({
   playerId,
