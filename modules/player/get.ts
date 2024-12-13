@@ -5,7 +5,8 @@ import { PlayerMongo } from "./types";
 
 export const getPlayer = async ({ playerId }: { playerId: ZodObjectId }) => {
   await mongooseConnect();
-  return playerModel.findOne({ _id: playerId }).lean();
+  const player = await playerModel.findOne({ _id: playerId }).exec();
+  return player?.toObject();
 };
 
 export const getAllPlayers = async (
