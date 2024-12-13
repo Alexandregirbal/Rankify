@@ -27,7 +27,7 @@ export default function RootLayout({
           data-theme="rankifyTheme"
         >
           <Header />
-          <main className="h-[calc(100%-7rem)] w-full sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12">
+          <main className="h-[calc(100%-8rem)] w-full sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12">
             {children}
           </main>
           <Footer />

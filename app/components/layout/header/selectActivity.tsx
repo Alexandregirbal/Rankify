@@ -2,7 +2,7 @@
 
 import { Activity, ActivityMongo } from "@/modules/activity/types";
 import { useParams, useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function SelectActivity({
   activities,
@@ -19,12 +19,18 @@ export default function SelectActivity({
   const handleActivityNameChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedName = e.target.value;
     setSelectedActivity(selectedName);
-    router.push(selectedName);
+    router.replace(selectedName);
   };
+
+  useEffect(() => {
+    if (params.activityName) {
+      setSelectedActivity(params.activityName);
+    }
+  }, [params.activityName]);
 
   return (
     <select
-      className="background select select-ghost w-1/3 border-none focus:outline-none"
+      className="background select select-ghost border-none focus:outline-none"
       onChange={handleActivityNameChange}
       value={selectedActivity}
     >
