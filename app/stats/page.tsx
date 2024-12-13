@@ -28,7 +28,7 @@ export default async function Charts() {
   ]);
 
   return (
-    <div className="h-full flex flex-col items-center gap-10 p-4 overflow-y-scroll text-lg bg-gray-950">
+    <div className="h-full flex flex-col items-center gap-6 p-4 overflow-y-scroll text-lg background">
       <h1 className="text-center text-2xl">{"Season's Stats"}</h1>
       <>
         <ul className="w-full">

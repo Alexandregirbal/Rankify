@@ -2,6 +2,7 @@ import { UIStoreProvider } from "@/stores/ui/provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Footer from "./components/layout/footer";
+import Header from "./components/layout/header";
 import GlobalLoading from "./components/ui/globalLoading";
 import "./globals.css";
 
@@ -25,7 +26,8 @@ export default function RootLayout({
           className="h-dvh flex flex-col items-center"
           data-theme="rankifyTheme"
         >
-          <main className="h-[calc(100%-4rem)] w-full sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12">
+          <Header />
+          <main className="h-[calc(100%-7rem)] w-full sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12">
             {children}
           </main>
           <Footer />

@@ -17,7 +17,7 @@ const BASE_ACTIVITIES: Activity[] = [
     description: "Les échecs, un incontournable des jeux de stratégie.",
   },
   {
-    name: "Ping Pong",
+    name: "Ping-Pong",
     description: "Pas de place à la chance ici.",
   },
   {

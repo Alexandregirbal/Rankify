@@ -5,12 +5,7 @@ import { estimateBaseRating } from "@/modules/elo/ratings";
 import { TeamScoring } from "@/modules/elo/types";
 import { PlayerMongo } from "@/modules/player/types";
 import { useUIStore } from "@/stores/ui/provider";
-import {
-  ChangeEvent,
-  FormEventHandler,
-  MouseEventHandler,
-  useState,
-} from "react";
+import { ChangeEvent, MouseEventHandler, useState } from "react";
 import TextCircle from "./textCircle";
 
 const DEFAULT_TEAM_SCORING: TeamScoring = {
@@ -18,31 +13,34 @@ const DEFAULT_TEAM_SCORING: TeamScoring = {
   score: 0,
   eliminationFoul: "",
 };
+
 export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
   const [team2, setTeam2] = useState<TeamScoring>(DEFAULT_TEAM_SCORING);
   const [team1, setTeam1] = useState<TeamScoring>(DEFAULT_TEAM_SCORING);
   const [teamRadioValue, setTeamRadioValue] = useState(true);
   const { isLoading, setIsLoading } = useUIStore((state) => state);
 
-  const addPlayerTeam1Player = (
-    player: PlayerMongo,
-  ) => {
-    setTeam1((oldState) => ({ ...oldState, players: [...oldState.players, { ...player, playerId: player._id }] }));
+  const addPlayerTeam1Player = (player: PlayerMongo) => {
+    setTeam1((oldState) => ({
+      ...oldState,
+      players: [...oldState.players, { ...player, playerId: player._id }],
+    }));
   };
 
-  const addPlayerTeam2Player = (
-    player: PlayerMongo,
-  ) => {
-    setTeam2((oldState) => ({ ...oldState, players: [...oldState.players, { ...player, playerId: player._id }] }));
+  const addPlayerTeam2Player = (player: PlayerMongo) => {
+    setTeam2((oldState) => ({
+      ...oldState,
+      players: [...oldState.players, { ...player, playerId: player._id }],
+    }));
   };
 
-  const removeTeam1Player = (
-    player: PlayerMongo
-  ) => {
+  const removeTeam1Player = (player: PlayerMongo) => {
     setTeam1((oldState) => {
       const { players } = oldState;
 
-      const oldPlayerIndex = players.findIndex(p => p.playerId === player._id);
+      const oldPlayerIndex = players.findIndex(
+        (p) => p.playerId === player._id
+      );
       if (oldPlayerIndex === -1) return oldState;
 
       const newPlayer = [...oldState.players];
@@ -50,15 +48,15 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
 
       return { ...oldState, players: newPlayer };
     });
-  }
+  };
 
-  const removeTeam2Player = (
-    player: PlayerMongo
-  ) => {
+  const removeTeam2Player = (player: PlayerMongo) => {
     setTeam2((oldState) => {
       const { players } = oldState;
 
-      const oldPlayerIndex = players.findIndex(p => p.playerId === player._id);
+      const oldPlayerIndex = players.findIndex(
+        (p) => p.playerId === player._id
+      );
       if (oldPlayerIndex === -1) return oldState;
 
       const newPlayer = [...oldState.players];
@@ -66,7 +64,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
 
       return { ...oldState, players: newPlayer };
     });
-  }
+  };
 
   const handleChangeTeam1Score = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -135,81 +133,112 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
       <h1 className="text-center text-2xl">New game</h1>
       <div className="flex flex-col gap-2 w-full">
         <div className="collapse bg-neutral collapse-arrow">
-          <input type="radio" onClick={() => setTeamRadioValue(true)} name="my-accordion-2" defaultChecked />
+          <input
+            type="radio"
+            onClick={() => setTeamRadioValue(true)}
+            name="my-accordion-2"
+            defaultChecked
+          />
           <div className="collapse-title text-xl font-medium flex flex-col gap-4">
             <>
               <div className="flex flex-row items-center gap-4">
                 <TextCircle text="1" size="10" />
                 <span>Players</span>
               </div>
-              {!!team1.players.length && !!team2.players.length && !teamRadioValue &&
-                <div className="w-full flex flex-row justify-around">
-                  <div className="flex flex-col gap-2">
-                    <span className="text-base text-accent">
-                      Team 1
-                    </span>
-                    <div className="flex flex-col gap-1">
-                      {team1.players.map((player, key) => {
-                        return (
-                          <span key={key} className="text-sm">
-                            {player.name}
-                          </span>
-                        )
-                      })}
+              {!!team1.players.length &&
+                !!team2.players.length &&
+                !teamRadioValue && (
+                  <div className="w-full flex flex-row justify-around">
+                    <div className="flex flex-col gap-2">
+                      <span className="text-base text-accent">Team 1</span>
+                      <div className="flex flex-col gap-1">
+                        {team1.players.map((player, key) => {
+                          return (
+                            <span key={key} className="text-sm">
+                              {player.name}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-base text-accent">Team 2</span>
+                      <div className="flex flex-col gap-1">
+                        {team2.players.map((player, key) => {
+                          return (
+                            <span key={key} className="text-sm">
+                              {player.name}
+                            </span>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <span className="text-base text-accent">
-                      Team 2
-                    </span>
-                    <div className="flex flex-col gap-1">
-                      {team2.players.map((player, key) => {
-                        return (
-                          <span key={key} className="text-sm">
-                            {player.name}
-                          </span>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </div>
-              }
+                )}
             </>
           </div>
           <div className="collapse-content">
             <div className="w-full flex flex-row h-96 justify-between">
               <div className="flex flex-1 flex-col overflow-y-scroll">
-                {
-                  allPlayers.map((player, key) => {
-                    const isSelected = team1.players.some(team1Player => team1Player.playerId === player._id);
+                {allPlayers.map((player, key) => {
+                  const isSelected = team1.players.some(
+                    (team1Player) => team1Player.playerId === player._id
+                  );
 
-                    return (
-                      <div key={key} onClick={() => isSelected ? removeTeam1Player(player) : addPlayerTeam1Player(player)} className={`flex flex-col h-10`}>
-                        <span className={`text-sm ${isSelected ? "text-accent" : ""}`}>{player.name}</span>
-                      </div>
-                    );
-                  })
-                }
+                  return (
+                    <div
+                      key={key}
+                      onClick={() =>
+                        isSelected
+                          ? removeTeam1Player(player)
+                          : addPlayerTeam1Player(player)
+                      }
+                      className={`flex flex-col h-10`}
+                    >
+                      <span
+                        className={`text-sm ${isSelected ? "text-accent" : ""}`}
+                      >
+                        {player.name}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
               <div className="divider divider-horizontal">VS</div>
               <div className="flex flex-1 flex-col overflow-y-scroll">
-                {
-                  allPlayers.map((player, key) => {
-                    const isSelected = team2.players.some(team2Player => team2Player.playerId === player._id);
+                {allPlayers.map((player, key) => {
+                  const isSelected = team2.players.some(
+                    (team2Player) => team2Player.playerId === player._id
+                  );
 
-                    return (
-                      <div key={key} onClick={() => isSelected ? removeTeam2Player(player) : addPlayerTeam2Player(player)} className="flex flex-col h-10">
-                        <span className={`text-sm ${isSelected ? "text-accent" : ""}`}>{player.name}</span>
-                      </div>
-                    );
-                  })
-                }
+                  return (
+                    <div
+                      key={key}
+                      onClick={() =>
+                        isSelected
+                          ? removeTeam2Player(player)
+                          : addPlayerTeam2Player(player)
+                      }
+                      className="flex flex-col h-10"
+                    >
+                      <span
+                        className={`text-sm ${isSelected ? "text-accent" : ""}`}
+                      >
+                        {player.name}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
         <div className="collapse bg-neutral collapse-arrow">
-          <input type="radio" name="my-accordion-2" onClick={() => setTeamRadioValue(false)} />
+          <input
+            type="radio"
+            name="my-accordion-2"
+            onClick={() => setTeamRadioValue(false)}
+          />
           <div className="collapse-title text-xl font-medium flex flex-row items-center gap-4">
             <TextCircle text="2" size="10" />
             Results
@@ -292,10 +321,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
           </div>
         </div>
         <div className="w-full flex flex-row justify-center items-center gap-4 my-2">
-          <button
-            className="btn btn-outline btn-error"
-            onClick={handleReset}
-          >
+          <button className="btn btn-outline btn-error" onClick={handleReset}>
             Reset
           </button>
 

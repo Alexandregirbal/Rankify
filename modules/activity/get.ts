@@ -4,5 +4,8 @@ import { ActivityMongo } from "./types";
 
 export const getAllActivities = async (): Promise<Array<ActivityMongo>> => {
   await mongooseConnect();
-  return activityModel.find().lean();
+  const activities = await activityModel.find().exec();
+  if (!activities) return [];
+
+  return activities.map((activity) => activity.toObject());
 };

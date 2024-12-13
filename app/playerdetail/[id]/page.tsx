@@ -27,7 +27,7 @@ export default function PlayerDetail() {
   }, []);
 
   return (
-    <div className="h-full w-full bg-gray-950 flex flex-col gap-6 py-4 px-6">
+    <div className="h-full w-full background flex flex-col gap-6 py-4 px-6">
       {player ? (
         <>
           <div className="w-full flex flex-row justify-center items-center relative">
