@@ -8,27 +8,19 @@ export const ratingHistorySchema = z.object({
 });
 
 export const trophySchema = z.object({
-  activityId: zodObjectId.optional(),
-  activityName: z.string().default("8-Ball"),
   season: z.number(),
   ranking: z.number(),
   rating: z.number(),
 });
 
-export const activityRating = z.object({
+export const playerSchema = z.object({
+  userId: zodObjectId,
+  userName: z.string(),
   activityId: zodObjectId,
   activityName: z.string(),
-  ratingValue: z.number(),
-  gamesPlayed: z.number(),
-  ratingHistory: z.array(ratingHistorySchema).default([]),
-});
-
-export const playerSchema = z.object({
-  name: z.string().min(2),
-  games: z.number().optional().default(0), // TODO: remove once script ran
-  rating: z.number().optional().default(DEFAULT_RATING), // TODO: remove once script ran
-  ratingHistory: z.array(ratingHistorySchema).optional().default([]), // TODO: remove once script ran
-  activitiesRatings: z.array(activityRating).optional().default([]),
+  games: z.number().optional().default(0),
+  rating: z.number().optional().default(DEFAULT_RATING),
+  ratingHistory: z.array(ratingHistorySchema).optional().default([]),
   trophies: z.array(trophySchema).optional(),
 });
 

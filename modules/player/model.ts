@@ -21,7 +21,14 @@ const trophyModelSchema = new Schema<Trophy>(
 
 const playerModelSchema = new Schema<PlayerMongo>(
   {
-    name: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    userName: { type: String, required: true },
+    activityId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Activity",
+    },
+    activityName: { type: String, required: true },
     games: { type: Number, required: true },
     rating: { type: Number, required: true },
     ratingHistory: {

@@ -5,6 +5,7 @@ import { PlayerMongo } from "./types";
 
 export const getPlayer = async ({ playerId }: { playerId: ZodObjectId }) => {
   await mongooseConnect();
+
   const player = await playerModel.findOne({ _id: playerId }).exec();
   return player?.toObject();
 };
@@ -13,6 +14,7 @@ export const getAllPlayers = async (
   minimumGames: number = 0
 ): Promise<PlayerMongo[]> => {
   await mongooseConnect();
+
   const players = await playerModel
     .find({ $or: [{ games: { $gte: minimumGames } }, { games: 0 }] }, null, {
       sort: { rating: -1 },
@@ -22,11 +24,16 @@ export const getAllPlayers = async (
 };
 
 export const getAllPlayersRatingHistories = async (): Promise<
-  Array<Pick<PlayerMongo, "_id" | "name" | "ratingHistory">>
+  Array<Pick<PlayerMongo, "_id" | "userName" | "ratingHistory">>
 > => {
   await mongooseConnect();
+
   const players = await playerModel
-    .find({}, { _id: 1, name: 1, ratingHistory: 1 }, { sort: { rating: -1 } })
+    .find(
+      {},
+      { _id: 1, userName: 1, ratingHistory: 1 },
+      { sort: { rating: -1 } }
+    )
     .exec();
   return players.map((player) => player.toObject());
 };
@@ -44,6 +51,7 @@ export const getPlayerRatingHistory = async (
   playerId: PlayerMongo["_id"]
 ): Promise<PlayerMongo["ratingHistory"]> => {
   await mongooseConnect();
+
   const player = await playerModel
     .findOne({ _id: playerId }, { _id: 0, ratingHistory: 1 })
     .lean();
