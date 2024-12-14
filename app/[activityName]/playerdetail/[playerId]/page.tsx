@@ -17,7 +17,7 @@ export default async function PlayerDetail({
       {player ? (
         <>
           <div className="w-full flex flex-row justify-center items-center relative">
-            <span className="text-2xl">{player.name}</span>
+            <span className="text-2xl">{player.userName}</span>
             <RouterBack />
           </div>
           <div className="flex-1 overflow-y-scroll">

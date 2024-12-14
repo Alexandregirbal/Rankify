@@ -1,8 +1,8 @@
 "use client";
 
+import useLocalStorage, { localStorageKeys } from "@/app/hooks/useLocalStorage";
 import { useUIStore } from "@/stores/ui/provider";
 import { useState } from "react";
-import useLocalStorage, { localStorageKeys } from "../hooks/useLocalStorage";
 
 export default function AdminPage() {
   const { setIsLoading } = useUIStore((state) => state);

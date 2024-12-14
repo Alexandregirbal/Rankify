@@ -155,7 +155,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
                         {team1.players.map((player, key) => {
                           return (
                             <span key={key} className="text-sm">
-                              {player.name}
+                              {player.userName}
                             </span>
                           );
                         })}
@@ -167,7 +167,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
                         {team2.players.map((player, key) => {
                           return (
                             <span key={key} className="text-sm">
-                              {player.name}
+                              {player.userName}
                             </span>
                           );
                         })}
@@ -198,7 +198,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
                       <span
                         className={`text-sm ${isSelected ? "text-accent" : ""}`}
                       >
-                        {player.name}
+                        {player.userName}
                       </span>
                     </div>
                   );
@@ -224,7 +224,7 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
                       <span
                         className={`text-sm ${isSelected ? "text-accent" : ""}`}
                       >
-                        {player.name}
+                        {player.userName}
                       </span>
                     </div>
                   );

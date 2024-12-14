@@ -2,28 +2,28 @@ import mongooseConnect from "@/database/config/mongoose";
 import { DEFAULT_RATING } from "@/modules/elo/constants";
 import { activityModel } from "../activity/model";
 import { ActivityMongo } from "../activity/types";
-import { userModel } from "../user/model";
+import { findOrCreateUser } from "../user/create";
 import { UserMongo } from "../user/types";
 import { playerModel } from "./model";
 import { PlayerMongo } from "./types";
 
 export const createPlayer = async ({
-  userId,
+  userName,
   activityId,
 }: {
-  userId: UserMongo["_id"];
+  userName: UserMongo["name"];
   activityId: ActivityMongo["_id"];
 }): Promise<PlayerMongo> => {
   await mongooseConnect();
 
-  const player = await playerModel.findOne({ userId, activityId });
-  if (player) {
-    throw new Error("Player already exists for matching user and activity");
+  const user = await findOrCreateUser({ name: userName });
+  if (!user) {
+    throw new Error("User could not be found nor created");
   }
 
-  const user = await userModel.findOne({ _id: userId });
-  if (!user) {
-    throw new Error("User not found");
+  const player = await playerModel.findOne({ userId: user._id, activityId });
+  if (player) {
+    throw new Error("Player already exists for matching user and activity");
   }
 
   const activity = await activityModel.findOne({ _id: activityId });

@@ -1,5 +1,5 @@
 import { getEnvConfigs } from "@/envConfig";
-import { getAllPlayers } from "@/modules/player/get";
+import { getAllPlayersOfActivity } from "@/modules/player/get";
 import {
   resetPlayersRating,
   updatePlayerTrophies,
@@ -16,8 +16,13 @@ const postSeasonBodySchema = z.object({
 
 export async function POST(request: Request) {
   const token = request.headers.get("x-admin-token");
+  const activityId = request.headers.get("x-activityId");
+
   if (token !== getEnvConfigs().ADMIN_TOKEN) {
     return Response.json({ error: "Invalid admin token" }, { status: 401 });
+  }
+  if (!activityId) {
+    return Response.json({ error: "Activity is required" }, { status: 400 });
   }
 
   const body = await request.json();
@@ -30,12 +35,15 @@ export async function POST(request: Request) {
   const report: Record<string, any> = {};
   switch (updateType) {
     case "end_season":
-      const players = await getAllPlayers(getEnvConfigs().GAMES_TO_BE_RANKABLE);
+      const players = await getAllPlayersOfActivity({
+        activityId,
+        minimumGames: getEnvConfigs().GAMES_TO_BE_RANKABLE,
+      });
 
       const leaderboard: Leaderboard[] = players.map((player, index) => ({
         ranking: index + 1,
         playerId: player._id,
-        playreName: player.name,
+        playreName: player.userName,
         rating: player.rating,
       }));
 

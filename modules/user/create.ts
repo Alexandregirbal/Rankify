@@ -16,3 +16,16 @@ export const createUser = async ({
     return null;
   }
 };
+
+export const findOrCreateUser = async ({
+  name,
+}: {
+  name: string;
+}): Promise<UserMongo | null> => {
+  await mongooseConnect();
+
+  const user = await userModel.findOne({ name });
+  if (user) return user.toObject();
+
+  return createUser({ name });
+};

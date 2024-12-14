@@ -14,15 +14,15 @@ describe("Testing the expectations part of the elo module", () => {
 
   it("should return a coherent expectation between two teams of 1 player", () => {
     const result = calculateTeamsExpectations(
-      [{ rating: 1000, games: 0, name: "player1", playerId: "1" }],
-      [{ rating: 1000, games: 0, name: "player2", playerId: "2" }]
+      [{ rating: 1000, games: 0, userName: "user1", playerId: "1" }],
+      [{ rating: 1000, games: 0, userName: "user2", playerId: "2" }]
     );
 
     expect(result).toEqual({ team1: 0.5, team2: 0.5 });
 
     const result2 = calculateTeamsExpectations(
-      [{ rating: 1000, games: 0, name: "player3", playerId: "3" }],
-      [{ rating: 600, games: 1, name: "player4", playerId: "4" }]
+      [{ rating: 1000, games: 0, userName: "user3", playerId: "3" }],
+      [{ rating: 600, games: 1, userName: "user4", playerId: "4" }]
     );
 
     expect(result2).toBeDefined();
@@ -37,13 +37,13 @@ describe("Testing the expectations part of the elo module", () => {
   it("should return a coherent expectation between two teams of many players", () => {
     const result = calculateTeamsExpectations(
       [
-        { rating: 1200, games: 0, name: "player1", playerId: "1" },
-        { rating: 1400, games: 0, name: "player2", playerId: "2" },
+        { rating: 1200, games: 0, userName: "user1", playerId: "1" },
+        { rating: 1400, games: 0, userName: "user2", playerId: "2" },
       ],
       [
-        { rating: 1000, games: 0, name: "player3", playerId: "3" },
-        { rating: 1500, games: 0, name: "player4", playerId: "4" },
-        { rating: 950, games: 0, name: "player5", playerId: "5" },
+        { rating: 1000, games: 0, userName: "user3", playerId: "3" },
+        { rating: 1500, games: 0, userName: "user4", playerId: "4" },
+        { rating: 950, games: 0, userName: "user5", playerId: "5" },
       ]
     );
 

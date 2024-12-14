@@ -30,7 +30,7 @@ export const updatePlayerTrophies = async ({
   ranking,
   seasonNumber,
 }: {
-  player: PlayerMongo;
+  player: Pick<PlayerMongo, "_id" | "rating">;
   ranking: number;
   seasonNumber: number;
 }) => {

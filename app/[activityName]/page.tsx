@@ -3,19 +3,23 @@
 import AddPlayer from "@/app/components/player/addPlayer";
 import PlayerComponent from "@/app/components/player/player";
 import { getEnvConfigs } from "@/envConfig";
-import { getAllPlayers } from "@/modules/player/get";
+import { getActivityId } from "@/modules/activity/get";
+import { getAllPlayersOfActivity } from "@/modules/player/get";
 import { getOrCreateQuoteOfTheDay } from "@/modules/quote/get";
 import PodiumPlayer from "../components/player/podiumPlayer";
+import { ActivityNameParams } from "./types";
 
-export default async function Leaderboard({
-  params,
-}: {
-  params: Promise<{ activityName: string }>;
-}) {
+export default async function Leaderboard({ params }: ActivityNameParams) {
   const { activityName } = await params;
   console.log(`~~~~~ Girbalog | activityName: `, activityName);
 
-  const allPlayers = await getAllPlayers(getEnvConfigs().GAMES_TO_BE_RANKABLE);
+  const activityId = await getActivityId(activityName);
+  if (!activityId) return <div>Activity not found</div>;
+
+  const allPlayers = await getAllPlayersOfActivity({
+    activityId,
+    minimumGames: getEnvConfigs().GAMES_TO_BE_RANKABLE,
+  });
   const otherPlayers = allPlayers.slice(3, allPlayers.length);
   const quoteOfTheDay = await getOrCreateQuoteOfTheDay();
 
@@ -37,7 +41,11 @@ export default async function Leaderboard({
 
           const { ranking, ...player } = el;
           return (
-            <PodiumPlayer key={player.name} player={player} ranking={ranking} />
+            <PodiumPlayer
+              key={player.userName}
+              player={player}
+              ranking={ranking}
+            />
           );
         })}
       </div>
@@ -60,7 +68,7 @@ export default async function Leaderboard({
         <div className="flex flex-1 flex-col px-2 items-center gap-2 w-full overflow-y-scroll">
           {otherPlayers.map((player, index) => (
             <PlayerComponent
-              key={player.name}
+              key={player.userName}
               player={player}
               ranking={index + 4}
             />

@@ -9,3 +9,11 @@ export const getAllActivities = async (): Promise<Array<ActivityMongo>> => {
 
   return activities.map((activity) => activity.toObject());
 };
+
+export const getActivityId = async (activityName: string) => {
+  await mongooseConnect();
+  const activity = await activityModel.findOne({ name: activityName }).exec();
+  if (!activity) return null;
+
+  return activity._id;
+};

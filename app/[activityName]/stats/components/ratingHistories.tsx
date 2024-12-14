@@ -12,10 +12,10 @@ import { PlayerQuoteSkeleton, PlayerStatsSkeleton } from "./skeletons";
 
 const NEAREST_MULTIPLE = 50;
 
-type PlayerNameSelect = Player["name"] | "all";
+type PlayerNameSelect = Player["userName"] | "all";
 
 type RatingHistoriesProps = {
-  players: Array<Pick<PlayerMongo, "_id" | "name" | "ratingHistory">>;
+  players: Array<Pick<PlayerMongo, "_id" | "userName" | "ratingHistory">>;
 };
 
 export default function RatingHistories({ players }: RatingHistoriesProps) {
@@ -47,16 +47,16 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
   const filterPlayers = (player: RatingHistoriesProps["players"][number]) => {
     return (
       nameInput === "all" ||
-      player.name.toLowerCase().includes(nameInput.toString().toLowerCase())
+      player.userName.toLowerCase().includes(nameInput.toString().toLowerCase())
     );
   };
 
   const chartDatasets = players.filter(filterPlayers).map((player) => {
     return {
-      label: player.name,
+      label: player.userName,
       data: player.ratingHistory.map((rating) => rating.rating),
       fill: false,
-      borderColor: stringToColor(player.name),
+      borderColor: stringToColor(player.userName),
       tension: 0.1,
       cubicInterpolationMode: "monotone" as const,
     };
@@ -92,7 +92,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     if (selectedName === "all") return;
 
     const selectedPlayer = players.find(
-      (player) => player.name === selectedName
+      (player) => player.userName === selectedName
     );
     if (!selectedPlayer) return;
 
@@ -157,7 +157,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
             All players
           </option>
           {players.map((player) => (
-            <option key={player.name}>{player.name}</option>
+            <option key={player.userName}>{player.userName}</option>
           ))}
         </select>
         <button className="btn btn-outline btn-error" onClick={resetPlayerName}>

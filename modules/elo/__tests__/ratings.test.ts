@@ -7,28 +7,28 @@ describe("Testing the ratings part of the elo module", () => {
       playerId: "1",
       rating: 1000,
       games: 0,
-      name: "player1",
+      userName: "user1",
       ratingHistory: [],
     };
     const player2 = {
       playerId: "2",
       rating: 1200,
       games: 10,
-      name: "player2",
+      userName: "user2",
       ratingHistory: [],
     };
     const player3 = {
       playerId: "3",
       rating: 900,
       games: 8,
-      name: "player3",
+      userName: "user3",
       ratingHistory: [],
     };
     const player4 = {
       playerId: "4",
       rating: 1500,
       games: 100,
-      name: "player4",
+      userName: "user4",
       ratingHistory: [],
     };
 
@@ -54,28 +54,28 @@ describe("Testing the ratings part of the elo module", () => {
       playerId: "1",
       rating: 1000,
       games: 100,
-      name: "player1",
+      userName: "user1",
       ratingHistory: [],
     };
     const player2 = {
       playerId: "2",
       rating: 2000,
       games: 100,
-      name: "player2",
+      userName: "user2",
       ratingHistory: [],
     };
     const player3 = {
       playerId: "3",
       rating: 900,
       games: 100,
-      name: "player3",
+      userName: "user3",
       ratingHistory: [],
     };
     const player4 = {
       playerId: "4",
       rating: 1300,
       games: 100,
-      name: "player4",
+      userName: "user4",
       ratingHistory: [],
     };
 

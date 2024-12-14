@@ -109,11 +109,12 @@ export async function GET(request: Request) {
   if (!playerId) {
     return Response.json({ error: "playerId is required" }, { status: 400 });
   }
+
   const player = await getPlayer({ playerId });
   if (!player) {
     return Response.json({ error: "player not found" }, { status: 404 });
   }
 
-  const games = await getPlayerGames({ playerId, playerName: player.name });
+  const games = await getPlayerGames({ playerId });
   return Response.json({ games });
 }

@@ -1,9 +1,15 @@
 import { createPlayer } from "@/modules/player/create";
-import { getAllPlayers } from "@/modules/player/get";
+import { getAllPlayersOfActivity } from "@/modules/player/get";
 import { revalidatePath } from "next/cache";
 
-export async function GET() {
-  const players = await getAllPlayers();
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const activityId = url.searchParams.get("activityId");
+  if (!activityId) {
+    return Response.json({ error: "activityId is required" }, { status: 400 });
+  }
+
+  const players = await getAllPlayersOfActivity({ activityId });
   return Response.json({ players });
 }
 

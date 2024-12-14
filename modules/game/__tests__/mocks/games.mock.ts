@@ -6,7 +6,7 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
-        name: "Clément",
+        userName: "Clément",
         games: 1,
         rating: 1000,
         newRating: 1028,
@@ -15,7 +15,7 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cce42d4c012ac8621ed"),
-        name: "Jean",
+        userName: "Jean",
         games: 1,
         rating: 1000,
         newRating: 972,
@@ -31,7 +31,7 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cbd42d4c012ac8621de"),
-        name: "Simon",
+        userName: "Simon",
         games: 1,
         rating: 1000,
         newRating: 1011,
@@ -40,7 +40,7 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
-        name: "Clément",
+        userName: "Clément",
         games: 2,
         rating: 1028,
         newRating: 1017,
@@ -57,7 +57,7 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
-        name: "Clément",
+        userName: "Clément",
         games: 3,
         rating: 1017,
         newRating: 1042,
@@ -66,7 +66,7 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cce42d4c012ac8621ed"),
-        name: "Jean",
+        userName: "Jean",
         games: 2,
         rating: 972,
         newRating: 947,
@@ -82,7 +82,7 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
-        name: "Clément",
+        userName: "Clément",
         games: 4,
         rating: 1042,
         newRating: 1063,
@@ -91,7 +91,7 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cce42d4c012ac8621ed"),
-        name: "Jean",
+        userName: "Jean",
         games: 3,
         rating: 947,
         newRating: 926,
@@ -107,14 +107,14 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
-        name: "Clément",
+        userName: "Clément",
         games: 5,
         rating: 1063,
         newRating: 1089,
       },
       {
         playerId: new ObjectId("66fd3cc942d4c012ac8621e8"),
-        name: "Fabien",
+        userName: "Fabien",
         games: 1,
         rating: 1000,
         newRating: 1026,
@@ -123,7 +123,7 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cc642d4c012ac8621e3"),
-        name: "Rémi",
+        userName: "Rémi",
         games: 1,
         rating: 1000,
         newRating: 974,
@@ -139,14 +139,14 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cbd42d4c012ac8621de"),
-        name: "Simon",
+        userName: "Simon",
         games: 2,
         rating: 1011,
         newRating: 1045,
       },
       {
         playerId: new ObjectId("66fd3cc642d4c012ac8621e3"),
-        name: "Rémi",
+        userName: "Rémi",
         games: 2,
         rating: 974,
         newRating: 1008,
@@ -155,14 +155,14 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
-        name: "Clément",
+        userName: "Clément",
         games: 6,
         rating: 1089,
         newRating: 1055,
       },
       {
         playerId: new ObjectId("66fd3cc942d4c012ac8621e8"),
-        name: "Fabien",
+        userName: "Fabien",
         games: 2,
         rating: 1026,
         newRating: 992,
@@ -178,14 +178,14 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
-        name: "Clément",
+        userName: "Clément",
         games: 7,
         rating: 1055,
         newRating: 1065,
       },
       {
         playerId: new ObjectId("66fd3cc942d4c012ac8621e8"),
-        name: "Fabien",
+        userName: "Fabien",
         games: 3,
         rating: 992,
         newRating: 1002,
@@ -194,14 +194,14 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cbd42d4c012ac8621de"),
-        name: "Simon",
+        userName: "Simon",
         games: 3,
         rating: 1045,
         newRating: 1035,
       },
       {
         playerId: new ObjectId("66fd3cc642d4c012ac8621e3"),
-        name: "Rémi",
+        userName: "Rémi",
         games: 3,
         rating: 1008,
         newRating: 998,
@@ -217,14 +217,14 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
-        name: "Clément",
+        userName: "Clément",
         games: 8,
         rating: 1065,
         newRating: 1092,
       },
       {
         playerId: new ObjectId("66fd3cc942d4c012ac8621e8"),
-        name: "Fabien",
+        userName: "Fabien",
         games: 4,
         rating: 1002,
         newRating: 1029,
@@ -233,14 +233,14 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cbd42d4c012ac8621de"),
-        name: "Simon",
+        userName: "Simon",
         games: 4,
         rating: 1035,
         newRating: 1008,
       },
       {
         playerId: new ObjectId("66fd3cc642d4c012ac8621e3"),
-        name: "Rémi",
+        userName: "Rémi",
         games: 4,
         rating: 998,
         newRating: 971,
@@ -256,7 +256,7 @@ export const MOCK_GAMES = [
     team1: [
       {
         playerId: new ObjectId("66fd3cce42d4c012ac8621ed"),
-        name: "Jean",
+        userName: "Jean",
         games: 4,
         rating: 926,
         newRating: 939,
@@ -265,7 +265,7 @@ export const MOCK_GAMES = [
     team2: [
       {
         playerId: new ObjectId("66fd3cc942d4c012ac8621e8"),
-        name: "Fabien",
+        userName: "Fabien",
         games: 5,
         rating: 1029,
         newRating: 1016,

@@ -15,9 +15,13 @@ const GameHistoryPart = ({
 }) => {
   return (
     <div
-      className={`h-full flex-1 flex flex-col justify-center ${isLeft ? "items-start" : "items-end"} gap-y-0.5`}
+      className={`h-full flex-1 flex flex-col justify-center ${
+        isLeft ? "items-start" : "items-end"
+      } gap-y-0.5`}
     >
-      {players.map(({ name }, key) => <span key={key}>{name}</span>)}
+      {players.map(({ userName }, key) => (
+        <span key={key}>{userName}</span>
+      ))}
     </div>
   );
 };
@@ -30,8 +34,8 @@ const GameHistory = ({
   player: PlayerMongo;
 }) => {
   const isInTeam1 = game.team1
-    .map((player) => player.name)
-    .includes(player.name);
+    .map((player) => player.userName)
+    .includes(player.userName);
   const isWinner = game.winner === (isInTeam1 ? "1" : "2");
   const gamePlayer = (isInTeam1 ? game.team1 : game.team2).find(
     (gp) => gp.playerId === player._id
@@ -44,13 +48,21 @@ const GameHistory = ({
     <div className="relative flex flex-row rounded-xl justify-around items-center gap-2 border bg-neutral border-base-300 py-2 px-8 w-full">
       <GameHistoryPart players={game.team1} isLeft={true} />
       <div className="text-center flex-col items-center justify-center">
-        <p className={`font-bold text-xl ${isWinner ? "text-success" : "text-error"}`}>{`${game.scores[0]} - ${game.scores[1]}`}</p>
+        <p
+          className={`font-bold text-xl ${
+            isWinner ? "text-success" : "text-error"
+          }`}
+        >{`${game.scores[0]} - ${game.scores[1]}`}</p>
         <p className="text-xs">{dayjs(game.createdAt).format("DD MMM")}</p>
       </div>
       <GameHistoryPart players={game.team2} isLeft={false} />
-      {!!pointsReward && <p className={`absolute top-1 right-2 text-sm text-primary`}>{displayNumberWithSign(pointsReward)}</p>}
+      {!!pointsReward && (
+        <p className={`absolute top-1 right-2 text-sm text-primary`}>
+          {displayNumberWithSign(pointsReward)}
+        </p>
+      )}
     </div>
-  )
+  );
 };
 
 const GamesSkeleton = () => {

@@ -1,5 +1,6 @@
 "use server";
 
+import { getActivityId } from "@/modules/activity/get";
 import {
   getNumberOfGamesSince,
   getTotalNumberOfGames,
@@ -7,9 +8,14 @@ import {
 import { getAllPlayersRatingHistories } from "@/modules/player/get";
 import { getCurrentSeason } from "@/modules/season/get";
 import dayjs from "dayjs";
+import { ActivityNameParams } from "../types";
 import RatingHistories from "./components/ratingHistories";
 
-export default async function Charts() {
+export default async function Charts({ params }: ActivityNameParams) {
+  const { activityName } = await params;
+  const activityId = await getActivityId(activityName);
+  if (!activityId) return <div>Activity not found</div>;
+
   const currentSeason = await getCurrentSeason();
   const [
     allPlayers,
@@ -17,7 +23,7 @@ export default async function Charts() {
     seasonNumberOfGamesPlayed,
     numberOfGamesPlayedToday,
   ] = await Promise.all([
-    getAllPlayersRatingHistories(),
+    getAllPlayersRatingHistories({ activityId }),
     getTotalNumberOfGames({}),
     getNumberOfGamesSince({
       since: currentSeason?.startDate,
