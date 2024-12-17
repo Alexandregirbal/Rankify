@@ -40,7 +40,7 @@ describe("getMostFrequentTeammate", () => {
     const result = await getMostFrequentTeammate(playerId);
 
     expect(result).toEqual({
-      userName: "Fabien",
+      name: "Fabien",
       count: 4,
     });
   });

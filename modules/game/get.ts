@@ -166,7 +166,7 @@ export const getMostGamesAgainst = async (
     {
       $group: {
         _id: "$opponentTeam.playerId",
-        name: { $first: "$opponentTeam.name" },
+        name: { $first: "$opponentTeam.userName" },
         wins: { $sum: { $cond: ["$playerWon", 1, 0] } },
         losses: { $sum: { $cond: ["$playerWon", 0, 1] } },
         totalGames: { $sum: 1 },
@@ -241,7 +241,7 @@ export const getMostFrequentTeammate = async (
     {
       $group: {
         _id: "$playerTeam.playerId",
-        name: { $first: "$playerTeam.name" },
+        name: { $first: "$playerTeam.userName" },
         count: { $sum: 1 },
       },
     },
