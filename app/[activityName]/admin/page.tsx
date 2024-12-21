@@ -1,11 +1,14 @@
 "use client";
 
+import { HEADER_VARIABLES } from "@/app/constants";
 import useLocalStorage, { localStorageKeys } from "@/app/hooks/useLocalStorage";
+import { useActivityStore } from "@/stores/activity/provider";
 import { useUIStore } from "@/stores/ui/provider";
 import { useState } from "react";
 
 export default function AdminPage() {
   const { setIsLoading } = useUIStore((state) => state);
+  const { selectedActivity } = useActivityStore((state) => state);
 
   // const [localAdminToken, setLocalAdminToken] = useState<string>("");
   const [adminToken, setAdminToken] = useLocalStorage<string>({
@@ -15,6 +18,10 @@ export default function AdminPage() {
   const [rollbackResult, setRollbackResult] = useState<any>();
   const [endSeasonResult, setEndSeasonResult] = useState<any>();
 
+  if (!selectedActivity) {
+    return <div>Select an activity</div>;
+  }
+
   const runRollbackLastGame = async () => {
     setIsLoading(true);
     return fetch("/api/admin/game", {
@@ -23,7 +30,8 @@ export default function AdminPage() {
         updateType: "rollback",
       }),
       headers: {
-        "x-admin-token": adminToken,
+        [HEADER_VARIABLES.adminToken]: adminToken,
+        [HEADER_VARIABLES.activityId]: selectedActivity?._id.toString(),
       },
     })
       .then((res) => res.json())
@@ -43,7 +51,8 @@ export default function AdminPage() {
         updateType: "end_season",
       }),
       headers: {
-        "x-admin-token": adminToken,
+        [HEADER_VARIABLES.adminToken]: adminToken,
+        [HEADER_VARIABLES.activityId]: selectedActivity?._id.toString(),
       },
     })
       .then((res) => res.json())

@@ -23,11 +23,11 @@ export default function RootLayout({
     <html lang="en" className={inter.className}>
       <ActivityStoreProvider>
         <UIStoreProvider>
-          <GlobalLoading />
           <body
             className="h-dvh flex flex-col items-center"
             data-theme="rankifyTheme"
           >
+            <GlobalLoading />
             <Header />
             <main className="h-[calc(100%-8rem)] w-full sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12">
               {children}

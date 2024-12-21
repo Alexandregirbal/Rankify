@@ -15,7 +15,7 @@ export const getActivityId = async (activityName: string) => {
   const activity = await activityModel.findOne({ name: activityName }).exec();
   if (!activity) return null;
 
-  return activity._id;
+  return activity._id.toString();
 };
 
 export const getActivityName = async (activityId: string) => {

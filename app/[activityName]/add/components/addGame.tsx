@@ -1,10 +1,14 @@
 "use client";
 
+import { HEADER_VARIABLES } from "@/app/constants";
+import { ZodObjectId } from "@/database/utils";
 import { calculateTeamsExpectations } from "@/modules/elo/expectations";
 import { estimateBaseRating } from "@/modules/elo/ratings";
 import { TeamScoring } from "@/modules/elo/types";
 import { PlayerMongo } from "@/modules/player/types";
+import { useActivityStore } from "@/stores/activity/provider";
 import { useUIStore } from "@/stores/ui/provider";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, MouseEventHandler, useState } from "react";
 import TextCircle from "./textCircle";
 
@@ -14,11 +18,20 @@ const DEFAULT_TEAM_SCORING: TeamScoring = {
   eliminationFoul: "",
 };
 
-export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
+export default function AddGame({
+  allPlayers,
+  activityId,
+}: {
+  allPlayers: PlayerMongo[];
+  activityId: ZodObjectId;
+}) {
   const [team2, setTeam2] = useState<TeamScoring>(DEFAULT_TEAM_SCORING);
   const [team1, setTeam1] = useState<TeamScoring>(DEFAULT_TEAM_SCORING);
   const [teamRadioValue, setTeamRadioValue] = useState(true);
+
   const { isLoading, setIsLoading } = useUIStore((state) => state);
+  const { selectedActivity } = useActivityStore((state) => state);
+  const router = useRouter();
 
   const addPlayerTeam1Player = (player: PlayerMongo) => {
     setTeam1((oldState) => ({
@@ -106,14 +119,17 @@ export default function AddGame({ allPlayers }: { allPlayers: PlayerMongo[] }) {
     setIsLoading(true);
     fetch("/api/game", {
       method: "POST",
+      headers: {
+        [HEADER_VARIABLES.activityId]: activityId.toString(),
+      },
       body: JSON.stringify({ team1, team2 }),
     })
       .then((res) => {
         if (res.status === 200) {
-          window.location.href = "/";
+          router.push(`/${selectedActivity?.name}`);
         }
       })
-      .catch(() => {
+      .finally(() => {
         setIsLoading(false);
       });
   };

@@ -1,7 +1,13 @@
 "use client";
+import { useActivityStore } from "@/stores/activity/provider";
+import { useRouter } from "next/navigation";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 
 export default function AddPlayer() {
+  const { selectedActivity } = useActivityStore((state) => state);
+
+  const router = useRouter();
+
   const [newPlayerName, setNewPlayerName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,12 +23,15 @@ export default function AddPlayer() {
     setIsLoading(true);
     fetch("/api/players", {
       method: "POST",
-      body: JSON.stringify({ name: newPlayerName.trim() }),
+      body: JSON.stringify({
+        name: newPlayerName,
+        activityId: selectedActivity?._id,
+      }),
     })
       .then(() => {
-        window.location.href = "/";
+        router.refresh();
       })
-      .catch(() => {
+      .finally(() => {
         setIsLoading(false);
       });
   };

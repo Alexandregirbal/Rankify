@@ -1,3 +1,4 @@
+import { HEADER_VARIABLES } from "@/app/constants";
 import { getEnvConfigs } from "@/envConfig";
 import { rollbackLastGame } from "@/modules/game/update";
 import { revalidatePath } from "next/cache";

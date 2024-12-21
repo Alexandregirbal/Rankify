@@ -1,3 +1,4 @@
+import { HEADER_VARIABLES } from "@/app/constants";
 import { getEnvConfigs } from "@/envConfig";
 import { getActivityName } from "@/modules/activity/get";
 import { calculatePlayersRatings } from "@/modules/elo/ratings";

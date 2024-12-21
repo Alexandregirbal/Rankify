@@ -48,6 +48,7 @@ playerModelSchema
   .index({ activityId: 1 })
   .index({ userId: 1 })
   .index({ rating: -1 });
+playerModelSchema.index({ userId: 1, activityId: 1 }, { unique: true });
 
 export const playerModel =
   (models.Player as Model<PlayerMongo>) ?? model("Player", playerModelSchema);

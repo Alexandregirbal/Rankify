@@ -15,6 +15,8 @@ const gamePlayerModelSchema = new Schema<GamePlayer>(
 
 const gameModelSchema = new Schema<GameMongo>(
   {
+    activityId: { type: Schema.Types.ObjectId, required: true },
+    activityName: { type: String, required: true },
     team1: {
       type: [gamePlayerModelSchema],
       required: true,

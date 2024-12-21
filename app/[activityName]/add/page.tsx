@@ -18,6 +18,7 @@ export default async function AddPage({ params }: ActivityNameParams) {
         allPlayers={allPlayers.sort((a, b) =>
           a.userName > b.userName ? 1 : -1
         )}
+        activityId={activityId}
       />
     </div>
   );

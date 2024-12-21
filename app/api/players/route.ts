@@ -1,6 +1,9 @@
+import { HEADER_VARIABLES } from "@/app/constants";
+import { zodObjectId } from "@/database/utils";
 import { createPlayer } from "@/modules/player/create";
 import { getAllPlayersOfActivity } from "@/modules/player/get";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 export async function GET(request: Request) {
   const activityId = request.headers.get(HEADER_VARIABLES.activityId);
@@ -12,13 +15,27 @@ export async function GET(request: Request) {
   return Response.json({ players });
 }
 
+const addNewPlayerSchema = z.object({
+  name: z.string().transform((val) => val.trim()),
+  activityId: zodObjectId,
+});
+
 export async function POST(request: Request) {
-  const { name } = await request.json();
-  if (!name) {
-    return Response.json({ error: "Name is required" }, { status: 400 });
+  const body = await request.json();
+  const parsedBody = addNewPlayerSchema.safeParse(body);
+  if (!parsedBody.success) {
+    return Response.json(
+      { error: "Valid name and activity are required" },
+      { status: 400 }
+    );
   }
 
-  const player = await createPlayer(name);
+  const { name, activityId } = parsedBody.data;
+
+  const player = await createPlayer({
+    userName: name,
+    activityId,
+  });
   revalidatePath("/", "layout");
 
   return Response.json({ player }, { status: 200 });

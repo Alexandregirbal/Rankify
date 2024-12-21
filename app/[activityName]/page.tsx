@@ -11,7 +11,6 @@ import { ActivityNameParams } from "./types";
 
 export default async function Leaderboard({ params }: ActivityNameParams) {
   const { activityName } = await params;
-  console.log(`~~~~~ Girbalog | activityName: `, activityName);
 
   const activityId = await getActivityId(activityName);
   if (!activityId) return <div>Activity not found</div>;

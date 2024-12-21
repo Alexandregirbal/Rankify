@@ -13,11 +13,6 @@ import { getPlayerQuoteOfTheDay } from "@/modules/quote/get";
 import dayjs from "dayjs";
 
 export async function GET(request: Request): Promise<Response> {
-  const activityId = request.headers.get(HEADER_VARIABLES.activityId);
-  if (!activityId) {
-    return Response.json({ error: "Activity is required" }, { status: 401 });
-  }
-
   const { searchParams } = new URL(request.url);
   const playerId = searchParams.get("playerId");
 

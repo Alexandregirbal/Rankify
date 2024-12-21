@@ -1,4 +1,5 @@
 import mongooseConnect from "@/database/config/mongoose";
+import { ZodObjectId } from "@/database/utils";
 import { ObjectId } from "mongodb";
 import { PipelineStage } from "mongoose";
 import { PlayerMongo } from "../player/types";
@@ -6,13 +7,15 @@ import { gameModel } from "./model";
 import { GameMongo } from "./types";
 
 export const getTotalNumberOfGames = async ({
+  activityId,
   playerId,
 }: {
+  activityId: ZodObjectId;
   playerId?: PlayerMongo["_id"];
 }): Promise<number> => {
   await mongooseConnect();
 
-  const conditions: Record<string, any> = {};
+  const conditions: Record<string, any> = { activityId };
 
   if (playerId) {
     conditions.$or = [
@@ -48,15 +51,20 @@ export const getTotalNumberOfWins = async (
 };
 
 export const getNumberOfGamesSince = async ({
+  activityId,
   since = new Date(2024, 0, 1),
   playerId,
 }: {
+  activityId: ZodObjectId;
   since?: Date;
   playerId?: PlayerMongo["_id"];
 }) => {
   await mongooseConnect();
 
-  const conditions: Record<string, any> = { createdAt: { $gte: since } };
+  const conditions: Record<string, any> = {
+    activityId,
+    createdAt: { $gte: since },
+  };
 
   if (playerId) {
     conditions.$or = [

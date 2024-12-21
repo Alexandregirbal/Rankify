@@ -24,11 +24,13 @@ export default async function Charts({ params }: ActivityNameParams) {
     numberOfGamesPlayedToday,
   ] = await Promise.all([
     getAllPlayersRatingHistories({ activityId }),
-    getTotalNumberOfGames({}),
+    getTotalNumberOfGames({ activityId }),
     getNumberOfGamesSince({
+      activityId,
       since: currentSeason?.startDate,
     }),
     getNumberOfGamesSince({
+      activityId,
       since: dayjs().startOf("day").toDate(),
     }),
   ]);

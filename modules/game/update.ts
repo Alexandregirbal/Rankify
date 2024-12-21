@@ -5,10 +5,6 @@ export const rollbackLastGame = async () => {
   const [lastGamePlayed] = await gameModel
     .find({}, null, { sort: { createdAt: -1 }, limit: 1 })
     .lean();
-  console.log(
-    `~~~~~ Girbalog | rollbackLastGame | lastGamePlayed: `,
-    lastGamePlayed
-  );
 
   if (!lastGamePlayed)
     return {
