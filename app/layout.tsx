@@ -1,3 +1,4 @@
+import { ActivityStoreProvider } from "@/stores/activity/provider";
 import { UIStoreProvider } from "@/stores/ui/provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -20,19 +21,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.className}>
-      <UIStoreProvider>
-        <GlobalLoading />
-        <body
-          className="h-dvh flex flex-col items-center"
-          data-theme="rankifyTheme"
-        >
-          <Header />
-          <main className="h-[calc(100%-8rem)] w-full sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12">
-            {children}
-          </main>
-          <Footer />
-        </body>
-      </UIStoreProvider>
+      <ActivityStoreProvider>
+        <UIStoreProvider>
+          <GlobalLoading />
+          <body
+            className="h-dvh flex flex-col items-center"
+            data-theme="rankifyTheme"
+          >
+            <Header />
+            <main className="h-[calc(100%-8rem)] w-full sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-4/12">
+              {children}
+            </main>
+            <Footer />
+          </body>
+        </UIStoreProvider>
+      </ActivityStoreProvider>
     </html>
   );
 }

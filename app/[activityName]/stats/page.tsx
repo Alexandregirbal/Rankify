@@ -14,9 +14,9 @@ import RatingHistories from "./components/ratingHistories";
 export default async function Charts({ params }: ActivityNameParams) {
   const { activityName } = await params;
   const activityId = await getActivityId(activityName);
-  if (!activityId) return <div>Activity not found</div>;
+  if (!activityId) return <div>{"Activity not found"}</div>;
 
-  const currentSeason = await getCurrentSeason();
+  const currentSeason = await getCurrentSeason(activityId);
   const [
     allPlayers,
     totalNumberOfGamesPlayed,

@@ -3,10 +3,9 @@ import { getAllPlayersOfActivity } from "@/modules/player/get";
 import { revalidatePath } from "next/cache";
 
 export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const activityId = url.searchParams.get("activityId");
+  const activityId = request.headers.get(HEADER_VARIABLES.activityId);
   if (!activityId) {
-    return Response.json({ error: "activityId is required" }, { status: 400 });
+    return Response.json({ error: "Activity is required" }, { status: 401 });
   }
 
   const players = await getAllPlayersOfActivity({ activityId });

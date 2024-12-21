@@ -17,3 +17,11 @@ export const getActivityId = async (activityName: string) => {
 
   return activity._id;
 };
+
+export const getActivityName = async (activityId: string) => {
+  await mongooseConnect();
+  const activity = await activityModel.findOne({ _id: activityId }).exec();
+  if (!activity) return null;
+
+  return activity.name;
+};

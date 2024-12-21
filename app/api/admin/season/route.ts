@@ -1,4 +1,5 @@
 import { getEnvConfigs } from "@/envConfig";
+import { getActivityName } from "@/modules/activity/get";
 import { getAllPlayersOfActivity } from "@/modules/player/get";
 import {
   resetPlayersRating,
@@ -15,14 +16,22 @@ const postSeasonBodySchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const token = request.headers.get("x-admin-token");
-  const activityId = request.headers.get("x-activityId");
+  const token = request.headers.get(HEADER_VARIABLES.adminToken);
+  const activityId = request.headers.get(HEADER_VARIABLES.activityId);
 
-  if (token !== getEnvConfigs().ADMIN_TOKEN) {
+  if (!token || token !== getEnvConfigs().ADMIN_TOKEN) {
     return Response.json({ error: "Invalid admin token" }, { status: 401 });
   }
+
   if (!activityId) {
-    return Response.json({ error: "Activity is required" }, { status: 400 });
+    return Response.json({ error: "Activity is required" }, { status: 401 });
+  }
+  const activityName = await getActivityName(activityId);
+  if (!activityName) {
+    return Response.json(
+      { error: "Activity could not be found" },
+      { status: 400 }
+    );
   }
 
   const body = await request.json();
@@ -47,7 +56,7 @@ export async function POST(request: Request) {
         rating: player.rating,
       }));
 
-      const endedSeason = await endActiveSeason(leaderboard);
+      const endedSeason = await endActiveSeason({ activityId, leaderboard });
       if (!endedSeason)
         return Response.json({ error: "No active season" }, { status: 400 });
 
@@ -64,6 +73,8 @@ export async function POST(request: Request) {
       const [_, newSeason] = await Promise.all([
         resetPlayersRating(),
         startNewSeason({
+          activityId,
+          activityName,
           number: endedSeason.number + 1,
         }),
       ]);

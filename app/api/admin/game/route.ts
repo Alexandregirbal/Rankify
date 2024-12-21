@@ -8,9 +8,9 @@ const putGameBodySchema = z.object({
 });
 
 export async function PUT(request: Request) {
-  const token = request.headers.get("x-admin-token");
+  const token = request.headers.get(HEADER_VARIABLES.adminToken);
 
-  if (token !== getEnvConfigs().ADMIN_TOKEN) {
+  if (!token || token !== getEnvConfigs().ADMIN_TOKEN) {
     return Response.json({ error: "Invalid admin token" }, { status: 401 });
   }
 
