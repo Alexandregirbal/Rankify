@@ -15,6 +15,12 @@ const leaderboardModelSchema = new Schema<Leaderboard>(
 const seasonModelSchema = new Schema<SeasonMongo>(
   {
     number: { type: Number, required: true, default: 1 },
+    activityId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Activity",
+    },
+    activityName: { type: String, required: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     state: { type: String, enum: ["active", "ended"], required: true },
@@ -24,6 +30,8 @@ const seasonModelSchema = new Schema<SeasonMongo>(
   },
   baseSchemaOptions
 );
+
+seasonModelSchema.index({ activityId: 1 });
 
 export const seasonModel =
   (models.Season as Model<SeasonMongo>) ?? model("Season", seasonModelSchema);

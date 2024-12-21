@@ -10,6 +10,8 @@ export const leaderboardSchema = z.object({
 
 export const seasonSchema = z.object({
   number: z.number(),
+  activityId: zodObjectId,
+  activityName: z.string(),
   startDate: z.date(),
   endDate: z.date(),
   state: z.enum(["active", "ended"]),

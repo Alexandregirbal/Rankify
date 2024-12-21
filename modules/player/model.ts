@@ -44,5 +44,10 @@ const playerModelSchema = new Schema<PlayerMongo>(
   baseSchemaOptions
 );
 
+playerModelSchema
+  .index({ activityId: 1 })
+  .index({ userId: 1 })
+  .index({ rating: -1 });
+
 export const playerModel =
   (models.Player as Model<PlayerMongo>) ?? model("Player", playerModelSchema);

@@ -3,8 +3,9 @@ import { activityModel } from "@/modules/activity/model";
 import { runScript } from "../../runScript";
 import { migrateToNewGameSchema } from "./games";
 import { migrateToNewPlayerSchema } from "./players";
+import { migrateToNewSeasonSchema } from "./seasons";
 
-const APPLY_UPDATES = true;
+const APPLY_UPDATES = false;
 
 runScript(async () => {
   await mongooseConnect();
@@ -39,6 +40,16 @@ runScript(async () => {
   reports.push({
     migration: "migrateToNewGameSchema",
     data: gameMigrationReport,
+  });
+
+  const seasonMigrationReport = await migrateToNewSeasonSchema({
+    activityId,
+    activityName,
+    applyUpdates: APPLY_UPDATES,
+  });
+  reports.push({
+    migration: "migrateToNewSeasonSchema",
+    data: seasonMigrationReport,
   });
 
   return reports;
