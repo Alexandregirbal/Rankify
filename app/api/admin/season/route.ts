@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       const leaderboard: Leaderboard[] = players.map((player, index) => ({
         ranking: index + 1,
         playerId: player._id,
-        playreName: player.userName,
+        playerName: player.userName,
         rating: player.rating,
       }));
 

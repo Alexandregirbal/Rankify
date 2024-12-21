@@ -12,6 +12,8 @@ export const gamePlayerSchema = z.object({
 export const teamSchema = z.array(gamePlayerSchema);
 
 export const gameSchema = z.object({
+  activityId: zodObjectId,
+  activityName: z.string(),
   team1: teamSchema,
   team2: teamSchema,
   scores: z.array(z.number()).length(2),

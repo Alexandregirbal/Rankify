@@ -6,7 +6,7 @@ const leaderboardModelSchema = new Schema<Leaderboard>(
   {
     ranking: { type: Number, required: true },
     playerId: { type: Schema.Types.ObjectId, ref: "Player", required: true },
-    playreName: { type: String, required: true },
+    playerName: { type: String, required: true },
     rating: { type: Number, required: true },
   },
   { _id: false }

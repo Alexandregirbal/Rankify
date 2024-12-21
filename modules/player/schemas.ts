@@ -15,6 +15,7 @@ export const trophySchema = z.object({
 
 export const playerSchema = z.object({
   userId: zodObjectId,
+  name: z.string().optional(), // TODO: remove after migration
   userName: z.string(),
   activityId: zodObjectId,
   activityName: z.string(),

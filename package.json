@@ -1,6 +1,6 @@
 {
   "name": "rankify",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "engines": {
     "node": ">=20.x"
   },
@@ -14,8 +14,9 @@
     "lint": "next lint",
     "ts-check": "tsc --noEmit",
     "validate": "npm run ts-check && npm run lint && npm run test",
-    "script:seed:base": "tsx ./scripts/seedBase.ts",
-    "script:seed:mocks": "tsx ./scripts/seedMocks.ts"
+    "script:seed:base": "tsx ./scripts/seeds/base.ts",
+    "script:seed:mocks": "tsx ./scripts/seeds/mocks.ts",
+    "script:migrations:activities": "tsx ./scripts/migrations/activities/index.ts"
   },
   "dependencies": {
     "@next/env": "^14.2.5",

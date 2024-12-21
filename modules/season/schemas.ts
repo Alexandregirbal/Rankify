@@ -4,7 +4,7 @@ import { z } from "zod";
 export const leaderboardSchema = z.object({
   ranking: z.number(),
   playerId: zodObjectId,
-  playreName: z.string(),
+  playerName: z.string(),
   rating: z.number(),
 });
 
