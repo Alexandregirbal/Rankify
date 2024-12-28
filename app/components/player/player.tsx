@@ -50,7 +50,7 @@ export default function PlayerComponent({
             <span>{ranking}</span>
           </div>
           <div className="flex flex-row items-centertext-center">
-            {player.userName}
+            {getNameWithTrophies(player)}
           </div>
         </div>
         <div className="flex flex-row items-center text-center w-2/5 justify-between">

@@ -5,6 +5,7 @@ import { PlayerMongo } from "@/modules/player/types";
 import Link from "next/link";
 import { QueueIcon } from "../ui/icons/QueueIcon";
 import LastGameStats from "./lastGameStats";
+import { getNameWithTrophies } from "./player";
 
 export const getTrophyIcon = (ranking: number, key: number) => {
   console.log("RANKGing: ", ranking);
@@ -46,7 +47,7 @@ export default function PodiumPlayer({
   player: PlayerMongo;
   ranking: number;
 }) {
-  const icon = getRankingIcon(ranking);
+  const nameWithTrophies = getNameWithTrophies(player);
   const { userName, _id } = player;
 
   return (
@@ -61,7 +62,7 @@ export default function PodiumPlayer({
             <span className="text-2xl">{getAvatarContent(ranking)}</span>
           </div>
         </div>
-        <span className="text-xl">{userName}</span>
+        <span className="text-xl">{nameWithTrophies}</span>
       </div>
       <div className="flex flex-col items-center gap-2">
         <div className="flex gap-2 items-center text-xs">

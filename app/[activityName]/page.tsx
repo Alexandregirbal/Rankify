@@ -41,7 +41,7 @@ export default async function Leaderboard({ params }: ActivityNameParams) {
         <p className="text-center text-sm">{quoteOfTheDay}</p>
       </div>
       <div className="flex flex-row justify-evenly">
-        {getFirstThree().map((el, key) => {
+        {getFirstThree().map((el) => {
           if (!el) return <></>;
 
           const { ranking, ...player } = el;
