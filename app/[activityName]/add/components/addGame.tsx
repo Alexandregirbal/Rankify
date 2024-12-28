@@ -168,9 +168,9 @@ export default function AddGame({
                     <div className="flex flex-col gap-2">
                       <span className="text-base text-accent">Team 1</span>
                       <div className="flex flex-col gap-1">
-                        {team1.players.map((player, key) => {
+                        {team1.players.map((player) => {
                           return (
-                            <span key={key} className="text-sm">
+                            <span key={player.userName} className="text-sm">
                               {player.userName}
                             </span>
                           );
@@ -180,9 +180,9 @@ export default function AddGame({
                     <div className="flex flex-col gap-2">
                       <span className="text-base text-accent">Team 2</span>
                       <div className="flex flex-col gap-1">
-                        {team2.players.map((player, key) => {
+                        {team2.players.map((player) => {
                           return (
-                            <span key={key} className="text-sm">
+                            <span key={player.userName} className="text-sm">
                               {player.userName}
                             </span>
                           );
