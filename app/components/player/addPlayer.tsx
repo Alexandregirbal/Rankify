@@ -1,4 +1,5 @@
 "use client";
+import { HEADER_VARIABLES } from "@/app/constants";
 import { useActivityStore } from "@/stores/activity/provider";
 import { useRouter } from "next/navigation";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
@@ -27,6 +28,9 @@ export default function AddPlayer() {
         name: newPlayerName,
         activityId: selectedActivity?._id,
       }),
+      headers: {
+        [HEADER_VARIABLES.activityId]: selectedActivity?._id.toString() ?? "",
+      },
     })
       .then(() => {
         router.refresh();

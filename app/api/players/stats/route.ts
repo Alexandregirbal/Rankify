@@ -1,3 +1,4 @@
+import { HEADER_VARIABLES } from "@/app/constants";
 import { zodObjectId } from "@/database/utils";
 import {
   getMostFrequentTeammate,
@@ -27,6 +28,11 @@ export async function GET(request: Request): Promise<Response> {
     );
   }
 
+  const activityId = request.headers.get(HEADER_VARIABLES.activityId);
+  if (!activityId) {
+    return Response.json({ error: "Activity is required" }, { status: 401 });
+  }
+
   const player = await getPlayer({ playerId });
   if (!player) {
     return Response.json({ error: "player not found" }, { status: 404 });
@@ -41,8 +47,9 @@ export async function GET(request: Request): Promise<Response> {
     mostWinsAgainst,
     mostFrequentTeammate,
   ] = await Promise.all([
-    getTotalNumberOfGames({ playerId }),
+    getTotalNumberOfGames({ activityId, playerId }),
     getNumberOfGamesSince({
+      activityId,
       since: dayjs().startOf("day").toDate(),
       playerId,
     }),

@@ -51,7 +51,7 @@ export default function PodiumPlayer({
 
   return (
     <Link
-      href={`/playerdetail/${_id}`}
+      href={`/playerHistory/${_id}`}
       className="flex flex-col text-center items-center gap-1"
       style={{ marginTop: ranking === 1 ? 0 : 20 }}
     >

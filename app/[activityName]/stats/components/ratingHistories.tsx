@@ -1,8 +1,10 @@
 "use client";
 
+import { HEADER_VARIABLES } from "@/app/constants";
 import { DEFAULT_RATING } from "@/modules/elo/constants";
 import { Player, PlayerMongo } from "@/modules/player/types";
 import { getExtremeRankings } from "@/modules/player/utils";
+import { useActivityStore } from "@/stores/activity/provider";
 import { type ChartData } from "chart.js";
 import "chart.js/auto";
 import { ChangeEvent, useState } from "react";
@@ -19,6 +21,8 @@ type RatingHistoriesProps = {
 };
 
 export default function RatingHistories({ players }: RatingHistoriesProps) {
+  const { selectedActivity } = useActivityStore((state) => state);
+
   const [isLoading, setIsLoading] = useState(false);
   const [nameInput, setNameInput] = useState<PlayerNameSelect>("all");
   const [totalNumberOfGamesPlayed, setTotalNumberOfGamesPlayed] = useState(0);
@@ -98,9 +102,12 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
 
     setIsLoading(true);
     const response = await fetch(
-      `api/players/stats?playerId=${selectedPlayer._id}`,
+      `/api/players/stats?playerId=${selectedPlayer._id}`,
       {
         method: "GET",
+        headers: {
+          [HEADER_VARIABLES.activityId]: selectedActivity?._id.toString() ?? "",
+        },
       }
     ).then((res) => res.json());
 

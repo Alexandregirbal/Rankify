@@ -1,8 +1,10 @@
 "use client";
 
+import { HEADER_VARIABLES } from "@/app/constants";
 import { GameMongo, GamePlayer } from "@/modules/game/types";
 import { PlayerMongo } from "@/modules/player/types";
 import { displayNumberWithSign } from "@/modules/player/utils";
+import { useActivityStore } from "@/stores/activity/provider";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
@@ -76,11 +78,18 @@ const GamesSkeleton = () => {
 };
 
 const HistoryComponent = ({ player }: { player: PlayerMongo }) => {
+  const { selectedActivity } = useActivityStore((state) => state);
+
   const [games, setGames] = useState<GameMongo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/game?playerId=${player._id}`, { method: "GET" })
+    fetch(`/api/game?playerId=${player._id}`, {
+      method: "GET",
+      headers: {
+        [HEADER_VARIABLES.activityId]: selectedActivity?._id.toString() ?? "",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         setGames(data.games);
@@ -88,7 +97,7 @@ const HistoryComponent = ({ player }: { player: PlayerMongo }) => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [player._id]);
+  }, [player._id, selectedActivity?._id]);
 
   return (
     <div className="flex flex-col gap-4 px-2">

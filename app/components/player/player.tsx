@@ -41,7 +41,7 @@ export default function PlayerComponent({
   return (
     <Link
       className="flex rounded-xl items-center gap-2 border bg-neutral border-base-300 py-2 px-4 h-12 w-full"
-      href={`/playerdetail/${player._id}`}
+      href={`/playerHistory/${player._id}`}
     >
       <div className="flex flex-row items-center w-full justify-between">
         <div className="flex flex-row items-center w-3/5">
