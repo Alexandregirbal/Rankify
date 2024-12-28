@@ -38,7 +38,7 @@ export default function Footer() {
     if (!activityName) return `/`;
     switch (tab) {
       case "stats":
-        return `${activityName}/stats`;
+        return `/${activityName}/stats`;
       case "leaderboard":
         return `/${activityName}`;
       case "add":

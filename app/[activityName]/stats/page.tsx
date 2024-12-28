@@ -37,21 +37,21 @@ export default async function Charts({ params }: ActivityNameParams) {
 
   return (
     <div className="h-full flex flex-col items-center gap-6 p-4 overflow-y-scroll text-lg background">
-      <h1 className="text-center text-2xl">{"Season's Stats"}</h1>
+      <h1 className="text-center text-2xl">{"Statistiques de la saison"}</h1>
       <>
         <ul className="w-full">
           <li>
-            <span>Games played total:</span>{" "}
+            <span>Parties jouées au total:</span>{" "}
             <span className="font-bold">
               {totalNumberOfGamesPlayed.toLocaleString()}
             </span>
           </li>
           <li>
-            <span>Games played this season:</span>{" "}
+            <span>Parties jouées cette saison:</span>{" "}
             <span className="font-bold">{seasonNumberOfGamesPlayed}</span>
           </li>
           <li>
-            <span>Games played today:</span>{" "}
+            <span>{"Parties jouées aujourd'hui:"}</span>{" "}
             <span className="font-bold">{numberOfGamesPlayedToday}</span>
           </li>
         </ul>

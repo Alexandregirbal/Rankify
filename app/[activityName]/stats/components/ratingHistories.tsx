@@ -161,7 +161,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
           value={nameInput}
         >
           <option value="all" className="text-error">
-            All players
+            Tous les joueurs
           </option>
           {players.map((player) => (
             <option key={player.userName}>{player.userName}</option>
@@ -182,7 +182,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
           )}
           <ul className="text-lg text-left w-full">
             <li>
-              <span>Current rating:</span>{" "}
+              <span>Notation actuelle:</span>{" "}
               <span className="font-bold">
                 {chartDatasets[0].data[chartDatasets[0].data.length - 1]}
               </span>
@@ -192,42 +192,42 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
             ) : (
               <>
                 <li>
-                  <span>Games played:</span>{" "}
+                  <span>Parties jouées:</span>{" "}
                   <span className="font-bold">{totalNumberOfGamesPlayed}</span>
                 </li>
                 <li>
-                  <span>Games played today:</span>{" "}
+                  <span>{"Parties jouées aujourd'hui:"}</span>{" "}
                   <span className="font-bold">{numberOfGamesPlayedToday}</span>
                 </li>
                 <li>
-                  <span>Win/Loss ratio:</span>{" "}
+                  <span>Ratio victoires/défaites:</span>{" "}
                   <span className="font-bold">
                     {(winLossRatio * 100).toFixed(0)}%
                   </span>
                 </li>
                 <li>
-                  <span>Best win streak:</span>{" "}
+                  <span>Meilleure série de victoires:</span>{" "}
                   <span className="font-bold">{extremeStreaks.win}</span>
                 </li>
                 <li>
-                  <span>Worst loss streak:</span>{" "}
+                  <span>Pire série de défaites:</span>{" "}
                   <span className="font-bold">{extremeStreaks.loss}</span>
                 </li>
                 {mostLossesAgainst && (
                   <li>
-                    <span>Most losses:</span>{" "}
+                    <span>Pire ennemi:</span>{" "}
                     <span className="font-bold">
                       {mostLossesAgainst.name} ({mostLossesAgainst.count}{" "}
-                      losses, {mostLossesAgainst.totalScore.against} -{" "}
+                      défaites, {mostLossesAgainst.totalScore.against} -{" "}
                       {mostLossesAgainst.totalScore.for})
                     </span>
                   </li>
                 )}
                 {mostWinsAgainst && (
                   <li>
-                    <span>Most wins:</span>{" "}
+                    <span>Meilleur ennemi:</span>{" "}
                     <span className="font-bold">
-                      {mostWinsAgainst.name} ({mostWinsAgainst.count} wins,{" "}
+                      {mostWinsAgainst.name} ({mostWinsAgainst.count} victoires,{" "}
                       {mostWinsAgainst.totalScore.for}-
                       {mostWinsAgainst.totalScore.against})
                     </span>
@@ -235,10 +235,10 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
                 )}
                 {mostFrequentTeammate && (
                   <li>
-                    <span>Most frequent teammate:</span>{" "}
+                    <span>Meilleur partenaire:</span>{" "}
                     <span className="font-bold">
                       {mostFrequentTeammate.name} ({mostFrequentTeammate.count}{" "}
-                      games)
+                      parties)
                     </span>
                   </li>
                 )}

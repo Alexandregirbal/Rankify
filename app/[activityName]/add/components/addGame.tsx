@@ -145,8 +145,8 @@ export default function AddGame({
   const baseRating = estimateBaseRating(team1.players, team2.players);
 
   return (
-    <div className="w-full flex flex-col items-center text-center gap-10">
-      <h1 className="text-center text-2xl">New game</h1>
+    <div className="w-full flex flex-col items-center text-center gap-4">
+      <h1 className="text-center text-2xl">Ajouter une partie</h1>
       <div className="flex flex-col gap-2 w-full">
         <div className="collapse bg-neutral collapse-arrow">
           <input
@@ -194,8 +194,8 @@ export default function AddGame({
             </>
           </div>
           <div className="collapse-content">
-            <div className="w-full flex flex-row h-96 justify-between">
-              <div className="flex flex-1 flex-col overflow-y-scroll">
+            <div className="w-full flex flex-row max-h-96 justify-between">
+              <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
                 {allPlayers.map((player, key) => {
                   const isSelected = team1.players.some(
                     (team1Player) => team1Player.playerId === player._id
@@ -209,19 +209,17 @@ export default function AddGame({
                           ? removeTeam1Player(player)
                           : addPlayerTeam1Player(player)
                       }
-                      className={`flex flex-col h-10`}
+                      className={`flex flex-col text-lg ${
+                        isSelected ? "text-accent" : ""
+                      }`}
                     >
-                      <span
-                        className={`text-sm ${isSelected ? "text-accent" : ""}`}
-                      >
-                        {player.userName}
-                      </span>
+                      {player.userName}
                     </div>
                   );
                 })}
               </div>
               <div className="divider divider-horizontal">VS</div>
-              <div className="flex flex-1 flex-col overflow-y-scroll">
+              <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
                 {allPlayers.map((player, key) => {
                   const isSelected = team2.players.some(
                     (team2Player) => team2Player.playerId === player._id
@@ -235,13 +233,11 @@ export default function AddGame({
                           ? removeTeam2Player(player)
                           : addPlayerTeam2Player(player)
                       }
-                      className="flex flex-col h-10"
+                      className={`flex flex-col text-lg ${
+                        isSelected ? "text-accent" : ""
+                      }`}
                     >
-                      <span
-                        className={`text-sm ${isSelected ? "text-accent" : ""}`}
-                      >
-                        {player.userName}
-                      </span>
+                      {player.userName}
                     </div>
                   );
                 })}

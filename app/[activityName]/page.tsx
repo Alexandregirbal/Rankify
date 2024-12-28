@@ -6,6 +6,7 @@ import { getEnvConfigs } from "@/envConfig";
 import { getActivityId } from "@/modules/activity/get";
 import { getAllPlayersOfActivity } from "@/modules/player/get";
 import { getOrCreateQuoteOfTheDay } from "@/modules/quote/get";
+import { getCurrentSeason } from "@/modules/season/get";
 import PodiumPlayer from "../components/player/podiumPlayer";
 import { ActivityNameParams } from "./types";
 
@@ -14,6 +15,8 @@ export default async function Leaderboard({ params }: ActivityNameParams) {
 
   const activityId = await getActivityId(activityName);
   if (!activityId) return <div>Activity not found</div>;
+
+  const currentSeason = await getCurrentSeason(activityId);
 
   const allPlayers = await getAllPlayersOfActivity({
     activityId,
@@ -31,7 +34,10 @@ export default async function Leaderboard({ params }: ActivityNameParams) {
   return (
     <div className="h-full w-full gap-6 background flex flex-col overflow-y-scroll">
       <div>
-        <h1 className="text-center text-2xl">Leaderboard</h1>
+        <h1 className="text-center text-2xl">{`Classement ${activityName}`}</h1>
+        <h2 className="text-center text-lg">{`Saison ${
+          currentSeason?.number ?? 1
+        }`}</h2>
         <p className="text-center text-sm">{quoteOfTheDay}</p>
       </div>
       <div className="flex flex-row justify-evenly">
