@@ -27,7 +27,8 @@ export default function SelectActivity({
         _id: matchingActivity._id,
         name: matchingActivity.name,
       });
-      router.replace(matchingActivity.name);
+
+      router.push(`/${matchingActivity.name}`);
     },
     [activities, setSelectedActivity, router]
   );
