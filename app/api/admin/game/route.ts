@@ -1,3 +1,4 @@
+import { HEADER_VARIABLES } from "@/app/constants";
 import { getEnvConfigs } from "@/envConfig";
 import { rollbackLastGame } from "@/modules/game/update";
 import { revalidatePath } from "next/cache";
@@ -8,10 +9,14 @@ const putGameBodySchema = z.object({
 });
 
 export async function PUT(request: Request) {
-  const token = request.headers.get("x-admin-token");
-
-  if (token !== getEnvConfigs().ADMIN_TOKEN) {
+  const adminToken = request.headers.get(HEADER_VARIABLES.adminToken);
+  if (!adminToken || adminToken !== getEnvConfigs().ADMIN_TOKEN) {
     return Response.json({ error: "Invalid admin token" }, { status: 401 });
+  }
+
+  const activityId = request.headers.get(HEADER_VARIABLES.activityId);
+  if (!activityId) {
+    return Response.json({ error: "Activity is required" }, { status: 401 });
   }
 
   const body = await request.json();
@@ -25,7 +30,7 @@ export async function PUT(request: Request) {
   const report: Record<string, any> = {};
   switch (updateType) {
     case "rollback":
-      const rollbackResult = await rollbackLastGame();
+      const rollbackResult = await rollbackLastGame({ activityId });
 
       revalidatePath("/", "layout");
       report.rollback = rollbackResult;

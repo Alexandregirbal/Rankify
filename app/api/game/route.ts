@@ -1,4 +1,6 @@
+import { HEADER_VARIABLES } from "@/app/constants";
 import { getEnvConfigs } from "@/envConfig";
+import { getActivityName } from "@/modules/activity/get";
 import { calculatePlayersRatings } from "@/modules/elo/ratings";
 import { teamScoringSchema } from "@/modules/elo/schemas";
 import { createGame } from "@/modules/game/create";
@@ -16,6 +18,19 @@ const requestBodySchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const activityId = request.headers.get(HEADER_VARIABLES.activityId);
+  if (!activityId) {
+    return Response.json({ error: "Activity is required" }, { status: 401 });
+  }
+
+  const activityName = await getActivityName(activityId);
+  if (!activityName) {
+    return Response.json(
+      { error: "Activity could not be found" },
+      { status: 400 }
+    );
+  }
+
   const requestBody = await request.json();
   const requestBodyResult = requestBodySchema.safeParse(requestBody);
   if (!requestBodyResult.success) {
@@ -71,6 +86,10 @@ export async function POST(request: Request) {
   );
 
   await createGame({
+    activity: {
+      _id: activityId,
+      name: activityName,
+    },
     team1: {
       players: newPlayersRatings.filter((player) =>
         team1PlayersIds.includes(player.playerId)
@@ -109,11 +128,12 @@ export async function GET(request: Request) {
   if (!playerId) {
     return Response.json({ error: "playerId is required" }, { status: 400 });
   }
+
   const player = await getPlayer({ playerId });
   if (!player) {
     return Response.json({ error: "player not found" }, { status: 404 });
   }
 
-  const games = await getPlayerGames({ playerId, playerName: player.name });
+  const games = await getPlayerGames({ playerId });
   return Response.json({ games });
 }

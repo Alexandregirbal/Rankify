@@ -1,66 +1,22 @@
 "use server";
 
-import AddPlayer from "@/app/components/player/addPlayer";
-import PlayerComponent from "@/app/components/player/player";
-import { getEnvConfigs } from "@/envConfig";
-import { getAllPlayers } from "@/modules/player/get";
-import { getOrCreateQuoteOfTheDay } from "@/modules/quote/get";
-import PodiumPlayer from "./components/player/podiumPlayer";
+import { getAllActivities } from "@/modules/activity/get";
+import LinkButton from "./components/ui/linkButton";
 
-export default async function Leaderboard() {
-  const allPlayers = await getAllPlayers(getEnvConfigs().GAMES_TO_BE_RANKABLE);
-  const otherPlayers = allPlayers.slice(3, allPlayers.length);
-  const quoteOfTheDay = await getOrCreateQuoteOfTheDay();
-
-  const getFirstThree = () => [
-    allPlayers[1] ? { ...allPlayers[1], ranking: 2 } : null,
-    allPlayers[0] ? { ...allPlayers[0], ranking: 1 } : null,
-    allPlayers[2] ? { ...allPlayers[2], ranking: 3 } : null,
-  ];
+export default async function HomePage() {
+  const activities = await getAllActivities();
 
   return (
-    <div className="h-full w-full gap-10 bg-gray-950 flex flex-col overflow-y-scroll py-4">
-      <div>
-        <h1 className="text-center text-2xl">Leaderboard</h1>
-        <p className="text-center text-sm">{quoteOfTheDay}</p>
-      </div>
-      <div className="flex flex-row mx-8 justify-between">
-        {getFirstThree().map((el, key) => {
-          if (!el) return <span key={key}>a</span>;
-
-          const { ranking, ...player } = el;
-          return (
-            <PodiumPlayer key={player.name} player={player} ranking={ranking} />
-          );
-        })}
-      </div>
-
-      <div className="flex flex-1 flex-col mx-8 gap-2 overflow-y-scroll">
-        <div className="flex flex-row items-center w-full justify-between px-4">
-          <div className="flex flex-row items-center w-3/5">
-            <div className="flex flex-row items-center text-center w-3/12">
-              <span className="text-primary">Rank</span>
-            </div>
-            <div className="flex flex-row items-center text-center ">
-              <span className="text-primary">Player</span>
-            </div>
-          </div>
-          <div className="flex flex-row items-center text-center w-2/5 justify-between">
-            <span className="text-primary">Rating</span>
-            <span className="text-primary">Streak</span>
-          </div>
-        </div>
-        <div className="flex flex-1 flex-col items-center gap-2 w-full overflow-y-scroll">
-          {otherPlayers.map((player, index) => (
-            <PlayerComponent
-              key={player.name}
-              player={player}
-              ranking={index + 4}
-            />
-          ))}
-          <AddPlayer />
-        </div>
-      </div>
+    <div className="h-full w-full pt-4 gap-6 flex flex-col items-center justify-start">
+      <h1 className=" text-2xl ">Bienvenue sur Rankify</h1>
+      <h2>Choisi ton jeu:</h2>
+      <ol className="px-4 grid grid-cols-3 gap-4">
+        {activities.map((activity) => (
+          <li key={activity._id.toString()}>
+            <LinkButton text={activity.name} href={activity.name} />
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

@@ -75,7 +75,6 @@ export const generatePlayerQuote = async ({
   const games = await getPlayerGames({
     playerId,
     since: dayjs().startOf("day").toDate(),
-    playerName: "",
   });
   if (newGame) games.push(newGame);
 

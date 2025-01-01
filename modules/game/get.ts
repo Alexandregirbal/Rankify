@@ -1,29 +1,26 @@
 import mongooseConnect from "@/database/config/mongoose";
+import { ZodObjectId } from "@/database/utils";
+import { ObjectId } from "mongodb";
+import { PipelineStage } from "mongoose";
 import { PlayerMongo } from "../player/types";
 import { gameModel } from "./model";
 import { GameMongo } from "./types";
-import { PipelineStage } from "mongoose";
-import { log } from "console";
-import { ObjectId } from "mongodb";
 
 export const getTotalNumberOfGames = async ({
+  activityId,
   playerId,
-  playerName,
 }: {
+  activityId: ZodObjectId;
   playerId?: PlayerMongo["_id"];
-  playerName?: PlayerMongo["name"];
 }): Promise<number> => {
   await mongooseConnect();
 
-  const conditions: Record<string, any> = {};
+  const conditions: Record<string, any> = { activityId };
 
   if (playerId) {
     conditions.$or = [
       { "team1.playerId": playerId },
       { "team2.playerId": playerId },
-      ...(playerName
-        ? [{ "team1.name": playerName }, { "team2.name": playerName }]
-        : []),
     ];
   }
 
@@ -31,21 +28,20 @@ export const getTotalNumberOfGames = async ({
 };
 
 export const getTotalNumberOfWins = async (
-  playerId: PlayerMongo["_id"],
-  playerName: PlayerMongo["name"]
+  playerId: PlayerMongo["_id"]
 ): Promise<number> => {
   await mongooseConnect();
 
   const [winsInTeam1, winsInTeam2] = await Promise.all([
     gameModel
       .countDocuments({
-        $or: [{ "team1.playerId": playerId }, { "team1.name": playerName }],
+        "team1.playerId": playerId,
         winner: "1",
       })
       .lean(),
     gameModel
       .countDocuments({
-        $or: [{ "team2.playerId": playerId }, { "team2.name": playerName }],
+        "team2.playerId": playerId,
         winner: "2",
       })
       .lean(),
@@ -55,25 +51,25 @@ export const getTotalNumberOfWins = async (
 };
 
 export const getNumberOfGamesSince = async ({
+  activityId,
   since = new Date(2024, 0, 1),
   playerId,
-  playerName,
 }: {
+  activityId: ZodObjectId;
   since?: Date;
   playerId?: PlayerMongo["_id"];
-  playerName?: PlayerMongo["name"];
 }) => {
   await mongooseConnect();
 
-  const conditions: Record<string, any> = { createdAt: { $gte: since } };
+  const conditions: Record<string, any> = {
+    activityId,
+    createdAt: { $gte: since },
+  };
 
   if (playerId) {
     conditions.$or = [
       { "team1.playerId": playerId },
       { "team2.playerId": playerId },
-      ...(playerName
-        ? [{ "team1.name": playerName }, { "team2.name": playerName }]
-        : []),
     ];
   }
 
@@ -92,23 +88,16 @@ export const getAllGames = async (): Promise<GameMongo[]> => {
 
 export const getPlayerGames = async ({
   playerId,
-  playerName,
   since,
 }: {
   playerId: PlayerMongo["_id"];
-  playerName: PlayerMongo["name"];
   since?: Date;
 }): Promise<GameMongo[]> => {
   await mongooseConnect();
   return gameModel
     .find(
       {
-        $or: [
-          { "team1.playerId": playerId },
-          { "team2.playerId": playerId },
-          { "team1.name": playerName },
-          { "team2.name": playerName },
-        ],
+        $or: [{ "team1.playerId": playerId }, { "team2.playerId": playerId }],
         ...(since ? { createdAt: { $gte: since } } : {}),
       },
       null,
@@ -185,7 +174,7 @@ export const getMostGamesAgainst = async (
     {
       $group: {
         _id: "$opponentTeam.playerId",
-        name: { $first: "$opponentTeam.name" },
+        name: { $first: "$opponentTeam.userName" },
         wins: { $sum: { $cond: ["$playerWon", 1, 0] } },
         losses: { $sum: { $cond: ["$playerWon", 0, 1] } },
         totalGames: { $sum: 1 },
@@ -260,7 +249,7 @@ export const getMostFrequentTeammate = async (
     {
       $group: {
         _id: "$playerTeam.playerId",
-        name: { $first: "$playerTeam.name" },
+        name: { $first: "$playerTeam.userName" },
         count: { $sum: 1 },
       },
     },

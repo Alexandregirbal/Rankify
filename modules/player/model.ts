@@ -21,7 +21,14 @@ const trophyModelSchema = new Schema<Trophy>(
 
 const playerModelSchema = new Schema<PlayerMongo>(
   {
-    name: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    userName: { type: String, required: true },
+    activityId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Activity",
+    },
+    activityName: { type: String, required: true },
     games: { type: Number, required: true },
     rating: { type: Number, required: true },
     ratingHistory: {
@@ -36,6 +43,12 @@ const playerModelSchema = new Schema<PlayerMongo>(
   },
   baseSchemaOptions
 );
+
+playerModelSchema
+  .index({ activityId: 1 })
+  .index({ userId: 1 })
+  .index({ rating: -1 });
+playerModelSchema.index({ userId: 1, activityId: 1 }, { unique: true });
 
 export const playerModel =
   (models.Player as Model<PlayerMongo>) ?? model("Player", playerModelSchema);

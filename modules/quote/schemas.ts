@@ -3,6 +3,8 @@ import { z } from "zod";
 
 export const quoteSchema = z.object({
   type: z.string(),
+  activityId: zodObjectId,
+  activityName: z.string(),
   playerId: zodObjectId.optional(),
   quote: z.string(),
   quoteHistory: z.array(z.string()),

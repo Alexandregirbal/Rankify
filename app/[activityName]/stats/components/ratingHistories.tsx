@@ -1,8 +1,10 @@
 "use client";
 
+import { HEADER_VARIABLES } from "@/app/constants";
 import { DEFAULT_RATING } from "@/modules/elo/constants";
 import { Player, PlayerMongo } from "@/modules/player/types";
 import { getExtremeRankings } from "@/modules/player/utils";
+import { useActivityStore } from "@/stores/activity/provider";
 import { type ChartData } from "chart.js";
 import "chart.js/auto";
 import { ChangeEvent, useState } from "react";
@@ -12,13 +14,15 @@ import { PlayerQuoteSkeleton, PlayerStatsSkeleton } from "./skeletons";
 
 const NEAREST_MULTIPLE = 50;
 
-type PlayerNameSelect = Player["name"] | "all";
+type PlayerNameSelect = Player["userName"] | "all";
 
 type RatingHistoriesProps = {
-  players: Array<Pick<PlayerMongo, "_id" | "name" | "ratingHistory">>;
+  players: Array<Pick<PlayerMongo, "_id" | "userName" | "ratingHistory">>;
 };
 
 export default function RatingHistories({ players }: RatingHistoriesProps) {
+  const { selectedActivity } = useActivityStore((state) => state);
+
   const [isLoading, setIsLoading] = useState(false);
   const [nameInput, setNameInput] = useState<PlayerNameSelect>("all");
   const [totalNumberOfGamesPlayed, setTotalNumberOfGamesPlayed] = useState(0);
@@ -47,16 +51,16 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
   const filterPlayers = (player: RatingHistoriesProps["players"][number]) => {
     return (
       nameInput === "all" ||
-      player.name.toLowerCase().includes(nameInput.toString().toLowerCase())
+      player.userName.toLowerCase().includes(nameInput.toString().toLowerCase())
     );
   };
 
   const chartDatasets = players.filter(filterPlayers).map((player) => {
     return {
-      label: player.name,
+      label: player.userName,
       data: player.ratingHistory.map((rating) => rating.rating),
       fill: false,
-      borderColor: stringToColor(player.name),
+      borderColor: stringToColor(player.userName),
       tension: 0.1,
       cubicInterpolationMode: "monotone" as const,
     };
@@ -92,15 +96,18 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
     if (selectedName === "all") return;
 
     const selectedPlayer = players.find(
-      (player) => player.name === selectedName
+      (player) => player.userName === selectedName
     );
     if (!selectedPlayer) return;
 
     setIsLoading(true);
     const response = await fetch(
-      `api/players/stats?playerId=${selectedPlayer._id}`,
+      `/api/players/stats?playerId=${selectedPlayer._id}`,
       {
         method: "GET",
+        headers: {
+          [HEADER_VARIABLES.activityId]: selectedActivity?._id.toString() ?? "",
+        },
       }
     ).then((res) => res.json());
 
@@ -154,10 +161,10 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
           value={nameInput}
         >
           <option value="all" className="text-error">
-            All players
+            Tous les joueurs
           </option>
           {players.map((player) => (
-            <option key={player.name}>{player.name}</option>
+            <option key={player.userName}>{player.userName}</option>
           ))}
         </select>
         <button className="btn btn-outline btn-error" onClick={resetPlayerName}>
@@ -175,7 +182,7 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
           )}
           <ul className="text-lg text-left w-full">
             <li>
-              <span>Current rating:</span>{" "}
+              <span>Notation actuelle:</span>{" "}
               <span className="font-bold">
                 {chartDatasets[0].data[chartDatasets[0].data.length - 1]}
               </span>
@@ -185,42 +192,42 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
             ) : (
               <>
                 <li>
-                  <span>Games played:</span>{" "}
+                  <span>Parties jouées:</span>{" "}
                   <span className="font-bold">{totalNumberOfGamesPlayed}</span>
                 </li>
                 <li>
-                  <span>Games played today:</span>{" "}
+                  <span>{"Parties jouées aujourd'hui:"}</span>{" "}
                   <span className="font-bold">{numberOfGamesPlayedToday}</span>
                 </li>
                 <li>
-                  <span>Win/Loss ratio:</span>{" "}
+                  <span>Ratio victoires/défaites:</span>{" "}
                   <span className="font-bold">
                     {(winLossRatio * 100).toFixed(0)}%
                   </span>
                 </li>
                 <li>
-                  <span>Best win streak:</span>{" "}
+                  <span>Meilleure série de victoires:</span>{" "}
                   <span className="font-bold">{extremeStreaks.win}</span>
                 </li>
                 <li>
-                  <span>Worst loss streak:</span>{" "}
+                  <span>Pire série de défaites:</span>{" "}
                   <span className="font-bold">{extremeStreaks.loss}</span>
                 </li>
                 {mostLossesAgainst && (
                   <li>
-                    <span>Most losses:</span>{" "}
+                    <span>Pire ennemi:</span>{" "}
                     <span className="font-bold">
                       {mostLossesAgainst.name} ({mostLossesAgainst.count}{" "}
-                      losses, {mostLossesAgainst.totalScore.against} -{" "}
+                      défaites, {mostLossesAgainst.totalScore.against} -{" "}
                       {mostLossesAgainst.totalScore.for})
                     </span>
                   </li>
                 )}
                 {mostWinsAgainst && (
                   <li>
-                    <span>Most wins:</span>{" "}
+                    <span>Meilleur ennemi:</span>{" "}
                     <span className="font-bold">
-                      {mostWinsAgainst.name} ({mostWinsAgainst.count} wins,{" "}
+                      {mostWinsAgainst.name} ({mostWinsAgainst.count} victoires,{" "}
                       {mostWinsAgainst.totalScore.for}-
                       {mostWinsAgainst.totalScore.against})
                     </span>
@@ -228,10 +235,10 @@ export default function RatingHistories({ players }: RatingHistoriesProps) {
                 )}
                 {mostFrequentTeammate && (
                   <li>
-                    <span>Most frequent teammate:</span>{" "}
+                    <span>Meilleur partenaire:</span>{" "}
                     <span className="font-bold">
                       {mostFrequentTeammate.name} ({mostFrequentTeammate.count}{" "}
-                      games)
+                      parties)
                     </span>
                   </li>
                 )}

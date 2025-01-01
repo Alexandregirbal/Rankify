@@ -1,4 +1,4 @@
-import { baseMongoSchema } from "@/database/utils";
+import { baseMongoSchema, zodObjectId } from "@/database/utils";
 import { z } from "zod";
 import { DEFAULT_RATING } from "../elo/constants";
 
@@ -14,10 +14,14 @@ export const trophySchema = z.object({
 });
 
 export const playerSchema = z.object({
-  name: z.string().min(2),
-  games: z.number().default(0),
-  rating: z.number().default(DEFAULT_RATING),
-  ratingHistory: z.array(ratingHistorySchema).default([]),
+  userId: zodObjectId,
+  name: z.string().optional(), // TODO: remove after migration
+  userName: z.string(),
+  activityId: zodObjectId,
+  activityName: z.string(),
+  games: z.number().optional().default(0),
+  rating: z.number().optional().default(DEFAULT_RATING),
+  ratingHistory: z.array(ratingHistorySchema).optional().default([]),
   trophies: z.array(trophySchema).optional(),
 });
 

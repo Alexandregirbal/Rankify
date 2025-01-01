@@ -1,6 +1,5 @@
-import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 import {
   afterAll,
   afterEach,
@@ -10,9 +9,9 @@ import {
   expect,
   it,
 } from "vitest";
-import { gameModel } from "../model";
-import { MOCK_GAMES } from "./mocks/games.mock";
 import { getMostGamesAgainst } from "../get";
+import { gameModel } from "../model";
+import { MOCK_8BALL_GAMES } from "./mocks/games.mock";
 
 let mongoServer: MongoMemoryServer;
 
@@ -28,7 +27,7 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  await gameModel.insertMany(MOCK_GAMES);
+  await gameModel.insertMany(MOCK_8BALL_GAMES);
 });
 
 afterEach(async () => {

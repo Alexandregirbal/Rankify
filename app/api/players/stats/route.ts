@@ -1,5 +1,7 @@
+import { HEADER_VARIABLES } from "@/app/constants";
 import { zodObjectId } from "@/database/utils";
 import {
+  getMostFrequentTeammate,
   getMostLossesAgainst,
   getMostWinsAgainst,
   getNumberOfGamesSince,
@@ -10,7 +12,6 @@ import { getPlayer } from "@/modules/player/get";
 import { getExtremPlayerStreak } from "@/modules/player/utils";
 import { getPlayerQuoteOfTheDay } from "@/modules/quote/get";
 import dayjs from "dayjs";
-import { getMostFrequentTeammate } from "@/modules/game/get";
 
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
@@ -27,6 +28,11 @@ export async function GET(request: Request): Promise<Response> {
     );
   }
 
+  const activityId = request.headers.get(HEADER_VARIABLES.activityId);
+  if (!activityId) {
+    return Response.json({ error: "Activity is required" }, { status: 401 });
+  }
+
   const player = await getPlayer({ playerId });
   if (!player) {
     return Response.json({ error: "player not found" }, { status: 404 });
@@ -41,13 +47,13 @@ export async function GET(request: Request): Promise<Response> {
     mostWinsAgainst,
     mostFrequentTeammate,
   ] = await Promise.all([
-    getTotalNumberOfGames({ playerId, playerName: player.name }),
+    getTotalNumberOfGames({ activityId, playerId }),
     getNumberOfGamesSince({
+      activityId,
       since: dayjs().startOf("day").toDate(),
       playerId,
-      playerName: player.name,
     }),
-    getTotalNumberOfWins(playerId, player.name),
+    getTotalNumberOfWins(playerId),
     getPlayerQuoteOfTheDay(playerId),
     getMostLossesAgainst(playerId),
     getMostWinsAgainst(playerId),

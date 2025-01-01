@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { SchemaOptions } from "mongoose";
+import { SchemaOptions, Types } from "mongoose";
 import { z } from "zod";
 
 export const zodObjectId = z.custom<ObjectId | string>((value) =>
@@ -14,9 +14,15 @@ export const baseMongoSchema = z.object({
   updatedAt: z.date(),
 });
 
-const transformOjectIdToString = (_doc: any, ret: Record<string, any>) => {
-  if (ret._id) ret._id = ret._id.toString();
-  // If you have any other ObjectIds in your schema (like playerId), convert them here
+const isObjectId = (value: any): value is Types.ObjectId =>
+  Types.ObjectId.isValid(value) && value instanceof Types.ObjectId;
+
+const transformObjectIdToString = (_doc: any, ret: Record<string, any>) => {
+  for (const key of Object.keys(ret)) {
+    if (isObjectId(ret[key])) {
+      ret[key] = ret[key].toString();
+    }
+  }
   return ret;
 };
 
@@ -25,9 +31,9 @@ export const baseSchemaOptions: SchemaOptions<any> = {
   timestamps: true,
   versionKey: false,
   toJSON: {
-    transform: transformOjectIdToString,
+    transform: transformObjectIdToString,
   },
   toObject: {
-    transform: transformOjectIdToString,
+    transform: transformObjectIdToString,
   },
 };

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const gamePlayerSchema = z.object({
   playerId: zodObjectId,
-  name: z.string(),
+  userName: z.string(),
   games: z.number(),
   rating: z.number(),
   newRating: z.number().optional(),
@@ -12,6 +12,8 @@ export const gamePlayerSchema = z.object({
 export const teamSchema = z.array(gamePlayerSchema);
 
 export const gameSchema = z.object({
+  activityId: zodObjectId,
+  activityName: z.string(),
   team1: teamSchema,
   team2: teamSchema,
   scores: z.array(z.number()).length(2),

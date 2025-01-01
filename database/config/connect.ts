@@ -11,7 +11,7 @@ const createMongooseConnection = async (): Promise<mongoose.Connection> => {
     getEnvConfigs().MONGODB_URI,
     options
   );
-  console.log("MongoDB connected");
+  console.debug("MongoDB connected");
   return connectionResult.connection;
 };
 

@@ -5,7 +5,7 @@ import { GameMongo, GamePlayer } from "./types";
 const gamePlayerModelSchema = new Schema<GamePlayer>(
   {
     playerId: { type: Schema.Types.ObjectId, ref: "Player", required: true },
-    name: { type: String, required: true },
+    userName: { type: String, required: true },
     games: { type: Number, required: true },
     rating: { type: Number, required: true },
     newRating: { type: Number, required: false },
@@ -15,6 +15,8 @@ const gamePlayerModelSchema = new Schema<GamePlayer>(
 
 const gameModelSchema = new Schema<GameMongo>(
   {
+    activityId: { type: Schema.Types.ObjectId, required: true },
+    activityName: { type: String, required: true },
     team1: {
       type: [gamePlayerModelSchema],
       required: true,
