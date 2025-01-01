@@ -55,7 +55,11 @@ export async function POST(request: Request) {
         rating: player.rating,
       }));
 
-      const endedSeason = await endActiveSeason({ activityId, leaderboard });
+      const endedSeason = await endActiveSeason({
+        activityId,
+        activityName,
+        leaderboard,
+      });
       if (!endedSeason)
         return Response.json({ error: "No active season" }, { status: 400 });
 
@@ -79,6 +83,7 @@ export async function POST(request: Request) {
           });
         })
       );
+
       const [_, newSeason] = await Promise.all([
         resetPlayersRating({ activityId }),
         startNewSeason({
