@@ -17,7 +17,7 @@ export default function SelectActivity({
   );
 
   const changeActivity = useCallback(
-    (activityName: string) => {
+    (activityName: string, pushRoute = true) => {
       const matchingActivity = activities.find(
         (act) => act.name === activityName
       );
@@ -28,7 +28,7 @@ export default function SelectActivity({
         name: matchingActivity.name,
       });
 
-      router.push(`/${matchingActivity.name}`);
+      if (pushRoute) router.push(`/${matchingActivity.name}`);
     },
     [activities, setSelectedActivity, router]
   );
@@ -40,7 +40,7 @@ export default function SelectActivity({
 
   useEffect(() => {
     if (params.activityName) {
-      changeActivity(params.activityName);
+      changeActivity(params.activityName, false);
     }
   }, [params.activityName, changeActivity]);
 
