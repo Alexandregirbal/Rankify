@@ -1,8 +1,12 @@
 import { ObjectId } from "mongodb";
+import { GameMongo } from "../../types";
 
-export const MOCK_GAMES = [
+const EightBallId = new ObjectId("66fd3c9f42d4c012ac8621e3");
+export const MOCK_8BALL_GAMES: GameMongo[] = [
   {
     _id: new ObjectId("66fd3cdb42d4c012ac8621f6"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
@@ -28,6 +32,8 @@ export const MOCK_GAMES = [
   },
   {
     _id: new ObjectId("66fd3cf442d4c012ac862210"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cbd42d4c012ac8621de"),
@@ -54,6 +60,8 @@ export const MOCK_GAMES = [
   },
   {
     _id: new ObjectId("66fe65593ee911e6f10b6287"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
@@ -79,6 +87,8 @@ export const MOCK_GAMES = [
   },
   {
     _id: new ObjectId("66fe65623ee911e6f10b6294"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
@@ -104,6 +114,8 @@ export const MOCK_GAMES = [
   },
   {
     _id: new ObjectId("66fe69b53ee911e6f10b6313"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
@@ -136,6 +148,8 @@ export const MOCK_GAMES = [
   },
   {
     _id: new ObjectId("66fe69e03ee911e6f10b634e"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cbd42d4c012ac8621de"),
@@ -175,6 +189,8 @@ export const MOCK_GAMES = [
   },
   {
     _id: new ObjectId("66fe6a033ee911e6f10b637f"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
@@ -214,6 +230,8 @@ export const MOCK_GAMES = [
   },
   {
     _id: new ObjectId("66fe6baa3ee911e6f10b63fa"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cba42d4c012ac8621d9"),
@@ -253,6 +271,8 @@ export const MOCK_GAMES = [
   },
   {
     _id: new ObjectId("66fe8b0f3ee911e6f10b6432"),
+    activityId: EightBallId,
+    activityName: "8-Ball",
     team1: [
       {
         playerId: new ObjectId("66fd3cce42d4c012ac8621ed"),

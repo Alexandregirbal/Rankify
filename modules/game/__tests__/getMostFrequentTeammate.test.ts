@@ -11,7 +11,7 @@ import {
 } from "vitest";
 import { getMostFrequentTeammate } from "../get";
 import { gameModel } from "../model";
-import { MOCK_GAMES } from "./mocks/games.mock";
+import { MOCK_8BALL_GAMES } from "./mocks/games.mock";
 
 let mongoServer: MongoMemoryServer;
 
@@ -27,7 +27,7 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  await gameModel.insertMany(MOCK_GAMES);
+  await gameModel.insertMany(MOCK_8BALL_GAMES);
 });
 
 afterEach(async () => {
