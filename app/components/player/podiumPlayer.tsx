@@ -8,7 +8,6 @@ import LastGameStats from "./lastGameStats";
 import { getNameWithTrophies } from "./player";
 
 export const getTrophyIcon = (ranking: number, key: number) => {
-  console.log("RANKGing: ", ranking);
   switch (ranking) {
     case 1:
       return <QueueIcon key={key} className="fill-gold -mr-4" />;
