@@ -2,13 +2,11 @@ import { HEADER_VARIABLES } from "@/app/constants";
 import { getEnvConfigs } from "@/envConfig";
 import { getActivityName } from "@/modules/activity/get";
 import { getAllPlayersOfActivity } from "@/modules/player/get";
-import {
-  resetPlayersRating,
-  updatePlayerTrophies,
-} from "@/modules/player/update";
+import { addPlayerTrophy, resetPlayersRating } from "@/modules/player/update";
 import { startNewSeason } from "@/modules/season/create";
 import { Leaderboard } from "@/modules/season/types";
 import { endActiveSeason } from "@/modules/season/update";
+import { addUserTrophy } from "@/modules/user/update";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -63,16 +61,26 @@ export async function POST(request: Request) {
 
       const top3 = players.slice(0, 3);
       await Promise.all(
-        top3.map((player, index) =>
-          updatePlayerTrophies({
+        top3.map(async (player, index) => {
+          await addPlayerTrophy({
             player,
             ranking: index + 1,
             seasonNumber: endedSeason.number,
-          })
-        )
+          });
+          await addUserTrophy({
+            userId: player.userId,
+            trophy: {
+              season: endedSeason.number,
+              ranking: index + 1,
+              rating: player.rating,
+              activityId,
+              activityName,
+            },
+          });
+        })
       );
       const [_, newSeason] = await Promise.all([
-        resetPlayersRating(),
+        resetPlayersRating({ activityId }),
         startNewSeason({
           activityId,
           activityName,

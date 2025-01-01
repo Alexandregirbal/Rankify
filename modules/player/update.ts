@@ -25,7 +25,7 @@ export const updatePlayerRating = async ({
   return player;
 };
 
-export const updatePlayerTrophies = async ({
+export const addPlayerTrophy = async ({
   player,
   ranking,
   seasonNumber,
@@ -48,11 +48,15 @@ export const updatePlayerTrophies = async ({
   return updateResult;
 };
 
-export const resetPlayersRating = async () => {
+export const resetPlayersRating = async ({
+  activityId,
+}: {
+  activityId: ZodObjectId;
+}) => {
   await mongooseConnect();
 
   const updatedResult = await playerModel.updateMany(
-    {},
+    { activityId },
     {
       $set: {
         rating: DEFAULT_RATING,

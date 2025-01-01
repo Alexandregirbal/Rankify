@@ -10,7 +10,6 @@ export default function AdminPage() {
   const { setIsLoading } = useUIStore((state) => state);
   const { selectedActivity } = useActivityStore((state) => state);
 
-  // const [localAdminToken, setLocalAdminToken] = useState<string>("");
   const [adminToken, setAdminToken] = useLocalStorage<string>({
     key: localStorageKeys.adminToken,
     initialValue: "",

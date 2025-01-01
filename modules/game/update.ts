@@ -1,9 +1,14 @@
+import { ZodObjectId } from "@/database/utils";
 import { playerModel } from "../player/model";
 import { gameModel } from "./model";
 
-export const rollbackLastGame = async () => {
+export const rollbackLastGame = async ({
+  activityId,
+}: {
+  activityId: ZodObjectId;
+}) => {
   const [lastGamePlayed] = await gameModel
-    .find({}, null, { sort: { createdAt: -1 }, limit: 1 })
+    .find({ activityId }, null, { sort: { createdAt: -1 }, limit: 1 })
     .lean();
 
   if (!lastGamePlayed)
