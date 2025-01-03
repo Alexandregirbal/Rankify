@@ -13,7 +13,7 @@ export default function Footer() {
     const isActive =
       (tab === "stats" && path.endsWith("/stats")) ||
       (tab === "add" && path.endsWith("/add")) ||
-      (tab === "leaderboard" && path.endsWith(params.activityName.toLowerCase()));
+      (tab === "leaderboard" && path.endsWith(params.activityName?.toLowerCase()));
     return isActive ? "active bg-neutral" : "";
   };
 

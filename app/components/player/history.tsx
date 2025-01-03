@@ -36,8 +36,9 @@ const GameHistory = ({
   player: PlayerMongo;
 }) => {
   const isInTeam1 = game.team1
-    .map((player) => player.userName)
+    .map((player) => player.userName ?? player.name)
     .includes(player.userName);
+    
   const isWinner = game.winner === (isInTeam1 ? "1" : "2");
   const gamePlayer = (isInTeam1 ? game.team1 : game.team2).find(
     (gp) => gp.playerId === player._id
