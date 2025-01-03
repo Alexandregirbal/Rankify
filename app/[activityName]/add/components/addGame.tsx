@@ -269,6 +269,19 @@ export default function AddGame({
                   max="100"
                 />
               </div>
+              {baseRating ? (
+                <>
+                  <span>
+                    {"Points en jeu pour une victoire avec 1 point d'écart."}
+                  </span>
+                  <div className="w-full flex flex-row justify-evenly">
+                    <p>{baseRating.team1wins}</p>
+                    <p>{baseRating.team2wins}</p>
+                  </div>
+                </>
+              ) : (
+                ""
+              )}
               <div className="collapse collapse-arrow  w-4/5 rounded-md">
                 <input type="checkbox" />
                 <div className="collapse-title font-medium">
