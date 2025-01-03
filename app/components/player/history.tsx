@@ -21,8 +21,8 @@ const GameHistoryPart = ({
         isLeft ? "items-start" : "items-end"
       } gap-y-0.5`}
     >
-      {players.map(({ userName }, key) => (
-        <span key={key}>{userName}</span>
+      {players.map(({ name, userName }, key) => (
+        <span key={key}>{userName ?? name}</span>
       ))}
     </div>
   );

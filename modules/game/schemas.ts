@@ -4,6 +4,7 @@ import { z } from "zod";
 export const gamePlayerSchema = z.object({
   playerId: zodObjectId,
   userName: z.string(),
+  name: z.string().optional(), // memo: Legacy - le script n'a pas update ce champ
   games: z.number(),
   rating: z.number(),
   newRating: z.number().optional(),

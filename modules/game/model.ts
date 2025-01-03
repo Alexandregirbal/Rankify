@@ -6,6 +6,7 @@ const gamePlayerModelSchema = new Schema<GamePlayer>(
   {
     playerId: { type: Schema.Types.ObjectId, ref: "Player", required: true },
     userName: { type: String, required: true },
+    name: { type: String, required: false }, // memo: Legacy - le script n'a pas update ce champ
     games: { type: Number, required: true },
     rating: { type: Number, required: true },
     newRating: { type: Number, required: false },
