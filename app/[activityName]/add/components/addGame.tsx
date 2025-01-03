@@ -197,21 +197,25 @@ export default function AddGame({
             <div className="w-full flex flex-row max-h-96 justify-between">
               <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
                 {allPlayers.map((player, key) => {
-                  const isSelected = team1.players.some(
+                  const isSelectedTeam1 = team1.players.some(
                     (team1Player) => team1Player.playerId === player._id
                   );
+                  const isSelectedTeam2 = team2.players.some(
+                    (team2Player) => team2Player.playerId === player._id
+                  );
+                  const isDisabled = isSelectedTeam2;
 
                   return (
                     <div
                       key={key}
                       onClick={() =>
-                        isSelected
+                        !isDisabled && (isSelectedTeam1
                           ? removeTeam1Player(player)
-                          : addPlayerTeam1Player(player)
+                          : addPlayerTeam1Player(player))
                       }
-                      className={`flex flex-col text-lg ${
-                        isSelected ? "text-accent" : ""
-                      }`}
+                      className={`flex flex-col text-lg cursor-pointer ${
+                        isSelectedTeam1 ? "text-accent" : ""
+                      } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       {player.userName}
                     </div>
@@ -221,21 +225,25 @@ export default function AddGame({
               <div className="divider divider-horizontal">VS</div>
               <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
                 {allPlayers.map((player, key) => {
-                  const isSelected = team2.players.some(
+                  const isSelectedTeam2 = team2.players.some(
                     (team2Player) => team2Player.playerId === player._id
                   );
+                  const isSelectedTeam1 = team1.players.some(
+                    (team1Player) => team1Player.playerId === player._id
+                  );
+                  const isDisabled = isSelectedTeam1;
 
                   return (
                     <div
                       key={key}
                       onClick={() =>
-                        isSelected
+                        !isDisabled && (isSelectedTeam2
                           ? removeTeam2Player(player)
-                          : addPlayerTeam2Player(player)
+                          : addPlayerTeam2Player(player))
                       }
-                      className={`flex flex-col text-lg ${
-                        isSelected ? "text-accent" : ""
-                      }`}
+                      className={`flex flex-col text-lg cursor-pointer ${
+                        isSelectedTeam2 ? "text-accent" : ""
+                      } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       {player.userName}
                     </div>
