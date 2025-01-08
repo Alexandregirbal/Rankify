@@ -1,9 +1,17 @@
 "use server";
 
-import { getActivityId } from "@/modules/activity/get";
+import { getActivityId, getAllActivities } from "@/modules/activity/get";
 import { getAllPlayersOfActivity } from "@/modules/player/get";
 import { ActivityNameParams } from "../types";
 import AddGame from "./components/addGame";
+
+export async function generateStaticParams() {
+  const activities = await getAllActivities();
+
+  return activities.map((activity) => ({
+    activityName: activity.name,
+  }));
+}
 
 export default async function AddPage({ params }: ActivityNameParams) {
   const { activityName } = await params;

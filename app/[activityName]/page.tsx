@@ -3,12 +3,20 @@
 import AddPlayer from "@/app/components/player/addPlayer";
 import PlayerComponent from "@/app/components/player/player";
 import { getEnvConfigs } from "@/envConfig";
-import { getActivityId } from "@/modules/activity/get";
+import { getActivityId, getAllActivities } from "@/modules/activity/get";
 import { getAllPlayersOfActivity } from "@/modules/player/get";
 import { getOrCreateQuoteOfTheDay } from "@/modules/quote/get";
 import { getCurrentSeason } from "@/modules/season/get";
 import PodiumPlayer from "../components/player/podiumPlayer";
 import { ActivityNameParams } from "./types";
+
+export async function generateStaticParams() {
+  const activities = await getAllActivities();
+
+  return activities.map((activity) => ({
+    activityName: activity.name,
+  }));
+}
 
 export default async function Leaderboard({ params }: ActivityNameParams) {
   const { activityName } = await params;

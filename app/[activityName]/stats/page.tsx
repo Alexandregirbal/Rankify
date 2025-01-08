@@ -1,6 +1,6 @@
 "use server";
 
-import { getActivityId } from "@/modules/activity/get";
+import { getActivityId, getAllActivities } from "@/modules/activity/get";
 import {
   getNumberOfGamesSince,
   getTotalNumberOfGames,
@@ -10,6 +10,14 @@ import { getCurrentSeason } from "@/modules/season/get";
 import dayjs from "dayjs";
 import { ActivityNameParams } from "../types";
 import RatingHistories from "./components/ratingHistories";
+
+export async function generateStaticParams() {
+  const activities = await getAllActivities();
+
+  return activities.map((activity) => ({
+    activityName: activity.name,
+  }));
+}
 
 export default async function Charts({ params }: ActivityNameParams) {
   const { activityName } = await params;
