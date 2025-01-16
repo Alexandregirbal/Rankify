@@ -73,10 +73,13 @@ export async function POST(request: Request) {
       players: team2PlayersWithPlayerId,
     }
   );
+  const playerIds = [...team1Players, ...team2Players].map(
+    (player) => player._id
+  );
 
-  revalidatePath(`/${activityName}`, "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
-  for (const player of [...team1Players, ...team2Players]) {
-    revalidatePath(`/playerHistory/${player._id}`, "layout");
+  revalidatePath(`/[activityName]`, "layout");
+  for (const playerId of playerIds) {
+    revalidatePath(`/playerHistory/${playerId}`, "layout");
   }
 
   const updatedPlayers = await Promise.all(
@@ -108,10 +111,6 @@ export async function POST(request: Request) {
       eliminationFoul: team2.eliminationFoul,
     },
   });
-
-  const playerIds = [...team1Players, ...team1Players].map(
-    (player) => player._id
-  );
 
   const urlWithoutProtocol = join(getEnvConfigs().VERCEL_URL, "/api/quote");
   fetch(buildFullUrl(urlWithoutProtocol), {

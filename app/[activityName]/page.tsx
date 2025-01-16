@@ -1,5 +1,3 @@
-"use server";
-
 import AddPlayer from "@/app/components/player/addPlayer";
 import PlayerComponent from "@/app/components/player/player";
 import { getEnvConfigs } from "@/envConfig";
