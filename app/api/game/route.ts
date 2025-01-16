@@ -74,7 +74,10 @@ export async function POST(request: Request) {
     }
   );
 
-  revalidatePath("/", "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
+  revalidatePath(`/${activityName}`, "layout"); // Revalidating all data (https://nextjs.org/docs/app/api-reference/functions/revalidatePath#revalidating-all-data)
+  for (const player of [...team1Players, ...team2Players]) {
+    revalidatePath(`/playerHistory/${player._id}`, "layout");
+  }
 
   const updatedPlayers = await Promise.all(
     newPlayersRatings.map((player) =>

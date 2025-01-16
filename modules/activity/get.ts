@@ -1,4 +1,5 @@
 import mongooseConnect from "@/database/config/mongoose";
+import { ZodObjectId } from "@/database/utils";
 import { activityModel } from "./model";
 import { ActivityMongo } from "./types";
 
@@ -18,7 +19,7 @@ export const getActivityId = async (activityName: string) => {
   return activity._id.toString();
 };
 
-export const getActivityName = async (activityId: string) => {
+export const getActivityName = async (activityId: ZodObjectId) => {
   await mongooseConnect();
   const activity = await activityModel.findOne({ _id: activityId }).exec();
   if (!activity) return null;

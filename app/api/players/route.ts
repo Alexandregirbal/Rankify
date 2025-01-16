@@ -1,5 +1,6 @@
 import { HEADER_VARIABLES } from "@/app/constants";
 import { zodObjectId } from "@/database/utils";
+import { getActivityName } from "@/modules/activity/get";
 import { createPlayer } from "@/modules/player/create";
 import { getAllPlayersOfActivity } from "@/modules/player/get";
 import { revalidatePath } from "next/cache";
@@ -32,11 +33,19 @@ export async function POST(request: Request) {
 
   const { name, activityId } = parsedBody.data;
 
+  const activityName = await getActivityName(activityId);
+  if (!activityName) {
+    return Response.json(
+      { error: "Activity could not be found" },
+      { status: 400 }
+    );
+  }
+
   const player = await createPlayer({
     userName: name,
     activityId,
   });
-  revalidatePath("/", "layout");
+  revalidatePath(`/${activityName}`, "layout");
 
   return Response.json({ player }, { status: 200 });
 }
