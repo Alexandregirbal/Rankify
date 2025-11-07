@@ -77,11 +77,6 @@ export async function POST(request: Request) {
     (player) => player._id
   );
 
-  revalidatePath(`/[activityName]`, "layout");
-  for (const playerId of playerIds) {
-    revalidatePath(`/playerHistory/${playerId}`, "layout");
-  }
-
   const updatedPlayers = await Promise.all(
     newPlayersRatings.map((player) =>
       updatePlayerRating({
@@ -111,6 +106,11 @@ export async function POST(request: Request) {
       eliminationFoul: team2.eliminationFoul,
     },
   });
+
+  revalidatePath(`/[activityName]`, "layout");
+  for (const playerId of playerIds) {
+    revalidatePath(`/playerHistory/${playerId}`, "layout");
+  }
 
   const urlWithoutProtocol = join(getEnvConfigs().VERCEL_URL, "/api/quote");
   fetch(buildFullUrl(urlWithoutProtocol), {
